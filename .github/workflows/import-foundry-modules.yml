@@ -36,7 +36,7 @@ jobs:
             rm -rf /tmp/sbs-drive
             mkdir -p /tmp/sbs-drive
             echo 'Downloading Google Drive module collection...'
-            gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive --remaining-ok
+            gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive
 
             echo 'Downloaded Drive tree:'
             find /tmp/sbs-drive -maxdepth 4 -type f | sort | head -250
