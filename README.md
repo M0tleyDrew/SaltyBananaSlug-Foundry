@@ -17,6 +17,7 @@ A collection of SaltyBananaSlug modules for Foundry VTT.
 - Web Viewer
 - Danger Zones
 - Environment
+- Evidence Board
 - Factions
 - Lore Module
 - Message Cantrip
