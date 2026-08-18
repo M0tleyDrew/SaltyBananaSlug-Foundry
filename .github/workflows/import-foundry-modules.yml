@@ -17,7 +17,7 @@ jobs:
   import-modules:
     if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Run SBS module import'
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 12
     steps:
       - name: Report start to trigger issue
         if: github.event_name == 'issues'
@@ -45,12 +45,48 @@ jobs:
             set -euo pipefail
             shopt -s dotglob nullglob
 
-            rm -rf /tmp/sbs-drive
+            DRIVE_URL='https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR'
+            rm -rf /tmp/sbs-drive /tmp/sbs-files.json /tmp/sbs-failed.tsv
             mkdir -p /tmp/sbs-drive
-            echo 'Downloading Google Drive module collection...'
-            timeout 240s gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive
 
-            echo 'Downloaded Drive tree:'
+            echo 'Listing complete Google Drive tree...'
+            gdown --folder "$DRIVE_URL" --json > /tmp/sbs-files.json
+
+            python - <<'PY'
+          import json
+          import pathlib
+          import subprocess
+
+          root = pathlib.Path('/tmp/sbs-drive')
+          items = json.loads(pathlib.Path('/tmp/sbs-files.json').read_text(encoding='utf-8'))
+          failures = []
+
+          print(f'Listed {len(items)} Drive files.')
+          for index, item in enumerate(items, start=1):
+              rel = pathlib.PurePosixPath(item['path'])
+              dest = root.joinpath(*rel.parts)
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              print(f'[{index}/{len(items)}] {rel}')
+              proc = subprocess.run(
+                  ['gdown', item['url'], '--output', str(dest)],
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.STDOUT,
+                  text=True,
+              )
+              if proc.returncode != 0:
+                  print(f'  SKIPPED: {rel}')
+                  failures.append((str(rel), item['url'], proc.stdout.strip()))
+
+          failed_path = pathlib.Path('/tmp/sbs-failed.tsv')
+          with failed_path.open('w', encoding='utf-8') as fh:
+              for path, url, output in failures:
+                  clean = output.replace('\t', ' ').replace('\r', ' ').replace('\n', ' | ')
+                  fh.write(f'{path}\t{url}\t{clean}\n')
+
+          print(f'Individual download pass complete. Failed files: {len(failures)}')
+          PY
+
+            echo 'Downloaded Drive tree sample:'
             find /tmp/sbs-drive -maxdepth 4 -type f | sort | head -250
 
             SOURCE='/tmp/sbs-drive'
@@ -114,6 +150,13 @@ jobs:
               git commit -m 'Import current SaltyBananaSlug Foundry modules'
               git push
             fi
+
+            FAILED_COUNT="$(wc -l < /tmp/sbs-failed.tsv | tr -d ' ')"
+            echo "Bulk import committed. Authenticated Drive backfill required for $FAILED_COUNT file(s)."
+            if [ "$FAILED_COUNT" -gt 0 ]; then
+              echo 'Files requiring authenticated backfill:'
+              cut -f1-2 /tmp/sbs-failed.tsv
+            fi
           } 2>&1 | tee /tmp/sbs-import.log
 
       - name: Report result to trigger issue
@@ -123,14 +166,26 @@ jobs:
         run: |
           {
             if [ '${{ job.status }}' = 'success' ]; then
-              echo 'SBS module import workflow completed successfully.'
+              echo 'SBS module bulk import workflow completed.'
             else
-              echo 'SBS module import workflow failed.'
+              echo 'SBS module bulk import workflow failed.'
             fi
             echo
+            if [ -f /tmp/sbs-failed.tsv ]; then
+              FAILED_COUNT="$(wc -l < /tmp/sbs-failed.tsv | tr -d ' ')"
+              echo "Files requiring authenticated Drive backfill: $FAILED_COUNT"
+              if [ "$FAILED_COUNT" -gt 0 ]; then
+                echo
+                echo '```text'
+                cut -f1-2 /tmp/sbs-failed.tsv | tail -n 100
+                echo '```'
+              fi
+            fi
+            echo
+            echo 'Last import log lines:'
             echo '```text'
             if [ -f /tmp/sbs-import.log ]; then
-              tail -n 100 /tmp/sbs-import.log
+              tail -n 80 /tmp/sbs-import.log
             else
               echo 'Import log was not created; failure occurred before the import step.'
             fi
