@@ -1,0 +1,105 @@
+name: Import current Foundry modules from Google Drive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-foundry-modules.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-modules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Google Drive downloader
+        run: python -m pip install --upgrade gdown
+
+      - name: Download module collection
+        run: |
+          rm -rf /tmp/sbs-drive
+          mkdir -p /tmp/sbs-drive
+          gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive --remaining-ok
+          echo 'Downloaded Drive tree:'
+          find /tmp/sbs-drive -maxdepth 3 -type f | sort | head -200
+
+      - name: Copy only Foundry module folders
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s dotglob nullglob
+
+          # gdown may either place the folder contents directly in the output
+          # directory or create one wrapper folder. Find the directory that
+          # actually contains the module folders.
+          SOURCE='/tmp/sbs-drive'
+          if [ "$(find "$SOURCE" -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 1 ]; then
+            ONLY_DIR="$(find "$SOURCE" -mindepth 1 -maxdepth 1 -type d | head -1)"
+            if find "$ONLY_DIR" -mindepth 1 -maxdepth 1 -type d -name 'saltybananaslug*' | grep -q . || [ -d "$ONLY_DIR/party-viewer" ]; then
+              SOURCE="$ONLY_DIR"
+            fi
+          fi
+
+          MODULES=(
+            party-viewer
+            saltybananaslug-actor-journal
+            saltybananaslug-card-games
+            saltybananaslug-character-sheets
+            saltybananaslug-containers
+            saltybananaslug-item-uploader
+            saltybananaslug-merchants
+            saltybananaslug-quests-objectives
+            saltybananaslug-scene-piles
+            saltybananaslug-scene-summarized
+            saltybananaslug-web-viewer
+            saltybananaslugs-danger-zones
+            saltybananaslugs-factions
+            saltybananaslugs-lore-module
+            saltybananaslugs-message-cantrip
+            saltybananaslugs-npc-memories
+          )
+
+          for module in "${MODULES[@]}"; do
+            if [ ! -d "$SOURCE/$module" ]; then
+              echo "ERROR: Expected module folder missing: $module" >&2
+              exit 1
+            fi
+            rm -rf "$module"
+            cp -a "$SOURCE/$module" "$module"
+          done
+
+          # Explicitly do not import the Environment releases folder or the
+          # standalone Cards macro. This repo is for modules only.
+          rm -rf '_SBS Environment Releases'
+          rm -f 'Cards Macro.json'
+
+          echo 'Imported module manifests:'
+          find . -mindepth 2 -maxdepth 2 -name module.json -print | sort
+
+          COUNT="$(find . -mindepth 2 -maxdepth 2 -name module.json | wc -l)"
+          if [ "$COUNT" -ne 16 ]; then
+            echo "ERROR: Expected 16 module manifests, found $COUNT" >&2
+            exit 1
+          fi
+
+      - name: Commit imported modules
+        run: |
+          git config user.name 'SaltyBananaSlug Import Bot'
+          git config user.email '34432002+M0tleyDrew@users.noreply.github.com'
+          git add --all
+          if git diff --cached --quiet; then
+            echo 'No module changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Import current SaltyBananaSlug Foundry modules'
+          git push
