@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   import-modules:
@@ -97,3 +98,14 @@ jobs:
           fi
           git commit -m 'Import current SaltyBananaSlug Foundry modules'
           git push
+
+      - name: Report result to trigger issue
+        if: always() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ '${{ job.status }}' = 'success' ]; then
+            gh issue comment '${{ github.event.issue.number }}' --body 'SBS module import workflow completed successfully.'
+          else
+            gh issue comment '${{ github.event.issue.number }}' --body 'SBS module import workflow failed. Check the Actions run for the failing step and logs.'
+          fi
