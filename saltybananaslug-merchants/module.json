@@ -1,0 +1,44 @@
+{
+  "id": "saltybananaslug-merchants",
+  "title": "SaltyBananaSlug's Merchants",
+  "description": "Comprehensive Foundry VTT v13 D&D5e merchants with private stock, player buy/sell carts, per-character favor pricing, finite treasury, Journal and RollTable inventory import, transaction ledger journals, generated or linked merchant tokens, greeting sounds, and no Item Piles dependency. Includes NPC Memories integration hooks plus a public favor API for SBS Factions and other modules.",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "version": "0.1.7",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "system": [
+    "dnd5e"
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/merchants.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": true,
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system"
+      }
+    ]
+  },
+  "readme": "README.md",
+  "url": "",
+  "manifest": "",
+  "download": ""
+}

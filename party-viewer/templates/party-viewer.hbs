@@ -1,0 +1,450 @@
+<div class="party-viewer" data-module-id="{{moduleId}}">
+  <header class="pv-header">
+    <div class="pv-title"><img src="{{icon}}" alt=""> <strong>SaltyBananaSlugs's Party Viewer</strong> <span class="pv-version">v{{moduleVersion}}</span></div>
+    <nav class="pv-tabs">
+      <button class="{{#if (pvEq activeTab 'dashboard')}}active{{/if}}" data-tab="dashboard">Party</button>
+      <button class="{{#if (pvEq activeTab 'storage')}}active{{/if}}" data-tab="storage">Storage</button>
+      <button class="{{#if (pvEq activeTab 'trades')}}active{{/if}}" data-tab="trades">Trades</button>
+      <button class="{{#if (pvEq activeTab 'notes')}}active{{/if}}" data-tab="notes">Notes</button>
+      {{#if isGM}}<button class="{{#if (pvEq activeTab 'gm')}}active{{/if}}" data-tab="gm">GM</button>{{/if}}
+    </nav>
+  </header>
+
+  {{#if (pvEq activeTab 'dashboard')}}
+  <section class="pv-panel pv-dashboard">
+    <div class="pv-card-grid">
+      {{#each members}}
+      <article class="pv-member-card {{#if missing}}missing{{/if}}">
+        {{#if missing}}
+          <div class="pv-member-missing">Missing actor: {{id}}</div>
+        {{else}}
+          <img class="pv-member-img pv-open-actor" src="{{img}}" alt="{{name}}" data-action="open-actor-sheet" data-actor-id="{{id}}" title="Open {{name}} sheet">
+          <div class="pv-member-main">
+            <div class="pv-member-name-row">
+              <h3><button type="button" class="pv-link-button pv-open-actor" data-action="open-actor-sheet" data-actor-id="{{id}}" title="Open {{name}} sheet">{{name}}</button></h3>
+              <span class="pv-pill">{{role}}</span>
+              {{#if hidden}}<span class="pv-pill warn">hidden</span>{{/if}}
+            </div>
+            <div class="pv-muted">{{classes}}</div>
+            <div class="pv-muted">Player: {{owners}}</div>
+            <div class="pv-stats-line">
+              <span><strong>HP</strong> {{hpDisplay}}</span>
+              <span><strong>AC</strong> {{ac}}</span>
+              {{#if ../settings.showPassivePerception}}<span><strong>PP</strong> {{pp}}</span>{{/if}}
+              {{#if inspiration}}<span class="pv-pill good">Inspiration</span>{{/if}}
+            </div>
+            <div class="pv-hpbar"><div style="width: {{hpPct}}%"></div></div>
+            <div class="pv-small-row">
+              {{#if exhaustion}}<span class="pv-pill warn">Exhaustion {{exhaustion}}</span>{{/if}}
+              {{#if deathSuccess}}<span class="pv-pill">Death +{{deathSuccess}}</span>{{/if}}
+              {{#if deathFailure}}<span class="pv-pill danger">Death -{{deathFailure}}</span>{{/if}}
+            </div>
+            {{#if ../settings.showConditions}}
+              {{#if conditions.length}}
+              <div class="pv-condition-list">
+                {{#each conditions}}<span class="pv-condition">{{this}}</span>{{/each}}
+              </div>
+              {{/if}}
+            {{/if}}
+          </div>
+          {{#if ../isGM}}
+          <div class="pv-member-gm" data-actor-id="{{id}}">
+            <select class="pv-roster-role">
+              <option value="pc" {{#if (pvEq role 'pc')}}selected{{/if}}>PC</option>
+              <option value="companion" {{#if (pvEq role 'companion')}}selected{{/if}}>Companion</option>
+              <option value="hireling" {{#if (pvEq role 'hireling')}}selected{{/if}}>Hireling</option>
+              <option value="vehicle" {{#if (pvEq role 'vehicle')}}selected{{/if}}>Vehicle</option>
+              <option value="mount" {{#if (pvEq role 'mount')}}selected{{/if}}>Mount</option>
+              <option value="summon" {{#if (pvEq role 'summon')}}selected{{/if}}>Summon</option>
+            </select>
+            <label><input class="pv-roster-hidden" type="checkbox" {{pvChecked hidden}}> Hide</label>
+            <button type="button" data-action="remove-member" data-actor-id="{{id}}"><i class="fas fa-trash"></i></button>
+          </div>
+          {{/if}}
+        {{/if}}
+      </article>
+      {{else}}
+        <p class="pv-empty">No party members yet. The GM can add some from the GM tab. The goblins are waiting politely, which is how you know it’s a trap.</p>
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if (pvEq activeTab 'storage')}}
+  <section class="pv-panel pv-storage">
+    <div class="pv-section-title">
+      <h2>Shared Storage</h2>
+      <p>Party stash, wagon, mule saddlebags, bag of holding, suspicious sack, emotionally compromised wheelbarrow, etc.</p>
+    </div>
+
+    {{#if containers.length}}
+    <div class="pv-add-actor-item pv-box">
+      <h3>Add Item from Character</h3>
+      <div class="pv-form-row">
+        <label>Item
+          <select name="actorItem">
+            {{#each actorItems}}
+              <optgroup label="{{name}}">
+                {{#each items}}
+                  <option value="{{../id}}|{{id}}">{{name}} ×{{quantity}}</option>
+                {{/each}}
+              </optgroup>
+            {{/each}}
+          </select>
+        </label>
+        <label>Qty <input name="actorItemQuantity" type="number" min="1" value="1"></label>
+        <label>To
+          <select name="targetContainer">
+            {{#each containers}}<option value="{{id}}">{{name}}</option>{{/each}}
+          </select>
+        </label>
+        <label class="pv-check"><input name="moveItem" type="checkbox" checked> Move, not copy</label>
+        <button type="button" data-action="add-actor-item">Add</button>
+      </div>
+      {{#unless actorItems.length}}<p class="pv-muted">No owned actor inventory items found.</p>{{/unless}}
+    </div>
+    {{/if}}
+
+    {{#each containers}}
+    <article class="pv-container pv-box" data-container-id="{{id}}">
+      <header class="pv-container-header">
+        <img src="{{img}}" alt="{{name}}">
+        <div>
+          {{#if ../isGM}}
+          <div class="pv-form-row compact pv-storage-edit-row">
+            <label class="pv-grow">Storage Name <input class="pv-container-field" name="containerEditName" value="{{name}}"></label>
+            <label>Type
+              <select class="pv-container-field" name="containerEditType">
+                <option value="container" {{#if (pvEq type 'container')}}selected{{/if}}>Container</option>
+                <option value="wagon" {{#if (pvEq type 'wagon')}}selected{{/if}}>Wagon</option>
+                <option value="mount" {{#if (pvEq type 'mount')}}selected{{/if}}>Mount</option>
+                <option value="vehicle" {{#if (pvEq type 'vehicle')}}selected{{/if}}>Vehicle</option>
+                <option value="bag" {{#if (pvEq type 'bag')}}selected{{/if}}>Bag</option>
+              </select>
+            </label>
+            <label>Capacity lb <input class="pv-container-field" name="containerEditCapacity" type="number" min="0" value="{{capacity}}"></label>
+            <label><input class="pv-container-field" name="containerEditLocked" type="checkbox" {{pvChecked locked}}> Locked</label>
+            <label><input class="pv-container-field" name="containerEditPlayersTake" type="checkbox" {{pvChecked playersTake}}> Players take</label>
+            <label><input class="pv-container-field" name="containerEditPlayersAdd" type="checkbox" {{pvChecked playersAdd}}> Players add</label>
+            <button type="button" data-action="save-container" data-container-id="{{id}}">Save Storage</button>
+            <button type="button" data-action="delete-container" data-container-id="{{id}}"><i class="fas fa-trash"></i></button>
+          </div>
+          {{else}}
+          <h3>{{name}}</h3>
+          {{/if}}
+          <div class="pv-muted">
+            {{type}} • Weight {{pvFixed weightTotal 1}}{{#if capacity}} / {{capacity}}{{/if}} lb {{#if overCapacity}}<span class="pv-danger-text">OVER CAPACITY</span>{{/if}} • Value {{pvMoney valueTotal}} gp
+            {{#if locked}} • Locked{{/if}}
+          </div>
+        </div>
+      </header>
+
+      <div class="pv-drop-zone" data-container-id="{{id}}">
+        <i class="fas fa-hand-holding-box"></i>
+        Drop items here from character sheets, the Items sidebar, or compendiums.
+      </div>
+
+      <div class="pv-currency">
+        {{#each currency as |amount coin|}}
+          <label>{{coin}} <input class="pv-currency-input" name="currency-{{coin}}" type="number" min="0" value="{{amount}}"></label>
+        {{/each}}
+      </div>
+
+      <div class="pv-storage-list">
+        {{#each items}}
+        <div class="pv-storage-item" data-item-id="{{id}}">
+          <img src="{{img}}" alt="{{name}}">
+          <div class="pv-grow">
+            <strong>{{name}}</strong> <span class="pv-muted">×{{quantity}}</span>
+            <div class="pv-muted">{{type}} • {{weight}} lb each • {{value}} gp each</div>
+          </div>
+          <label class="pv-take-qty">Qty <input name="takeQuantity" type="number" min="1" max="{{quantity}}" value="1"></label>
+          <select name="takeActor">
+            {{#each ../../storageTargetActors}}<option value="{{id}}">{{name}}</option>{{/each}}
+          </select>
+          <button type="button" data-action="take-storage-item" data-container-id="{{../id}}" data-item-id="{{id}}">Take</button>
+          {{#if ../../isGM}}<button type="button" data-action="remove-storage-item" data-container-id="{{../id}}" data-item-id="{{id}}"><i class="fas fa-trash"></i></button>{{/if}}
+        </div>
+        {{else}}
+          <p class="pv-empty">Empty. The mule exhales in temporary relief.</p>
+        {{/each}}
+      </div>
+
+      <div class="pv-manual-item pv-box inset">
+        <h4>Add Manual Loot</h4>
+        <div class="pv-form-row">
+          <label>Name <input name="itemName" placeholder="Blackened Silver Reliquary"></label>
+          <label>Qty <input name="itemQuantity" type="number" min="1" value="1"></label>
+          <label>Weight <input name="itemWeight" type="number" min="0" step="0.1" value="0"></label>
+          <label>Value gp <input name="itemValue" type="number" min="0" step="0.01" value="0"></label>
+        </div>
+        <div class="pv-form-row">
+          <label>Image path <input name="itemImg" placeholder="icons/svg/item-bag.svg"></label>
+          <label class="pv-grow">Description <input name="itemDescription" placeholder="Optional notes"></label>
+          <button type="button" data-action="add-manual-item" data-container-id="{{id}}">Add</button>
+        </div>
+      </div>
+    </article>
+    {{else}}
+      <p class="pv-empty">No shared storage yet. The GM can create a wagon, chest, mule bags, or whatever container the party will immediately abuse.</p>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{#if (pvEq activeTab 'trades')}}
+  <section class="pv-panel pv-trades">
+    <div class="pv-trade-form pv-box">
+      <h2>Offer Trade / Give Item</h2>
+      <div class="pv-form-row">
+        <label>Offer item
+          <select name="tradeItem">
+            {{#each tradeActorItems}}
+              <optgroup label="{{name}}">
+                {{#each items}}<option value="{{../id}}|{{id}}">{{name}} ×{{quantity}}</option>{{/each}}
+              </optgroup>
+            {{/each}}
+          </select>
+        </label>
+        <label>Qty <input name="tradeQuantity" type="number" min="1" value="1"></label>
+        <label>To
+          <select name="tradeTarget">
+            {{#each tradeTargetActors}}<option value="{{id}}">{{name}}</option>{{/each}}
+          </select>
+        </label>
+      </div>
+      <div class="pv-form-row">
+        <label class="pv-grow">Request / note <input name="requestText" placeholder="For 10 gp, for that potion, because I am charming, etc."></label>
+        <button type="button" data-action="create-trade" {{#unless tradeActorItems.length}}disabled{{/unless}}>Send Offer</button>
+      </div>
+      {{#unless tradeActorItems.length}}<p class="pv-muted">No tradeable items found on party actors you own.</p>{{/unless}}
+    </div>
+
+    <div class="pv-box">
+      <div class="pv-section-title inline">
+        <h2>Trade Offers</h2>
+        {{#if isGM}}<button type="button" data-action="clear-resolved-trades">Clear Resolved</button>{{/if}}
+      </div>
+      {{#each trades}}
+      <article class="pv-trade {{status}}">
+        <img src="{{itemImg}}" alt="{{itemName}}">
+        <div class="pv-grow">
+          <strong>{{quantity}} × {{itemName}}</strong>
+          <div>{{fromActorName}} → {{toActorName}}</div>
+          <div class="pv-muted">Offered by {{fromUserName}} • {{createdLabel}}</div>
+          {{#if requestText}}<div class="pv-note">{{requestText}}</div>{{/if}}
+          <span class="pv-pill {{status}}">{{status}}</span>
+        </div>
+        {{#if (pvEq status 'pending')}}
+          {{#if canResolve}}
+          <button type="button" data-action="accept-trade" data-trade-id="{{id}}">Accept</button>
+          <button type="button" data-action="decline-trade" data-trade-id="{{id}}">Decline</button>
+          {{/if}}
+        {{else}}
+          <div class="pv-muted">Resolved by {{resolvedByName}}</div>
+        {{/if}}
+      </article>
+      {{else}}
+        <p class="pv-empty">No trade offers. Capitalism has briefly failed. Treasure this moment.</p>
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if (pvEq activeTab 'notes')}}
+  <section class="pv-panel pv-notes">
+    <div class="pv-note-grid">
+      <article class="pv-box pv-shared-notes">
+        <div class="pv-section-title">
+          <h2>Shared Party Notes</h2>
+          <p>Visible to everyone. Updated: {{sharedNotesUpdated}}</p>
+        </div>
+        <textarea name="sharedNotes" rows="12" {{#unless isGM}}{{#unless settings.playersCanEditNotes}}disabled{{/unless}}{{/unless}}>{{sharedNotes.text}}</textarea>
+        <div class="pv-actions">
+          {{#if isGM}}<button type="button" class="pv-save-shared-notes">Save Shared Notes</button>{{else}}{{#if settings.playersCanEditNotes}}<button type="button" class="pv-save-shared-notes">Save Shared Notes</button>{{/if}}{{/if}}
+        </div>
+      </article>
+
+      <article class="pv-box pv-private-notes">
+        <div class="pv-section-title">
+          <h2>My Private Notes</h2>
+          <p>Only shown to you unless you make them public. Updated: {{privateNoteUpdated}}</p>
+        </div>
+        <textarea name="privateNotes" rows="12">{{privateNote.text}}</textarea>
+        <div class="pv-form-row compact">
+          <label class="pv-check"><input name="privateNotesPublic" type="checkbox" {{pvChecked privateNote.public}}> Make my private notes public to the party</label>
+          <button type="button" class="pv-save-private-notes">Save Private Notes</button>
+        </div>
+      </article>
+    </div>
+
+    <article class="pv-box">
+      <div class="pv-section-title">
+        <h2>Public Player Notes</h2>
+        <p>Private notes that players have chosen to share. Ah yes, consent-based lore leakage.</p>
+      </div>
+      {{#each publicPrivateNotes}}
+      <div class="pv-public-note">
+        <h3>{{userName}}</h3>
+        <div class="pv-muted">Updated: {{updatedLabel}}</div>
+        <div class="pv-note-text">{{pvNl2br text}}</div>
+      </div>
+      {{else}}
+        <p class="pv-empty">No one has made private notes public yet. Shocking restraint from adventurers.</p>
+      {{/each}}
+    </article>
+
+    {{#if publicGmNotes.length}}
+    <article class="pv-box">
+      <div class="pv-section-title">
+        <h2>Public GM Notes</h2>
+        <p>Notes the GM has chosen to reveal. Totally not ominous. Probably.</p>
+      </div>
+      {{#each publicGmNotes}}
+      <div class="pv-public-note">
+        <h3>{{title}}</h3>
+        <div class="pv-muted">Updated: {{updatedLabel}}</div>
+        <div class="pv-note-text">{{pvNl2br text}}</div>
+      </div>
+      {{/each}}
+    </article>
+    {{/if}}
+
+    {{#if isGM}}
+    <article class="pv-box pv-gm-notes-box">
+      <div class="pv-section-title">
+        <h2>GM Notes</h2>
+        <p>GM-only by default. Each section can be made public when the peasants have earned lore crumbs.</p>
+      </div>
+
+      <div class="pv-gm-note-create pv-box inset">
+        <h3>Create GM Note Section</h3>
+        <div class="pv-form-row">
+          <label class="pv-grow">Title <input name="gmNoteTitle" placeholder="The Chapel Beneath the Old Road"></label>
+          <label class="pv-check"><input name="gmNotePublic" type="checkbox"> Public</label>
+          <button type="button" data-action="create-gm-note">Create</button>
+        </div>
+        <textarea name="gmNoteText" rows="5" placeholder="Secret nonsense goes here."></textarea>
+      </div>
+
+      {{#each gmNotes}}
+      <div class="pv-gm-note pv-box inset" data-note-id="{{id}}">
+        <div class="pv-form-row compact">
+          <label class="pv-grow">Title <input name="gmNoteTitle" value="{{title}}"></label>
+          <label class="pv-check"><input name="gmNotePublic" type="checkbox" {{pvChecked public}}> Public</label>
+          <button type="button" class="pv-save-gm-note">Save</button>
+          <button type="button" data-action="delete-gm-note" data-note-id="{{id}}"><i class="fas fa-trash"></i></button>
+        </div>
+        <div class="pv-muted">Updated: {{updatedLabel}}</div>
+        <textarea name="gmNoteText" rows="6">{{text}}</textarea>
+      </div>
+      {{else}}
+        <p class="pv-empty">No GM notes yet. A rare moment where the secrets have not metastasized.</p>
+      {{/each}}
+    </article>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  {{#if (pvEq activeTab 'gm')}}
+  {{#if isGM}}
+  <section class="pv-panel pv-gm">
+    <div class="pv-box">
+      <h2>Party Roster</h2>
+      <div class="pv-form-row">
+        <label>Actor
+          <input name="addActorSearch" list="pv-add-actor-list" placeholder="Type to search actors">
+          <datalist id="pv-add-actor-list">
+            {{#each allActors}}<option value="{{name}} ({{type}})" data-actor-id="{{id}}"></option>{{/each}}
+          </datalist>
+        </label>
+        <label>Role
+          <select name="addActorRole">
+            <option value="pc">PC</option>
+            <option value="companion">Companion</option>
+            <option value="hireling">Hireling</option>
+            <option value="vehicle">Vehicle</option>
+            <option value="mount">Mount</option>
+            <option value="summon">Summon</option>
+          </select>
+        </label>
+        <button type="button" data-action="add-member">Add to Party</button>
+      </div>
+    </div>
+
+    <div class="pv-create-container pv-box">
+      <h2>Create Shared Storage</h2>
+      <div class="pv-form-row">
+        <label>Name <input name="containerName" placeholder="Wagon Storage"></label>
+        <label>Type
+          <select name="containerType">
+            <option value="container">Container</option>
+            <option value="wagon">Wagon</option>
+            <option value="mount">Mount</option>
+            <option value="vehicle">Vehicle</option>
+            <option value="bag">Bag</option>
+          </select>
+        </label>
+        <label>Capacity lb <input name="containerCapacity" type="number" min="0" value="0"></label>
+      </div>
+      <div class="pv-form-row">
+        <label class="pv-check"><input name="playersTake" type="checkbox" checked> Players can take</label>
+        <label class="pv-check"><input name="playersAdd" type="checkbox" checked> Players can add</label>
+        <label class="pv-check"><input name="locked" type="checkbox"> Locked</label>
+        <button type="button" data-action="create-container">Create Storage</button>
+      </div>
+    </div>
+
+    <div class="pv-box">
+      <h2>Manage Shared Storage</h2>
+      {{#each containers}}
+      <div class="pv-gm-storage-row pv-box inset" data-container-id="{{id}}">
+        <div class="pv-form-row compact">
+          <label class="pv-grow">Name <input name="containerEditName" value="{{name}}"></label>
+          <label>Type
+            <select name="containerEditType">
+              <option value="container" {{#if (pvEq type 'container')}}selected{{/if}}>Container</option>
+              <option value="wagon" {{#if (pvEq type 'wagon')}}selected{{/if}}>Wagon</option>
+              <option value="mount" {{#if (pvEq type 'mount')}}selected{{/if}}>Mount</option>
+              <option value="vehicle" {{#if (pvEq type 'vehicle')}}selected{{/if}}>Vehicle</option>
+              <option value="bag" {{#if (pvEq type 'bag')}}selected{{/if}}>Bag</option>
+            </select>
+          </label>
+          <label>Capacity lb <input name="containerEditCapacity" type="number" min="0" value="{{capacity}}"></label>
+          <label class="pv-check"><input name="containerEditLocked" type="checkbox" {{pvChecked locked}}> Locked</label>
+          <label class="pv-check"><input name="containerEditPlayersTake" type="checkbox" {{pvChecked playersTake}}> Players take</label>
+          <label class="pv-check"><input name="containerEditPlayersAdd" type="checkbox" {{pvChecked playersAdd}}> Players add</label>
+          <button type="button" data-action="save-container" data-container-id="{{id}}">Save Storage</button>
+          <button type="button" data-action="delete-container" data-container-id="{{id}}"><i class="fas fa-trash"></i></button>
+        </div>
+        <div class="pv-muted">Current weight {{pvFixed weightTotal 1}}{{#if capacity}} / {{capacity}}{{/if}} lb • Value {{pvMoney valueTotal}} gp</div>
+      </div>
+      {{else}}
+        <p class="pv-empty">No shared storage exists yet. Create one above, then immediately make the mule regret literacy.</p>
+      {{/each}}
+    </div>
+
+    <div class="pv-settings pv-box">
+      <h2>Visibility & Permissions</h2>
+      <label><input data-setting="exactHp" type="checkbox" {{pvChecked settings.exactHp}}> Show exact HP to players</label>
+      <label><input data-setting="showPassivePerception" type="checkbox" {{pvChecked settings.showPassivePerception}}> Show Passive Perception</label>
+      <label><input data-setting="showConditions" type="checkbox" {{pvChecked settings.showConditions}}> Show conditions/effects</label>
+      <label><input data-setting="showInventoryValues" type="checkbox" {{pvChecked settings.showInventoryValues}}> Show item values</label>
+      <label><input data-setting="playersCanEditNotes" type="checkbox" {{pvChecked settings.playersCanEditNotes}}> Players can edit party notes</label>
+      <button type="button" class="pv-save-settings">Save Settings</button>
+    </div>
+
+    <div class="pv-box">
+      <div class="pv-section-title inline">
+        <h2>Transaction Log</h2>
+        <button type="button" data-action="clear-log">Clear Log</button>
+      </div>
+      <div class="pv-log">
+        {{#each log}}
+        <div><span class="pv-muted">{{timeLabel}} • {{userName}}</span><br>{{message}}</div>
+        {{else}}<p class="pv-empty">No log entries yet. Suspiciously clean. Too clean.</p>{{/each}}
+      </div>
+    </div>
+  </section>
+  {{/if}}
+  {{/if}}
+</div>

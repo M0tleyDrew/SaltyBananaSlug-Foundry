@@ -1,0 +1,22 @@
+{
+  "id": "saltybananaslug-scene-summarized",
+  "title": "SaltyBananaSlug's Scene Summarized",
+  "description": "Create detailed, linked Journal dossiers from Foundry scenes, including creatures, NPCs, native SBS Containers and Merchants, inventory, optional media indexing, sounds, lights, notes, walls, regions, and optional GM context.",
+  "version": "1.0.4",
+  "authors": [
+    {
+      "name": "Drew / SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "esmodules": [
+    "scripts/scene-summarized-v104.js"
+  ],
+  "styles": [
+    "styles/scene-summarized-v104.css"
+  ]
+}

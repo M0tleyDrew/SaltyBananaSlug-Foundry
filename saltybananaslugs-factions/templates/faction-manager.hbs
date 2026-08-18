@@ -1,0 +1,103 @@
+<div class="sbsf-shell">
+  <header class="sbsf-brand">
+    <img src="{{logo}}" alt="SBS Factions">
+    <div class="sbsf-title"><h1>SaltyBananaSlug's Factions</h1><p>Reputation, loyalties, grudges, discounts, and all the other consequences of having met the party.</p></div>
+    <div class="sbsf-header-actions"><button type="button" data-action="new-faction"><i class="fa-solid fa-plus"></i> New Faction</button>{{#if selected}}<button type="button" data-action="sync-effects"><i class="fa-solid fa-rotate"></i> Reapply Effects</button><button type="button" class="danger" data-action="delete-faction"><i class="fa-solid fa-trash"></i> Delete</button>{{/if}}</div>
+  </header>
+
+  <div class="sbsf-body">
+    <aside class="sbsf-sidebar">
+      <div class="sbsf-filter"><input type="search" name="factionFilter" placeholder="Search factions..."></div>
+      <div class="sbsf-faction-list">
+        {{#each factions}}
+        <button type="button" class="sbsf-faction-card {{#if active}}active{{/if}}" data-action="select-faction" data-faction-id="{{id}}" data-search="{{search}}">
+          <img src="{{image}}" alt=""><span class="grow"><strong>{{name}}</strong><small>{{tierName}} · {{score}}</small></span><span class="sbsf-score {{scoreClass}}">{{score}}</span>
+        </button>
+        {{/each}}
+        {{#unless factions.length}}<div class="sbsf-empty">No factions yet. Create one and begin the extremely healthy process of assigning numerical values to grudges.</div>{{/unless}}
+      </div>
+    </aside>
+
+    <main class="sbsf-main">
+      {{#if selected}}
+      <div class="sbsf-selected-head"><img src="{{selected.image}}" alt=""><div><h2>{{selected.name}}</h2><p>Party Standing: <strong class="{{selected.scoreClass}}">{{selected.partyScore}}</strong> · {{selected.partyTierName}}</p></div></div>
+      <nav class="sbsf-tabs">
+        <button type="button" data-action="tab" data-tab="details" class="{{#if tabs.details}}active{{/if}}">Details</button>
+        <button type="button" data-action="tab" data-tab="members" class="{{#if tabs.members}}active{{/if}}">Members <span>{{selected.members.length}}</span></button>
+        <button type="button" data-action="tab" data-tab="reputation" class="{{#if tabs.reputation}}active{{/if}}">Reputation</button>
+        <button type="button" data-action="tab" data-tab="tiers" class="{{#if tabs.tiers}}active{{/if}}">Tiers & Effects</button>
+        <button type="button" data-action="tab" data-tab="relationships" class="{{#if tabs.relationships}}active{{/if}}">Relationships</button>
+        <button type="button" data-action="tab" data-tab="log" class="{{#if tabs.log}}active{{/if}}">History</button>
+      </nav>
+
+      <section class="sbsf-content">
+        {{#if tabs.details}}
+        <div class="sbsf-panel">
+          <div class="sbsf-grid two"><label>Name<input name="name" value="{{selected.name}}"></label><label>Short Name / Abbreviation<input name="shortName" value="{{selected.shortName}}" placeholder="Optional"></label><label class="wide">Image / Emblem Path<input name="image" value="{{selected.rawImage}}" placeholder="modules/... or icons/..."></label><label class="wide">Description<textarea name="description" rows="6">{{selected.description}}</textarea></label><label class="wide">GM Notes<textarea name="gmNotes" rows="6">{{selected.gmNotes}}</textarea></label><label class="wide">Tags<input name="tags" value="{{selected.tagsText}}" placeholder="government, guild, thieves, religion"></label></div>
+          <div class="sbsf-actions"><button type="button" data-action="save-details"><i class="fa-solid fa-floppy-disk"></i> Save Faction Details</button></div>
+        </div>
+        {{/if}}
+
+        {{#if tabs.members}}
+        <div class="sbsf-panel">
+          <div class="sbsf-drop" data-member-drop><i class="fa-solid fa-users"></i><strong>Drop an NPC Actor, merchant token, or other Actor/token here</strong><span>Members can inherit faction memories, merchant favor rules, and party-wide token disposition.</span></div>
+          <div class="sbsf-member-head"><span>Member</span><span>Role</span><span>Effects</span><span></span></div>
+          {{#each selected.memberRows}}
+          <div class="sbsf-member-row" data-member-id="{{id}}">
+            <div class="sbsf-member-name"><img src="{{image}}" alt=""><span><strong>{{name}}</strong><small>{{kindLabel}}{{#if missing}} · Missing document{{/if}}</small></span></div>
+            <input name="role" value="{{role}}" placeholder="Member / Leader / Agent">
+            <div class="sbsf-member-effects"><label title="Write faction reputation events to this NPC's SBS Memories"><input type="checkbox" name="memories" {{#if memories}}checked{{/if}}> Memory</label><label title="Party reputation may change this NPC's placed token disposition"><input type="checkbox" name="disposition" {{#if disposition}}checked{{/if}}> Hostility</label><label title="Apply faction standing to this merchant's customer favor"><input type="checkbox" name="merchantFavor" {{#if merchantFavor}}checked{{/if}}> Merchant</label></div>
+            <button type="button" class="icon danger" data-action="remove-member" title="Remove member"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          {{/each}}
+          {{#unless selected.memberRows.length}}<div class="sbsf-empty">Nobody belongs to this faction yet. The organizational chart is currently just a very confident blank page.</div>{{/unless}}
+        </div>
+        {{/if}}
+
+        {{#if tabs.reputation}}
+        <div class="sbsf-panel">
+          <div class="sbsf-reason"><label>Reason for the next change<input name="reputationReason" placeholder="Saved a patrol, robbed the treasury, called the duke a turnip..."></label></div>
+          <div class="sbsf-rep-card party"><div><h3>Whole Party</h3><p>Default standing inherited by characters without an individual override.</p></div><div class="sbsf-rep-value {{selected.scoreClass}}"><span>{{selected.partyScore}}</span><small>{{selected.partyTierName}}</small><div class="sbsf-exact"><input type="number" min="-100" max="100" value="{{selected.partyScore}}" data-exact-score="party"><button type="button" data-action="set-rep" data-target="party">Set</button></div></div><div class="sbsf-delta-buttons">{{#each deltas}}<button type="button" data-action="change-rep" data-target="party" data-delta="{{value}}" class="{{className}}">{{label}}</button>{{/each}}</div></div>
+          <h3>Character Overrides</h3>
+          <div class="sbsf-rep-list">
+            {{#each selected.characterRows}}
+            <div class="sbsf-rep-row"><div class="sbsf-char"><img src="{{image}}" alt=""><span><strong>{{name}}</strong><small>{{#if inherited}}Inheriting party standing{{else}}Individual override{{/if}}</small></span></div><div class="sbsf-rep-value {{scoreClass}}"><span>{{score}}</span><small>{{tierName}}</small><div class="sbsf-exact"><input type="number" min="-100" max="100" value="{{score}}" data-exact-score="{{id}}"><button type="button" data-action="set-rep" data-target="{{id}}">Set</button></div></div><div class="sbsf-delta-buttons compact">{{#each ../../deltas}}<button type="button" data-action="change-rep" data-target="{{../id}}" data-delta="{{value}}" class="{{className}}">{{label}}</button>{{/each}}</div><button type="button" data-action="clear-override" data-target="{{id}}" {{#if inherited}}disabled{{/if}}>Inherit Party</button></div>
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
+
+        {{#if tabs.tiers}}
+        <div class="sbsf-panel">
+          <div class="sbsf-effect-toggles"><label><input type="checkbox" name="autoMerchantFavor" {{#if selected.effects.autoMerchantFavor}}checked{{/if}}> Automatically change member merchant favor</label><label><input type="checkbox" name="autoDisposition" {{#if selected.effects.autoDisposition}}checked{{/if}}> Automatically change member token disposition from party standing</label><label><input type="checkbox" name="autoMemories" {{#if selected.effects.autoMemories}}checked{{/if}}> Record faction reputation changes in member NPC Memories</label></div>
+          <p class="hint">Tiers are evaluated from their minimum score upward. Merchant favor is resolved against each merchant's own favor list; if its IDs are customized, Factions chooses the nearest tier by rank.</p>
+          <div class="sbsf-tier-head"><span>Minimum</span><span>Tier Name</span><span>Merchant Favor</span><span>Token Disposition</span><span>Memory Tone</span><span></span></div>
+          {{#each selected.tierRows}}
+          <div class="sbsf-tier-row" data-tier-id="{{id}}"><input type="number" min="-100" max="100" name="min" value="{{min}}"><input name="name" value="{{name}}"><select name="merchantFavorId">{{#each favorOptions}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select><select name="disposition">{{#each dispositionOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select><select name="tone">{{#each toneOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select><button type="button" class="icon danger" data-action="remove-tier" title="Remove tier"><i class="fa-solid fa-trash"></i></button></div>
+          {{/each}}
+          <div class="sbsf-actions"><button type="button" data-action="add-tier"><i class="fa-solid fa-plus"></i> Add Tier</button><button type="button" data-action="reset-tiers">Reset Default Tiers</button></div>
+        </div>
+        {{/if}}
+
+        {{#if tabs.relationships}}
+        <div class="sbsf-panel"><p class="hint">Faction-to-faction relationships are tracked separately from party reputation. They are available to the API now and can drive future automatic ripple effects.</p>
+          {{#each selected.relationshipRows}}
+          <div class="sbsf-relationship-row" data-other-id="{{id}}"><div><strong>{{name}}</strong><small>{{label}}</small></div><input type="number" min="-100" max="100" name="score" value="{{score}}"><input name="notes" value="{{notes}}" placeholder="Why do they feel this way?"></div>
+          {{/each}}
+          {{#unless selected.relationshipRows.length}}<div class="sbsf-empty">Create another faction and it will appear here.</div>{{/unless}}
+        </div>
+        {{/if}}
+
+        {{#if tabs.log}}
+        <div class="sbsf-panel"><div class="sbsf-log">
+          {{#each selected.logRows}}<article><div><strong>{{targetName}}</strong><span class="{{deltaClass}}">{{deltaLabel}}</span></div><p>{{oldScore}} → {{newScore}} · {{oldTier}} → {{newTier}}</p>{{#if reason}}<blockquote>{{reason}}</blockquote>{{/if}}<small>{{when}} · {{by}}</small></article>{{/each}}
+          {{#unless selected.logRows.length}}<div class="sbsf-empty">No reputation history yet.</div>{{/unless}}
+        </div></div>
+        {{/if}}
+      </section>
+      {{else}}
+      <div class="sbsf-welcome"><img src="{{logo}}" alt=""><h2>Choose or create a faction</h2><p>Then decide who belongs to it, who hates it, and which shopkeepers mysteriously stop offering the good discount.</p></div>
+      {{/if}}
+    </main>
+  </div>
+</div>

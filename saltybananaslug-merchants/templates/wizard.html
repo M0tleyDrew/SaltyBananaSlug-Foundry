@@ -1,0 +1,86 @@
+<div class="sbsm-app sbsm-wizard-shell">
+  <header class="sbsm-brand"><img src="{{logo}}"><div><h1>SaltyBananaSlug's Merchants</h1><p>{{#if isEdit}}Edit Merchant{{else}}Comprehensive Merchant Creator{{/if}}</p></div></header>
+  <nav class="sbsm-step-tabs">{{#each steps}}<button type="button" class="sbsm-step-tab {{#if active}}active{{/if}}" data-step="{{idx}}">{{label}}</button>{{/each}}</nav>
+  <div class="sbsm-wizard-scroll">
+    <section class="sbsm-step-panel" data-panel="basics">
+      <h2>Merchant Basics</h2><div class="sbsm-grid two">
+        <label>Merchant / Shop Name<input name="name" type="text" placeholder="Artie's Arcane Sundries"></label>
+        <label>Shop Type<select name="shopType">{{#each shopTypes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+        <label>Custom Shop Type<input name="customShopType" type="text" placeholder="Used when Shop Type is Custom"></label>
+        <label>Status<select name="status"><option value="open">Open</option><option value="closed">Closed</option><option value="gm">GM Only</option></select></label>
+        <label class="wide">Player-visible Description<textarea name="description" rows="4" placeholder="What customers see when they open the shop."></textarea></label>
+        <label class="wide">GM Notes<textarea name="gmNotes" rows="4" placeholder="Private bookkeeping, hooks, NPC notes, etc."></textarea></label>
+      </div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="token">
+      <h2>Merchant Token</h2>
+      <div class="sbsm-grid two">
+        <label>Token Mode<select name="tokenMode"><option value="generated">Create & Place Merchant Token</option><option value="linked">Link Existing Selected Token</option></select><small>Linked NPCs keep their normal Actor and inventory. Shop stock stays separate and GM-only.</small></label>
+        <label>Interaction Distance (ft)<input name="distance" type="number" min="0" step="5"><small>0 disables distance checking.</small></label>
+      </div>
+      <div class="sbsm-link-box"><strong>Existing Token:</strong> {{linkedName}} <button type="button" data-action="use-selected-token"><i class="fas fa-link"></i> Use Selected Token</button><small>GM can Shift+double-click a linked merchant later to open the NPC's normal Actor sheet.</small></div>
+      <h3>Generated Merchant Sprite</h3><div class="sbsm-grid four">
+        <label>Species<select name="species">{{#each species}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+        <label>Sprite Presentation / Build<select name="presentation">{{#each presentations}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select><small>These are appearance silhouettes, not identity restrictions. Pick whichever build fits the NPC.</small></label>
+        <label>Merchant Style<select name="merchantStyle">{{#each styles}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+        <label>Color Tint<select name="tokenColor">{{#each colors}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+      </div>
+      <div class="sbsm-token-preview pixel"><img src="{{previewImage}}"><div><strong>32-bit RPG-style Preview</strong><p>Built-in merchant art uses transparent, chunky pixel-sprite styling selected by species + presentation/build + merchant role. Color tint is optional.</p></div></div>
+      <h3>Custom Merchant Image</h3><div class="sbsm-inline"><input name="customImage" type="text" placeholder="Optional image path"><button type="button" data-action="pick-image"><i class="fas fa-folder-open"></i> Browse</button><button type="button" data-action="clear-custom-image">Use Built-in</button></div>
+      <label class="check"><input name="saveCustomImage" type="checkbox"> Save this custom image to this world's Merchant Art choices</label>
+      {{#if savedArt.length}}<div class="sbsm-saved-art"><strong>Saved Custom Art</strong><div>{{#each savedArt}}<button type="button" data-saved-art="{{path}}"><img src="{{path}}">{{name}}</button>{{/each}}</div></div>{{/if}}
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="inventory">
+      <h2>Starting Inventory</h2>
+      {{#unless isEdit}}<div class="sbsm-wizard-dropzone"><i class="fas fa-boxes-stacked"></i><strong>Drop Items, Journals, Journal Pages, or RollTables Here</strong><span>Items are copied. Journal imports copy linked Foundry Items and recognized loose currency. RollTables can draw stock or import every linked Item result.</span></div>{{/unless}}
+      <div class="sbsm-callout"><strong>Infinite stock:</strong> enter <code>X</code> as an item's quantity. X is truly unlimited and does not decrease when players purchase it.</div>
+      {{#if inventory.length}}<div class="sbsm-staged-list">{{#each inventory}}<div class="sbsm-staged-row" data-idx="{{idx}}"><img src="{{img}}"><div class="grow"><strong>{{name}}</strong><small>{{type}}{{#if zero}} · base value 0{{/if}}</small></div><label>Qty<input data-stage-qty type="text" value="{{quantity}}"></label><label class="check compact"><input data-stage-visible type="checkbox" {{#if visible}}checked{{/if}}> Player Visible</label><label class="check compact"><input data-stage-zero type="checkbox" {{#if allowZero}}checked{{/if}}> Allow 0 Value</label>{{#if identifiable}}<button type="button" data-stage-identify="{{idx}}" data-identified="{{#if identified}}false{{else}}true{{/if}}">{{#if identified}}Mark Unidentified{{else}}Identify{{/if}}</button>{{/if}}<button type="button" class="danger" data-remove-stage="{{idx}}"><i class="fas fa-trash"></i></button></div>{{/each}}</div>{{else}}<p><em>No starting stock staged yet.</em></p>{{/if}}
+      {{#if isEdit}}<div class="sbsm-callout">Existing stock is edited from the merchant storefront/admin window so changing general merchant settings cannot accidentally replace inventory.</div>{{/if}}
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="pricing">
+      <h2>Default Pricing</h2><div class="sbsm-grid three">
+        <label>Customer Purchase Rate (%)<input name="sellRate" type="number" min="0" step="1"><small>Default 100%. A 100 gp item costs 100 gp.</small></label>
+        <label>Merchant Buyback Rate (%)<input name="buyRate" type="number" min="0" step="1"><small>Default 60%. A 100 gp item gets a 60 gp offer.</small></label>
+        <label>Rounding<select name="rounding"><option value="nearest">Nearest Copper</option><option value="down">Round Down</option><option value="up">Round Up</option></select></label>
+      </div>
+      <div class="sbsm-callout">Price priority: item-specific absolute price → character custom rate → character favor rate → merchant default rate → item's D&D5e base value.</div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="favor">
+      <h2>Favor Levels & Character Pricing</h2><p>Favor is stored by Character Actor, not login account. Each level can independently affect what the player pays and what the merchant pays them.</p>
+      <label>Default Favor Level<select name="defaultFavor">{{#each favorLevels}}<option value="{{id}}" {{#if isDefault}}selected{{/if}}>{{name}}</option>{{/each}}</select><small>New merchants default to <strong>Neutral</strong> unless you choose a different relationship baseline.</small></label>
+      <div class="sbsm-favor-table"><div class="head"><span>Name</span><span>Player Pays %</span><span>Merchant Pays %</span><span></span></div>{{#each favorLevels}}<div class="sbsm-favor-row" data-idx="{{idx}}"><input data-favor-name value="{{name}}"><input data-favor-sell type="number" min="0" value="{{sellRate}}"><input data-favor-buy type="number" min="0" value="{{buyRate}}"><button type="button" class="danger" data-remove-favor="{{idx}}"><i class="fas fa-trash"></i></button></div>{{/each}}</div>
+      <button type="button" data-action="add-favor"><i class="fas fa-plus"></i> Add Favor Level</button>
+      <h3>Character Relationships</h3><div class="sbsm-relations">{{#each relationRows}}<div class="sbsm-relation-row" data-actor="{{id}}"><strong>{{name}}</strong><select data-rel-favor>{{#each favorOptions}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select><input data-rel-sell type="number" min="0" placeholder="Custom player pays %" value="{{customSell}}"><input data-rel-buy type="number" min="0" placeholder="Custom merchant pays %" value="{{customBuy}}"></div>{{/each}}</div>
+      <div class="sbsm-callout">Leave a character's custom percentage blank to use the selected favor level. A character-specific percentage overrides the favor rate.</div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="buying">
+      <h2>What This Merchant Buys</h2><p>If no item types are checked, all types are accepted.</p><div class="sbsm-check-grid">{{#each itemTypes}}<label class="check"><input name="accepted_type" type="checkbox" value="{{id}}" {{#if checked}}checked{{/if}}> {{id}}</label>{{/each}}</div>
+      <div class="sbsm-grid two"><label class="check"><input name="acceptMagic" type="checkbox"> Accept magical items</label><label class="check"><input name="acceptMundane" type="checkbox"> Accept mundane items</label><label class="check"><input name="acceptUnidentified" type="checkbox"> Accept unidentified items</label><label class="check"><input name="acceptZero" type="checkbox"> Accept zero-value items</label><label class="check"><input name="acceptEquipped" type="checkbox"> Accept currently equipped items</label><label>Purchased Items<select name="resellBought"><option value="yes">Add to Stock & Show</option><option value="hidden">Add to Stock but Hide</option><option value="no">Do Not Add to Stock</option></select></label></div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="treasury">
+      <h2>Merchant Treasury & Buying Limit</h2><p>This is the cash the merchant can use to buy items from players.</p><div class="sbsm-grid five"><label>CP<input name="treasury_cp" type="number" min="0"></label><label>SP<input name="treasury_sp" type="number" min="0"></label><label>EP<input name="treasury_ep" type="number" min="0"></label><label>GP<input name="treasury_gp" type="number" min="0"></label><label>PP<input name="treasury_pp" type="number" min="0"></label></div>
+      <div class="sbsm-grid two"><label>Maximum Buying Funds (GP equivalent)<input name="treasury_max_gp" type="number" min="0" step="0.01"><small>Default 1000 gp. Current treasury cannot be spent below zero.</small></label><label class="check"><input name="treasury_unlimited" type="checkbox"> Unlimited funds for buying player items</label><label class="check"><input name="treasury_add_payments" type="checkbox"> Add money players spend to merchant treasury</label><label class="check"><input name="treasury_cap" type="checkbox"> Cap those added payments at Maximum Buying Funds</label></div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="sound">
+      <h2>Merchant Greeting Sound</h2><label class="check"><input name="sound_enabled" type="checkbox"> Play a sound when the storefront successfully opens</label><div class="sbsm-inline"><input name="sound_path" type="text" placeholder="Audio file path"><button type="button" data-action="pick-sound"><i class="fas fa-folder-open"></i> Browse</button><button type="button" data-action="preview-sound"><i class="fas fa-play"></i> Preview</button></div><div class="sbsm-grid two"><label>Volume (0–1)<input name="sound_volume" type="number" min="0" max="1" step="0.05"></label><label>Play For<select name="sound_audience"><option value="players">Players Only (Default)</option><option value="all">Players & GM</option><option value="gm">GM Only</option></select></label></div><div class="sbsm-callout">The greeting plays only after a valid merchant open. It does not play just because somebody clicks the token.</div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="journal">
+      <h2>Merchant Journal & Ledger</h2><div class="sbsm-callout"><strong>A companion journal is always created and is GM-only.</strong> It tracks Storefront info, Inventory/Treasury, Customer Relations, Transaction Ledger, and GM Notes. Players use the merchant storefront instead of receiving the private ledger.</div><p>The journal name is <code>Merchant Name — Scene Name</code>; duplicate names receive 2, 3, 4…</p><p><small>Keeping the ledger GM-only prevents transaction history, treasury details, customer favor relationships, and GM notes from leaking to players.</small></p>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="advanced">
+      <h2>Restocking</h2><div class="sbsm-grid two"><label>Restock Mode<select name="restock_mode"><option value="manual">Manual</option><option value="original">Restore Original Quantities</option><option value="table">Original + Draw Attached RollTable</option></select></label><label>Restock RollTable UUID<input name="restock_table" type="text" placeholder="Optional RollTable UUID"></label><label class="check"><input name="restock_treasury" type="checkbox"> Restore treasury to Maximum Buying Funds when restocked</label></div><div class="sbsm-callout">The Merchant Manager includes a Restock button. Automatic real-time schedules are intentionally deferred until the base economy survives live play without transforming into accounting gelatin.</div>
+    </section>
+
+    <section class="sbsm-step-panel" data-panel="summary"><h2>{{#if isEdit}}Save Merchant{{else}}Create Merchant{{/if}}</h2><div class="sbsm-summary"></div><div class="sbsm-callout"><strong>Storage architecture:</strong> stock and treasury live on a separate GM-only inventory Actor. Generated merchant tokens use an empty shell Actor. Linked NPCs keep their own Actor and inventory untouched.</div></section>
+  </div>
+  <footer class="sbsm-wizard-footer"><button type="button" data-action="cancel"><i class="fas fa-times"></i> Cancel</button><span class="spacer"></span><button type="button" data-action="back"><i class="fas fa-chevron-left"></i> Back</button><button type="button" data-action="next">Next <i class="fas fa-chevron-right"></i></button><button type="button" class="hidden primary" data-action="create"><i class="fas fa-check"></i> {{#if isEdit}}Save Merchant{{else}}Create / Place Merchant{{/if}}</button></footer>
+</div>

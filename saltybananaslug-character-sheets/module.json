@@ -1,0 +1,33 @@
+{
+  "id": "saltybananaslug-character-sheets",
+  "title": "SaltyBananaSlug's Character Sheets",
+  "description": "Create player-safe expanded D&D5e character sheets or standalone spellbooks from Foundry Actors. HTML stays continuous and linked; PDF export uses semantic A4 page layout without pixel slicing.",
+  "version": "0.1.14",
+  "authors": [
+    {
+      "name": "Drew / SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/character-sheets.js"
+  ],
+  "styles": [
+    "styles/character-sheets.css"
+  ]
+}

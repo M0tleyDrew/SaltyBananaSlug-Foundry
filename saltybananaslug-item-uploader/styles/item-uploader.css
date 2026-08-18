@@ -1,0 +1,57 @@
+.sbs-item-uploader { display:flex; flex-direction:column; height:100%; gap:10px; padding:10px; }
+.sbs-iu-header { display:flex; align-items:center; gap:14px; padding:10px 14px; border:1px solid var(--color-border-light-2); border-radius:8px; background:linear-gradient(135deg, rgba(47,27,58,.96), rgba(63,107,79,.9)); color:#fff; }
+.sbs-iu-header img { width:72px; height:72px; object-fit:contain; filter:drop-shadow(0 2px 4px #0008); }
+.sbs-iu-header h1 { margin:0; border:0; font-size:24px; color:#f0d578; }
+.sbs-iu-header p { margin:5px 0 0; }
+.sbs-iu-toolbar, .sbs-iu-options, .sbs-iu-summary, .sbs-iu-footer { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.sbs-iu-toolbar, .sbs-iu-options { padding:8px; background:var(--color-bg-option); border:1px solid var(--color-border-light-2); border-radius:6px; }
+.sbs-file-field { flex:1; min-width:280px; display:flex; align-items:center; gap:8px; }
+.sbs-file-field input { flex:1; }
+.sbs-iu-options label:not(.checkbox) { display:flex; align-items:center; gap:7px; }
+.sbs-iu-options .checkbox { display:flex; align-items:center; gap:5px; }
+.sbs-iu-summary { padding:8px 10px; border-left:4px solid #c7a84a; background:#c7a84a22; }
+.sbs-iu-message { padding:8px 10px; border-radius:5px; }
+.sbs-iu-message.info { background:#3b82f633; border:1px solid #3b82f6; }
+.sbs-iu-message.error { background:#b91c1c33; border:1px solid #b91c1c; }
+.sbs-iu-preview { flex:1; min-height:260px; overflow:auto; border:1px solid var(--color-border-light-2); border-radius:6px; }
+.sbs-iu-preview table { width:100%; border-collapse:collapse; margin:0; }
+.sbs-iu-preview thead { position:sticky; top:0; z-index:2; background:rgba(47,27,58,.98); color:#fff; }
+.sbs-iu-preview th, .sbs-iu-preview td { padding:6px 8px; border-bottom:1px solid var(--color-border-light-2); text-align:left; vertical-align:middle; }
+.sbs-iu-preview tr.invalid { background:#b91c1c1f; }
+.sbs-iu-preview tr.warning { background:#c7a84a22; }
+.sbs-iu-preview tr.disabled { opacity:.58; }
+.sbs-iu-preview code { white-space:nowrap; }
+.sbs-iu-preview .image-cell { width:50px; text-align:center; }
+.sbs-iu-preview .image-cell img { width:40px; height:40px; object-fit:cover; border:1px solid #777; border-radius:4px; }
+.sbs-iu-empty { min-height:250px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px; opacity:.8; }
+.sbs-iu-empty > i { font-size:54px; margin-bottom:10px; }
+.sbs-iu-footer { justify-content:space-between; }
+.sbs-iu-footer .progress-wrap { display:flex; align-items:center; gap:8px; flex:1; }
+.sbs-iu-footer progress { flex:1; }
+.sbs-iu-footer .hidden { visibility:hidden; }
+.sbs-import { min-width:180px; }
+
+.sbs-download-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 4px;
+  background: var(--color-bg-btn, rgba(0, 0, 0, 0.1));
+  color: var(--color-text-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+.sbs-download-link:hover {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+  box-shadow: 0 0 5px var(--color-shadow-primary);
+  text-decoration: none;
+}
+.sbs-download-help {
+  flex-basis: 100%;
+  font-size: 0.85em;
+  opacity: 0.8;
+}

@@ -1,0 +1,109 @@
+<form class="sbs-item-uploader" autocomplete="off">
+  <header class="sbs-iu-header">
+    <img src="modules/saltybananaslug-item-uploader/assets/banana-slug.svg" alt="SaltyBananaSlug logo">
+    <div>
+      <h1>SaltyBananaSlug's Item Uploader</h1>
+      <p>Feed it an XLSX workbook. It will produce Items instead of workplace resentment.</p>
+    </div>
+  </header>
+
+  <section class="sbs-iu-toolbar">
+    <label class="sbs-file-field">
+      <span>Workbook</span>
+      <input type="file" name="workbook" accept=".xlsx,.xlsm">
+    </label>
+    <a class="sbs-download-link" href="modules/saltybananaslug-item-uploader/workbooks/SaltyBananaSlug_Item_Uploader_Blank_Template.zip" download="SaltyBananaSlug_Item_Uploader_Blank_Template.zip"><i class="fas fa-file-arrow-down"></i> Blank Template (.zip)</a>
+    <a class="sbs-download-link" href="modules/saltybananaslug-item-uploader/workbooks/SaltyBananaSlug_Item_Uploader_Welch_Items.zip" download="SaltyBananaSlug_Item_Uploader_Welch_Items.zip"><i class="fas fa-book"></i> Welch Example (.zip)</a>
+    <span class="sbs-download-help">Normal file links—no browser Blob. If a click is blocked, right-click and choose <strong>Save Link As</strong>.</span>
+  </section>
+
+  <section class="sbs-iu-options">
+    <label>
+      <span>Matching items</span>
+      <select name="conflictMode">
+        <option value="update" {{#if conflictUpdate}}selected{{/if}}>Update matching items</option>
+        <option value="skip" {{#if conflictSkip}}selected{{/if}}>Skip matching items</option>
+        <option value="duplicate" {{#if conflictDuplicate}}selected{{/if}}>Create duplicates</option>
+      </select>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="createFolders" {{#if createFolders}}checked{{/if}}>
+      <span>Create folders from the Folder column</span>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="uploadImages" {{#if uploadImages}}checked{{/if}}>
+      <span>Upload embedded workbook images</span>
+    </label>
+  </section>
+
+  {{#if parsing}}
+  <div class="sbs-iu-message info"><i class="fas fa-spinner fa-spin"></i> Reading workbook…</div>
+  {{/if}}
+
+  {{#if error}}
+  <div class="sbs-iu-message error"><strong>Workbook error:</strong> {{error}}</div>
+  {{/if}}
+
+  {{#if fileName}}
+  <section class="sbs-iu-summary">
+    <div><strong>{{fileName}}</strong></div>
+    <div>{{validCount}} ready</div>
+    <div>{{invalidCount}} invalid</div>
+    <div>{{embeddedImageCount}} embedded images</div>
+    <div>Sheet: {{sourceSheet}}</div>
+  </section>
+  {{/if}}
+
+  <section class="sbs-iu-preview">
+    {{#if rows.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Import</th>
+          <th>Image</th>
+          <th>Item ID</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Scope / Class</th>
+          <th>Folder</th>
+          <th>Mechanics</th>
+          <th>Validation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+        <tr class="{{statusClass}}">
+          <td>{{#if enabled}}<i class="fas fa-check"></i>{{else}}—{{/if}}</td>
+          <td class="image-cell">
+            {{#if imagePreview}}<img src="{{imagePreview}}" alt="">{{else}}<i class="fas fa-image"></i>{{/if}}
+          </td>
+          <td><code>{{itemId}}</code></td>
+          <td><strong>{{name}}</strong></td>
+          <td>{{foundryType}}</td>
+          <td>{{scopeLabel}}</td>
+          <td>{{folder}}</td>
+          <td>{{mechanicsLabel}}</td>
+          <td>{{validationText}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="sbs-iu-empty">
+      <i class="fas fa-file-excel"></i>
+      <p>Select a populated XLSX workbook to preview its items.</p>
+      <small>The uploader prefers the <strong>Foundry Import</strong> sheet and can also read older <strong>Machine Data - Do Not Edit</strong> sheets.</small>
+    </div>
+    {{/if}}
+  </section>
+
+  <footer class="sbs-iu-footer">
+    <div class="progress-wrap {{#unless importing}}hidden{{/unless}}">
+      <progress max="{{progressMax}}" value="{{progressValue}}"></progress>
+      <span>{{progressLabel}}</span>
+    </div>
+    <button type="button" class="sbs-import" {{#unless canImport}}disabled{{/unless}}>
+      <i class="fas fa-box-open"></i> Import {{validCount}} Item{{#unless oneValid}}s{{/unless}}
+    </button>
+  </footer>
+</form>

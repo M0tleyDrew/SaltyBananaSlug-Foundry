@@ -1,0 +1,349 @@
+.sbs-danger-zones-dialog {
+  min-width: 300px;
+}
+
+.sbs-danger-zones-dialog .sbs-danger-zones-window {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.sbs-danger-zones-dialog form {
+  min-height: 0;
+}
+
+.sbs-dz {
+  --sbs-dz-accent: #d39b32;
+  --sbs-dz-panel: rgba(20, 24, 20, 0.88);
+  --sbs-dz-border: rgba(211, 155, 50, 0.65);
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* The wizard body, not the buttons, owns scrolling. This keeps Next/Place visible. */
+.sbs-dz .sbs-dz-scroll {
+  width: 100%;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 8px 12px 2px;
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+}
+
+.sbs-danger-zones-dialog[style*="height"] .sbs-dz .sbs-dz-scroll {
+  max-height: calc(100vh - 220px);
+}
+
+.sbs-dz .sbs-dz-hero {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid var(--sbs-dz-border);
+  border-radius: 8px;
+  background: var(--sbs-dz-panel);
+}
+
+.sbs-dz .sbs-dz-hero img {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.sbs-dz h2,
+.sbs-dz h3 {
+  margin: 0 0 6px;
+}
+
+.sbs-dz .hint {
+  opacity: 0.78;
+  font-size: 0.9em;
+  line-height: 1.3;
+}
+
+.sbs-dz .sbs-dz-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.sbs-dz .sbs-dz-grid.one {
+  grid-template-columns: 1fr;
+}
+
+.sbs-dz .sbs-dz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sbs-dz .sbs-dz-field.inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sbs-dz .sbs-dz-field > label {
+  font-weight: 600;
+}
+
+.sbs-dz input,
+.sbs-dz select,
+.sbs-dz textarea,
+.sbs-dz button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.sbs-dz input[type="checkbox"] {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.sbs-dz textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.sbs-dz .sbs-dz-section {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.sbs-dz .sbs-dz-section > legend,
+.sbs-dz .sbs-dz-section > h3 {
+  color: var(--sbs-dz-accent);
+}
+
+.sbs-dz .sbs-dz-launcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sbs-dz .sbs-dz-launcher button {
+  min-height: 54px;
+}
+
+.sbs-dz .sbs-dz-zone-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 8px;
+  margin: 6px 0;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-left: 4px solid var(--dz-color, #ff3b30);
+  border-radius: 7px;
+  background: rgba(0,0,0,0.12);
+}
+
+.sbs-dz .sbs-dz-zone-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.sbs-dz .sbs-dz-zone-actions button {
+  width: 34px;
+  height: 30px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.sbs-dz .sbs-dz-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  margin: 2px 4px 2px 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  font-size: 0.82em;
+}
+
+.sbs-dz .sbs-dz-warning {
+  padding: 8px 10px;
+  border-left: 3px solid #e5b74b;
+  background: rgba(229,183,75,0.09);
+  margin: 8px 0;
+}
+
+.sbs-dz .sbs-dz-danger {
+  padding: 8px 10px;
+  border-left: 3px solid #e04b4b;
+  background: rgba(224,75,75,0.09);
+  margin: 8px 0;
+}
+
+.sbs-dz .sbs-dz-mode-help {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.05);
+}
+
+.sbs-dz .sbs-dz-mode-help p {
+  margin: 5px 0;
+}
+
+@media (max-width: 700px), (max-height: 650px) {
+  .sbs-dz .sbs-dz-grid,
+  .sbs-dz .sbs-dz-launcher,
+  .sbs-dz .sbs-dz-zone-card {
+    grid-template-columns: 1fr;
+  }
+
+  .sbs-dz .sbs-dz-hero {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .sbs-dz .sbs-dz-hero img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sbs-dz .sbs-dz-scroll {
+    max-height: calc(100vh - 190px);
+  }
+}
+
+.sbs-dz .sbs-dz-clear-card {
+  border-color: rgba(224, 75, 75, 0.45);
+}
+
+.sbs-dz .sbs-dz-clear-card h3 {
+  color: #e66a6a;
+}
+
+
+/* v0.2.2 launcher: the large cards ARE the controls. The configured DialogV2
+   footer actions remain registered so data-action can submit them, but the
+   duplicate footer row is intentionally hidden for this dialog only. */
+.sbs-dz-launcher-dialog .form-footer {
+  display: none !important;
+}
+
+.sbs-dz .sbs-dz-launcher {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sbs-dz .sbs-dz-launch-tile {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 82px;
+  height: auto;
+  padding: 12px;
+  text-align: left;
+  white-space: normal;
+  overflow: visible;
+  line-height: 1.25;
+  border: 1px solid var(--sbs-dz-border);
+  border-radius: 9px;
+  background: var(--sbs-dz-panel);
+  color: inherit;
+  cursor: pointer;
+}
+
+.sbs-dz .sbs-dz-launch-tile:hover,
+.sbs-dz .sbs-dz-launch-tile:focus-visible {
+  border-color: var(--sbs-dz-accent);
+  box-shadow: 0 0 0 1px var(--sbs-dz-accent), 0 0 12px rgba(211, 155, 50, 0.22);
+}
+
+.sbs-dz .sbs-dz-launch-tile > i {
+  font-size: 1.35rem;
+  text-align: center;
+}
+
+.sbs-dz .sbs-dz-launch-tile > span {
+  display: block;
+  min-width: 0;
+}
+
+.sbs-dz .sbs-dz-launch-tile strong,
+.sbs-dz .sbs-dz-launch-tile small {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.sbs-dz .sbs-dz-launch-tile strong {
+  color: var(--sbs-dz-accent);
+  font-size: 1.04em;
+  margin-bottom: 4px;
+}
+
+.sbs-dz .sbs-dz-launch-tile small {
+  opacity: 0.82;
+  font-size: 0.9em;
+  line-height: 1.3;
+}
+
+.sbs-dz .sbs-dz-launch-tile-danger {
+  grid-column: 1 / -1;
+  border-color: rgba(224, 75, 75, 0.55);
+}
+
+.sbs-dz .sbs-dz-launch-tile-danger strong,
+.sbs-dz .sbs-dz-launch-tile-danger > i {
+  color: #e66a6a;
+}
+
+/* Foundry's dialog footer buttons can be narrower than their labels. Let them
+   grow vertically and wrap rather than clipping text in wizard/manage dialogs. */
+.sbs-danger-zones-dialog .form-footer {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sbs-danger-zones-dialog .form-footer button {
+  flex: 1 1 150px;
+  width: auto;
+  min-width: 120px;
+  max-width: 100%;
+  height: auto;
+  min-height: 34px;
+  padding: 6px 10px;
+  white-space: normal;
+  overflow: visible;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* Long native choice labels get the whole available field instead of being
+   squeezed by aggressive line-height/height rules from themes. */
+.sbs-dz select {
+  min-height: 32px;
+  height: auto;
+  line-height: 1.25;
+}
+
+@media (max-width: 700px), (max-height: 650px) {
+  .sbs-dz .sbs-dz-launcher {
+    grid-template-columns: 1fr;
+  }
+
+  .sbs-dz .sbs-dz-launch-tile-danger {
+    grid-column: auto;
+  }
+}

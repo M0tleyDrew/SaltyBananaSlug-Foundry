@@ -1,0 +1,99 @@
+<div class="sbs-lore-shell">
+  <header class="sbs-lore-hero">
+    <img src="modules/saltybananaslugs-lore-module/assets/banana-slug.svg" alt="Banana slug logo">
+    <div>
+      <h1>{{#if set}}{{set.name}}{{else}}Choose a Lore Set{{/if}}</h1>
+      {{#if set.description}}<p>{{set.description}}</p>{{else}}<p>Lore, quizzes, and the terrible burden of remembering NPC names.</p>{{/if}}
+    </div>
+    {{#if userIsGM}}<button type="button" class="icon" data-action="open-manager" title="Open GM Manager"><i class="fas fa-gears"></i></button>{{/if}}
+  </header>
+
+  {{#if chooseSet}}
+    <section class="sbs-set-picker">
+      {{#each sets}}
+        <button type="button" class="sbs-set-card" data-action="select-set" data-set-id="{{id}}">
+          <strong>{{name}}</strong>
+          <span>{{description}}</span>
+          <small><i class="fas fa-circle-question"></i> {{questionCount}} questions &nbsp; <i class="fas fa-book"></i> {{loreCount}} lore entries</small>
+        </button>
+      {{else}}
+        <div class="sbs-empty-state"><i class="fas fa-book-skull"></i><h2>No Published Lore Sets</h2><p>The GM has not published any lore sets yet.</p></div>
+      {{/each}}
+    </section>
+  {{else}}
+    <nav class="sbs-lore-tabs">
+      <button type="button" class="{{#if tabQuiz}}active{{/if}}" data-action="tab" data-tab="quiz"><i class="fas fa-circle-question"></i> Quiz</button>
+      {{#if playerLoreAccess}}<button type="button" class="{{#if tabLore}}active{{/if}}" data-action="tab" data-tab="lore"><i class="fas fa-book-open"></i> Lore</button>{{/if}}
+      {{#if showProgress}}<button type="button" class="{{#if tabScore}}active{{/if}}" data-action="tab" data-tab="score"><i class="fas fa-chart-simple"></i> My Score</button>{{/if}}
+      <button type="button" class="sbs-change-set" data-action="change-set"><i class="fas fa-layer-group"></i> Change Set</button>
+    </nav>
+
+    <main class="sbs-lore-main">
+      {{#if tabQuiz}}
+        {{#if result}}
+          <section class="sbs-result {{#if result.correct}}correct{{else}}incorrect{{/if}}">
+            <i class="fas {{#if result.correct}}fa-circle-check{{else}}fa-circle-xmark{{/if}}"></i>
+            <h2>{{result.heading}}</h2>
+            <p>{{result.message}}</p>
+            {{#if result.explanation}}<div class="sbs-explanation"><strong>More Lore:</strong><br>{{result.explanation}}</div>{{/if}}
+            <button type="button" data-action="next-question"><i class="fas fa-forward"></i> Next Question</button>
+          </section>
+        {{else if question}}
+          <section class="sbs-question-card">
+            <div class="sbs-question-kicker">Question from {{set.name}}</div>
+            <h2>{{question.prompt}}</h2>
+            <div class="sbs-answer-list">
+              {{#each question.options}}
+                <label class="sbs-answer-option"><input type="radio" name="lore-answer" value="{{id}}"><span>{{text}}</span></label>
+              {{/each}}
+            </div>
+            <button type="button" class="sbs-primary" data-action="submit-answer"><i class="fas fa-check"></i> Lock In Answer</button>
+          </section>
+        {{else if noQuestions}}
+          <div class="sbs-empty-state"><i class="fas fa-feather-pointed"></i><h2>No Questions Yet</h2><p>This set contains lore, but the quiz goblins have not finished their paperwork.</p></div>
+        {{else if complete}}
+          <div class="sbs-empty-state">
+            <i class="fas fa-trophy"></i>
+            <h2>Set Complete</h2>
+            <p>You have answered every available question in this set.</p>
+            <div class="sbs-complete-actions">
+              <button type="button" data-action="tab" data-tab="score">View My Results</button>
+              {{#if canRetake}}<button type="button" data-action="restart-round"><i class="fas fa-rotate-right"></i> Start Another Round</button>{{/if}}
+            </div>
+          </div>
+        {{/if}}
+      {{/if}}
+
+      {{#if tabLore}}
+        <section class="sbs-lore-grid">
+          {{#each set.lore}}
+            <button type="button" class="sbs-lore-card" data-action="open-lore" data-lore-id="{{id}}">
+              <i class="fas {{icon}}"></i><strong>{{title}}</strong><small>{{type}}</small>
+            </button>
+          {{else}}
+            <div class="sbs-empty-state"><i class="fas fa-scroll"></i><h2>No Lore Entries</h2><p>Somehow the oral tradition has become extremely oral and not at all documented.</p></div>
+          {{/each}}
+        </section>
+      {{/if}}
+
+      {{#if tabScore}}
+        <section class="sbs-score-summary">
+          <div><strong>{{summary.correct}}</strong><span>Correct</span></div>
+          <div><strong>{{summary.incorrect}}</strong><span>Incorrect</span></div>
+          <div><strong>{{summary.percent}}%</strong><span>Accuracy</span></div>
+          <div><strong>{{summary.uniqueAnswered}} / {{summary.questionCount}}</strong><span>Questions Tried</span></div>
+        </section>
+        <section class="sbs-attempt-history">
+          {{#each attempts}}
+            <article class="sbs-attempt {{#if correct}}correct{{else}}incorrect{{/if}}">
+              <i class="fas {{icon}}"></i>
+              <div><strong>{{questionPrompt}}</strong><span>{{resultLabel}} — You chose: {{selectedText}}</span>{{#unless correct}}<span>Correct answer: {{correctText}}</span>{{/unless}}<small>{{answeredAtLabel}}</small></div>
+            </article>
+          {{else}}
+            <div class="sbs-empty-state"><i class="fas fa-chart-line"></i><h2>No Attempts Yet</h2><p>Fortune favors the bold. Statistics also require the bold to click an answer.</p></div>
+          {{/each}}
+        </section>
+      {{/if}}
+    </main>
+  {{/if}}
+</div>

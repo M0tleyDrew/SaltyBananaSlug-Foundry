@@ -1,0 +1,17 @@
+{
+  "name": "SaltyBananaSlug's Card Games",
+  "type": "script",
+  "scope": "global",
+  "command": "// SaltyBananaSlug's Card Games \u2014 Foundry Script Macro\nconst cardGames = game.modules.get(\"saltybananaslug-card-games\");\n\nif (!cardGames?.active) {\n  return ui.notifications.error(\"SaltyBananaSlug's Card Games is not enabled in this world.\");\n}\n\nif (typeof cardGames.api?.launch !== \"function\") {\n  return ui.notifications.error(\"The Card Games module is still loading. Reload the world and try again.\");\n}\n\nawait cardGames.api.launch();\n",
+  "img": "modules/saltybananaslug-card-games/assets/banana-slug.svg",
+  "folder": null,
+  "ownership": {
+    "default": 2
+  },
+  "flags": {
+    "saltybananaslug-card-games": {
+      "launcher": true
+    }
+  },
+  "_id": "SBSCardGames0001"
+}

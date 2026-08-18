@@ -1,0 +1,29 @@
+{
+  "id": "saltybananaslugs-lore-module",
+  "title": "SaltyBananaSlug's Lore Module",
+  "description": "Organize campaign lore and multiple-choice quizzes into reusable chapter sets, track player results, and import or export complete lore collections. Includes reliable player quiz advancement and Foundry v13 settings.",
+  "version": "1.0.2",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/lore.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": true
+}

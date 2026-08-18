@@ -1,0 +1,21 @@
+{
+  "id": "saltybananaslugs-message-cantrip",
+  "title": "SaltyBananaSlug's Message Cantrip",
+  "description": "Private magical message popups between selected Foundry users, with private whisper chat logging. Now with maximum banana slug energy.",
+  "version": "1.0.1",
+  "authors": [
+    {
+      "name": "Drew Frydrych + ChatGPT"
+    }
+  ],
+  "compatibility": {
+    "minimum": "11",
+    "verified": "13"
+  },
+  "scripts": [
+    "scripts/message-cantrip.js"
+  ],
+  "styles": [
+    "styles/message-cantrip.css"
+  ]
+}

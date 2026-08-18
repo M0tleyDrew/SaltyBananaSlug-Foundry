@@ -1,0 +1,77 @@
+<form class="sbs-cs-form" autocomplete="off">
+  <header class="sbs-cs-brand">
+    <img src="{{logoPath}}" alt="SaltyBananaSlug logo">
+    <div>
+      <h2>SaltyBananaSlug's Character Sheets</h2>
+      <p>An expanded, printable version of the character sheet: the stats and references the character actually uses, with room to read them.</p>
+    </div>
+  </header>
+
+  <section class="sbs-cs-panel">
+    <div class="form-group">
+      <label>Character / Actor</label>
+      <div class="form-fields">
+        <select name="actorId">
+          {{#each actors}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}{{#if typeLabel}} — {{typeLabel}}{{/if}}</option>
+          {{/each}}
+        </select>
+        <button type="button" data-action="use-selected" title="Use the selected token"><i class="fas fa-crosshairs"></i> Selected Token</button>
+      </div>
+      <p class="hint">Players only see Actors they own. GMs may export any Actor they can access.</p>
+    </div>
+
+    <div class="sbs-cs-selected">
+      {{#if selectedActorImg}}<img src="{{selectedActorImg}}" alt="{{selectedActorName}}">{{/if}}
+      <div>
+        <strong>{{selectedActorName}}</strong>
+        <span>{{selectedActorSummary}}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sbs-cs-panel">
+    <h3><i class="fas fa-scroll"></i> Export Content</h3>
+    <div class="sbs-cs-check-grid">
+      <label class="checkbox"><input type="checkbox" name="includeBiography" {{checked includeBiography}}> Biography / notes visible to this user</label>
+      <label class="checkbox"><input type="checkbox" name="includePortrait" {{checked includePortrait}}> Character portrait</label>
+      <label class="checkbox"><input type="checkbox" name="includeItemImages" {{checked includeItemImages}}> Spell, item, and feature thumbnails</label>
+      <label class="checkbox"><input type="checkbox" name="includeEffects" {{checked includeEffects}}> Active effects / conditions (optional)</label>
+      <label class="checkbox"><input type="checkbox" name="includeCurrency" {{checked includeCurrency}}> Currency and inventory totals</label>
+      <label class="checkbox"><input type="checkbox" name="includeSource" {{checked includeSource}}> Source book / source field (optional)</label>
+      <label class="sbs-cs-select-option">
+        <span>Spellbook</span>
+        <select name="spellMode">
+          <option value="prepared" {{#if spellModePrepared}}selected{{/if}}>Prepared spell list only — compact, no descriptions</option>
+          <option value="prepared-details" {{#if spellModePreparedDetails}}selected{{/if}}>Prepared spells only — full descriptions</option>
+          <option value="all" {{#if spellModeAll}}selected{{/if}}>Full spellbook — all spells with full descriptions</option>
+          <option value="none" {{#if spellModeNone}}selected{{/if}}>Do not include spells</option>
+        </select>
+      </label>
+      <label class="checkbox"><input type="checkbox" name="spellbookOnly" {{checked spellbookOnly}}> Spellbook only — omit the rest of the character sheet</label>
+      {{#if canRevealSecrets}}
+      <label class="checkbox sbs-cs-gm-option"><input type="checkbox" name="includeSecrets" {{checked includeSecrets}}> GM: include Secret blocks</label>
+      <label class="checkbox sbs-cs-gm-option"><input type="checkbox" name="revealUnidentified" {{checked revealUnidentified}}> GM: reveal true unidentified item details</label>
+      {{/if}}
+    </div>
+    <div class="sbs-cs-full-note">
+      <i class="fas fa-book-open"></i>
+      <div><strong>Full descriptions stay where they matter.</strong> Carried items and features actually present on the Actor get their complete readable descriptions. The spellbook can be a compact prepared list, prepared spells with full descriptions, a complete spellbook with full descriptions, or omitted. “Spellbook only” exports just that spell section. Foundry/MIDI automation configuration is never included.</div>
+    </div>
+  </section>
+
+  <section class="sbs-cs-panel">
+    <h3><i class="fas fa-file-export"></i> Output</h3>
+    <p class="hint">The sheet first opens inside Foundry. The preview contains direct PDF and HTML download links. Browser Print remains available only as a fallback.</p>
+    <div class="sbs-cs-actions">
+      <button type="button" data-action="preview"><i class="fas fa-eye"></i> Preview Character Sheet</button>
+      <button type="button" data-action="print" class="sbs-cs-primary"><i class="fas fa-file-pdf"></i> Prepare PDF</button>
+      <button type="button" data-action="download"><i class="fas fa-file-code"></i> Prepare HTML</button>
+    </div>
+  </section>
+
+  <footer class="sbs-cs-footer-note">
+    <img src="{{logoPath}}" alt="">
+    <span>SaltyBananaSlug • Foundry VTT v13 • D&amp;D5e</span>
+  </footer>
+</form>

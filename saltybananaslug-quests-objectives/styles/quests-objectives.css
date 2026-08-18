@@ -1,0 +1,863 @@
+
+/* SBS scene-control branding ------------------------------------------------- */
+/* Foundry accepts custom icon classes for Scene Controls. These use the actual
+   SBS artwork instead of another generic Font Awesome list/scroll glyph. */
+.sbsqo-scene-control-icon,
+.sbsqo-quest-board-control-icon {
+  display: inline-block !important;
+  width: 1em !important;
+  min-width: 1em !important;
+  height: 1em !important;
+  line-height: 1em !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  vertical-align: middle;
+  color: transparent !important;
+}
+
+.sbsqo-scene-control-icon::before,
+.sbsqo-quest-board-control-icon::before {
+  content: "" !important;
+}
+
+.sbsqo-scene-control-icon {
+  background-image: url("../assets/sbs-brand.svg") !important;
+}
+
+.sbsqo-quest-board-control-icon {
+  background-image: url("../assets/quest-board.svg") !important;
+}
+
+/* Keep custom SBS scene controls on Foundry's normal square control footprint.
+   The :has() form covers V13's icon-inside-button markup; the direct class
+   selectors are a fallback if another theme/module applies the icon class to
+   the control element itself. */
+#scene-controls :is(button, a):has(> .sbsqo-scene-control-icon),
+#scene-controls :is(button, a):has(> .sbsqo-quest-board-control-icon),
+#scene-controls :is(button, a).sbsqo-scene-control-icon,
+#scene-controls :is(button, a).sbsqo-quest-board-control-icon {
+  inline-size: var(--control-size, 32px) !important;
+  min-inline-size: var(--control-size, 32px) !important;
+  block-size: var(--control-size, 32px) !important;
+  min-block-size: var(--control-size, 32px) !important;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+}
+
+.sbsqo-window {
+  --sbs-bg: #10160d;
+  --sbs-panel: #182115;
+  --sbs-panel-2: #202b1b;
+  --sbs-border: #526b3a;
+  --sbs-gold: #f4bf32;
+  --sbs-gold-soft: #ffe773;
+  --sbs-text: #f4f1df;
+  --sbs-muted: #b6bea8;
+  --sbs-danger: #b84235;
+  --sbs-secret: #8a5db2;
+  color: var(--sbs-text);
+  font-family: var(--font-primary, sans-serif);
+}
+
+.sbsqo-window .window-content {
+  padding: 0;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(82, 107, 58, 0.22), transparent 35%),
+    linear-gradient(180deg, #12190f 0%, #0d120b 100%);
+  overflow: hidden;
+}
+
+.sbsqo-window .window-content button,
+.sbsqo-window .window-content input,
+.sbsqo-window .window-content select,
+.sbsqo-window .window-content textarea {
+  font: inherit;
+}
+
+.sbsqo-window .window-content button {
+  min-height: 30px;
+  border: 1px solid #5b684f;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #303b2a, #20291c);
+  color: var(--sbs-text);
+  padding: 5px 10px;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.sbsqo-window .window-content button:hover,
+.sbsqo-window .window-content button:focus {
+  border-color: var(--sbs-gold);
+  box-shadow: 0 0 0 1px rgba(244, 191, 50, 0.25);
+}
+
+.sbsqo-window .window-content button.active,
+.sbsqo-window .window-content button.primary {
+  background: linear-gradient(180deg, #6f5a1c, #4b3b12);
+  border-color: var(--sbs-gold);
+  color: #fff7cd;
+}
+
+.sbsqo-window .window-content button.danger {
+  background: linear-gradient(180deg, #7c332b, #4f201b);
+  border-color: #ce6558;
+}
+
+.sbsqo-window .window-content button.danger.ghost {
+  background: transparent;
+  border-color: #76463f;
+  color: #e59085;
+}
+
+.sbsqo-window .window-content button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sbsqo-shell,
+.sbsqo-confirm-shell {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sbsqo-brand-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #425237;
+  background: linear-gradient(90deg, rgba(32, 45, 27, 0.98), rgba(18, 25, 15, 0.96));
+}
+
+.sbsqo-brand-header img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+
+.sbsqo-brand-header h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--sbs-gold-soft);
+  letter-spacing: .02em;
+}
+
+.sbsqo-brand-header p {
+  margin: 4px 0 0;
+  color: var(--sbs-muted);
+  font-size: 12px;
+}
+
+.sbsqo-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #394630;
+  background: rgba(17, 23, 14, 0.92);
+}
+
+.sbsqo-tabs,
+.sbsqo-filter-row,
+.sbsqo-toolbar-actions,
+.sbsqo-card-actions,
+.sbsqo-card-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sbsqo-tabs button,
+.sbsqo-filter-row button {
+  min-width: 95px;
+}
+
+.sbsqo-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-color: #59684e #11180e;
+}
+
+.sbsqo-board-content,
+.sbsqo-manager-content {
+  flex: 1 1 auto;
+  padding: 14px;
+}
+
+.sbsqo-quest-group + .sbsqo-quest-group {
+  margin-top: 18px;
+}
+
+.sbsqo-quest-group > h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 0 4px 6px;
+  color: var(--sbs-gold-soft);
+  font-size: 16px;
+  border-bottom: 1px solid #3f4d35;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.sbsqo-quest-group > h2 small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #2f3b29;
+  color: var(--sbs-muted);
+  font-size: 11px;
+}
+
+.sbsqo-quest-list,
+.sbsqo-manager-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sbsqo-quest-card {
+  border: 1px solid #46563a;
+  border-left: 4px solid var(--sbs-gold);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(31, 42, 26, .97), rgba(21, 29, 18, .97));
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,.24);
+}
+
+.sbsqo-quest-card.gm-hidden {
+  border-left-color: var(--sbs-secret);
+  background: linear-gradient(180deg, rgba(40, 31, 48, .85), rgba(25, 22, 29, .95));
+}
+
+.sbsqo-quest-card.status-completed {
+  border-left-color: #6f9d5f;
+  opacity: .92;
+}
+
+.sbsqo-quest-card.status-failed,
+.sbsqo-quest-card.status-abandoned {
+  border-left-color: #9c554a;
+  opacity: .85;
+}
+
+.sbsqo-quest-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 12px 8px;
+}
+
+.sbsqo-quest-kicker {
+  color: var(--sbs-gold);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+  font-weight: 700;
+}
+
+.sbsqo-quest-title-block h3 {
+  margin: 2px 0 5px;
+  color: #fff5c4;
+  font-size: 19px;
+  line-height: 1.15;
+}
+
+.sbsqo-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.sbsqo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid #526247;
+  border-radius: 999px;
+  background: rgba(7, 10, 6, .35);
+  color: #cbd2c2;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.sbsqo-badge.hidden,
+.sbsqo-objective-visibility.hidden {
+  border-color: #8c6f33;
+  color: #edc866;
+}
+
+.sbsqo-badge.secret,
+.sbsqo-objective-visibility.secret {
+  border-color: #795490;
+  color: #c9a3e1;
+}
+
+.sbsqo-badge.private {
+  border-color: #496b78;
+  color: #99d1e3;
+}
+
+.sbsqo-quest-description {
+  padding: 8px 12px 10px;
+  color: #d4dacb;
+  font-size: 12px;
+  line-height: 1.45;
+  border-top: 1px solid rgba(82, 98, 71, .38);
+}
+
+.sbsqo-objectives {
+  padding: 0 12px 8px;
+}
+
+.sbsqo-objective {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px;
+  padding: 8px 5px;
+  border-top: 1px solid rgba(82, 98, 71, .4);
+}
+
+.sbsqo-objective.complete .sbsqo-objective-title {
+  text-decoration: line-through;
+  color: #899182;
+}
+
+.sbsqo-objective.hidden-objective {
+  margin: 4px 0;
+  border: 1px dashed #725d36;
+  border-radius: 6px;
+  background: rgba(76, 56, 27, .18);
+}
+
+.sbsqo-objective-check {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+}
+
+.sbsqo-objective-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sbsqo-custom-check {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #68755d;
+  border-radius: 4px;
+  background: #11170f;
+  color: transparent;
+}
+
+.sbsqo-objective-check.editable {
+  cursor: pointer;
+}
+
+.sbsqo-objective-check.editable:hover .sbsqo-custom-check {
+  border-color: var(--sbs-gold);
+}
+
+.sbsqo-objective-check input:checked + .sbsqo-custom-check {
+  background: #536b3b;
+  border-color: #87a66d;
+  color: #fff8d1;
+}
+
+.sbsqo-objective-title {
+  color: #f0f0df;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.sbsqo-objective-title .fa-star {
+  margin-right: 5px;
+  color: var(--sbs-gold);
+}
+
+.sbsqo-objective-description {
+  margin-top: 2px;
+  color: #aeb6a6;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.sbsqo-objective-visibility {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 1px 5px;
+  border: 1px solid #526247;
+  border-radius: 4px;
+  color: #bfc7b6;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.sbsqo-small-button {
+  width: 28px;
+  min-width: 28px;
+  padding: 3px !important;
+}
+
+.sbsqo-no-objectives {
+  padding: 10px 4px;
+  color: #8f9987;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.sbsqo-quest-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid #3b4932;
+  background: rgba(8, 12, 7, .32);
+}
+
+.sbsqo-meta {
+  color: #8f9987;
+  font-size: 10px;
+}
+
+.sbsqo-empty {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #a4ad9b;
+}
+
+.sbsqo-empty img {
+  width: 82px;
+  height: 82px;
+  opacity: .72;
+}
+
+.sbsqo-empty > i {
+  font-size: 42px;
+  color: #68795b;
+}
+
+.sbsqo-empty h3 {
+  margin: 8px 0 4px;
+  color: #d2d8c9;
+}
+
+.sbsqo-empty p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.sbsqo-empty.compact {
+  min-height: 80px;
+  border: 1px dashed #45523d;
+  border-radius: 7px;
+}
+
+.sbsqo-editor-content {
+  flex: 1 1 auto;
+  padding: 14px;
+}
+
+.sbsqo-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.sbsqo-window label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #c5ccbc;
+  font-size: 11px;
+}
+
+.sbsqo-window label > span {
+  font-weight: 600;
+}
+
+.sbsqo-window label.wide {
+  grid-column: 1 / -1;
+}
+
+.sbsqo-window .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding-top: 17px;
+}
+
+.sbsqo-window .checkbox-label input {
+  width: auto;
+  margin: 0;
+}
+
+.sbsqo-window .window-content input[type="text"],
+.sbsqo-window .window-content input:not([type]),
+.sbsqo-window .window-content input:not([type="checkbox"]),
+.sbsqo-window .window-content select,
+.sbsqo-window .window-content textarea {
+  width: 100%;
+  border: 1px solid #56634c;
+  border-radius: 5px;
+  background: #10160e;
+  color: #f2f0df;
+  padding: 6px 8px;
+}
+
+.sbsqo-window .window-content input[type="checkbox"] {
+  width: auto;
+}
+
+.sbsqo-window .window-content textarea {
+  resize: vertical;
+  min-height: 58px;
+}
+
+.sbsqo-window .window-content input:focus,
+.sbsqo-window .window-content select:focus,
+.sbsqo-window .window-content textarea:focus {
+  outline: none;
+  border-color: var(--sbs-gold);
+  box-shadow: 0 0 0 1px rgba(244, 191, 50, .22);
+}
+
+.sbsqo-objective-editor-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 18px 0 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #45523d;
+}
+
+.sbsqo-objective-editor-header h2 {
+  margin: 0;
+  color: var(--sbs-gold-soft);
+  font-size: 17px;
+}
+
+.sbsqo-objective-editor-header p {
+  margin: 3px 0 0;
+  color: #99a190;
+  font-size: 10px;
+}
+
+.sbsqo-objective-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sbsqo-objective-editor {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #48563f;
+  border-radius: 8px;
+  background: rgba(31, 42, 26, .72);
+}
+
+.sbsqo-objective-number {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #4b5d3f;
+  color: #fff2b6;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.sbsqo-objective-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+
+.sbsqo-objective-fields .wide {
+  grid-column: 1 / -1;
+}
+
+.sbsqo-objective-row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sbsqo-objective-row-actions button {
+  width: 30px;
+  min-width: 30px;
+  padding: 3px;
+}
+
+.sbsqo-editor-footer {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #45523d;
+  background: #11170f;
+}
+
+.sbsqo-confirm-body {
+  padding: 16px;
+  color: #d8ddcf;
+  line-height: 1.45;
+}
+
+.sbsqo-confirm-body p {
+  margin: 0 0 12px;
+}
+
+.sbsqo-floating-launcher {
+  position: fixed;
+  z-index: 72;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 2px solid #9b7d29;
+  border-radius: 50%;
+  background: #172013;
+  box-shadow: 0 4px 14px rgba(0,0,0,.45);
+  cursor: pointer;
+}
+
+.sbsqo-floating-launcher:hover {
+  border-color: #f4bf32;
+  transform: translateY(-1px);
+}
+
+.sbsqo-floating-launcher img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.sbsqo-launcher-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 1px solid #fff2a0;
+  border-radius: 999px;
+  background: #785d15;
+  color: #fff8d1;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.sbsqo-tracked-hud {
+  position: fixed;
+  z-index: 71;
+  width: 285px;
+  max-width: calc(100vw - 30px);
+  border: 1px solid #657653;
+  border-left: 3px solid #f4bf32;
+  border-radius: 7px;
+  background: rgba(15, 21, 12, .95);
+  color: #ecebdc;
+  box-shadow: 0 4px 14px rgba(0,0,0,.4);
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+}
+
+.sbsqo-tracked-header {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #44513a;
+}
+
+.sbsqo-tracked-title,
+.sbsqo-untrack {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #f8eaa3;
+  cursor: pointer;
+}
+
+.sbsqo-tracked-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 9px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.sbsqo-tracked-title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sbsqo-untrack {
+  flex: 0 0 32px;
+}
+
+.sbsqo-tracked-objectives {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px 10px;
+  color: #c8cebf;
+  font-size: 11px;
+}
+
+.sbsqo-tracked-objectives > div {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: 5px;
+  line-height: 1.3;
+}
+
+.sbsqo-tracked-objectives i {
+  color: #b9952b;
+  margin-top: 1px;
+}
+
+.sbsqo-pulse {
+  animation: sbsqo-pulse 1.1s ease-out;
+}
+
+@keyframes sbsqo-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(244, 191, 50, .75); }
+  60% { box-shadow: 0 0 0 8px rgba(244, 191, 50, 0); }
+  100% { box-shadow: 0 4px 12px rgba(0,0,0,.24); }
+}
+
+@media (max-width: 760px) {
+  .sbsqo-form-grid,
+  .sbsqo-objective-fields {
+    grid-template-columns: 1fr;
+  }
+  .sbsqo-form-grid .wide,
+  .sbsqo-objective-fields .wide {
+    grid-column: auto;
+  }
+  .sbsqo-window .checkbox-label {
+    padding-top: 0;
+  }
+  .sbsqo-objective-editor {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+  .sbsqo-objective-row-actions {
+    grid-column: 2;
+    flex-direction: row;
+  }
+}
+
+/* v0.1.4: keep destructive quest actions obvious without disturbing Foundry's window frame. */
+.sbsqo-window .window-content .sbsqo-editor-footer {
+  justify-content: space-between;
+}
+.sbsqo-window .window-content .sbsqo-editor-footer-left,
+.sbsqo-window .window-content .sbsqo-editor-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+/* GM Quest Manager long-list layout -----------------------------------------
+   The player Quest Board already scrolls correctly. Keep this deliberately
+   scoped to the GM manager so a large campaign list cannot force cards or
+   controls outside the ApplicationV2 content box. */
+#sbsqo-quest-manager .window-content {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#sbsqo-quest-manager .sbsqo-shell {
+  flex: 1 1 0 !important;
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#sbsqo-quest-manager .sbsqo-brand-header,
+#sbsqo-quest-manager .sbsqo-manager-toolbar {
+  flex: 0 0 auto !important;
+}
+
+#sbsqo-quest-manager .sbsqo-manager-content {
+  /* A zero flex-basis is intentional: it makes the remaining manager height
+     the scroll viewport instead of allowing a long quest list to enlarge the
+     Application content beyond its visible frame. */
+  flex: 1 1 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+  padding-bottom: 22px;
+  scrollbar-gutter: stable;
+}
+
+#sbsqo-quest-manager .sbsqo-manager-content > .sbsqo-quest-card {
+  flex: 0 0 auto !important;
+  min-height: min-content;
+}
+
+/* Make wrapped GM controls remain usable rather than clipping at narrow
+   manager widths or when a quest has many state/visibility actions. */
+#sbsqo-quest-manager .sbsqo-quest-card-header,
+#sbsqo-quest-manager .sbsqo-card-actions,
+#sbsqo-quest-manager .sbsqo-card-footer-actions {
+  min-width: 0;
+}
+
+#sbsqo-quest-manager .sbsqo-card-actions,
+#sbsqo-quest-manager .sbsqo-card-footer-actions {
+  flex-wrap: wrap;
+}

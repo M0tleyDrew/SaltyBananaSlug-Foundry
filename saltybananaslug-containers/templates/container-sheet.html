@@ -1,0 +1,53 @@
+<div class="sbs-sheet-shell">
+  <header class="sbs-container-header">
+    <img src="{{img}}">
+    <div>
+      <h2>{{name}}</h2>
+      <div class="sbs-badges"><span>{{data.typeLabel}}</span><span>{{lock}}</span><span>{{data.state}}</span></div>
+    </div>
+    <div class="sbs-header-actions"><img class="sbs-brand-mini" src="{{logo}}" alt="SBS" title="SaltyBananaSlug's Containers">
+      {{#if showHeaderActions}}{{#if isGM}}<button type="button" data-action="toggle-lock" title="{{lockActionLabel}} Container">{{#if locked}}<i class="fas fa-unlock"></i>{{else}}<i class="fas fa-lock"></i>{{/if}} <span class="sbs-lock-action-text">{{lockActionLabel}}</span></button><button type="button" data-action="create-key" title="Create Matching Key"><i class="fas fa-key"></i></button><button type="button" data-action="edit" title="Edit Container"><i class="fas fa-cog"></i></button>{{/if}}
+      {{#if canOpenJournal}}<button type="button" data-action="journal" title="Open Companion Journal"><i class="fas fa-book-open"></i></button>{{/if}}{{/if}}
+    </div>
+  </header>
+  <div class="sbs-sheet-scroll">
+    {{#if gmOverride}}<div class="sbs-gm-override"><strong>GM Override:</strong> This container is {{lock}} / {{stateLabel}}. You may inspect and modify its contents without changing its lock or open/closed state.</div>{{/if}}
+    <div class="sbs-grid actor-select">
+      <label>Interacting Actor<select name="actor">{{#each actors}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+      <p>Transfers go to/from this Actor. Distance checks use its token on the current scene.</p>
+    </div>
+    {{#if data.description}}<div class="sbs-description">{{data.description}}</div>{{/if}}
+
+    <h3>Contents</h3>
+    <div class="sbs-loot-list">
+      {{#each items}}<div class="sbs-loot-row">
+        <img src="{{img}}">
+        <div class="name"><strong>{{name}}</strong><small>{{type}}{{#if identifiable}} · {{identificationLabel}}{{/if}}</small></div>
+        <div class="qty">× {{quantity}}</div>
+        <div class="actions">
+          {{#if ../isGM}}{{#if identifiable}}{{#if identified}}<button type="button" data-identify-item="{{id}}" data-identified="false" title="Players will see the unidentified version">Mark Unidentified</button>{{else}}<button type="button" data-identify-item="{{id}}" data-identified="true">Identify</button>{{/if}}{{/if}}{{/if}}
+          {{#if ../canWithdraw}}<button type="button" data-take="{{id}}" data-qty="1">Take 1</button><button type="button" data-take-all="{{id}}">Take All</button>{{/if}}
+        </div>
+      </div>{{/each}}
+      {{#unless items.length}}<div class="sbs-empty">This container is empty.</div>{{/unless}}
+    </div>
+
+    <div class="sbs-section-heading">
+      <h3>Currency</h3>
+      {{#if canSplitCurrency}}<button type="button" data-action="split-currency" class="sbs-split-button" title="Divide all currency evenly among active non-GM players with assigned characters"><i class="fas fa-people-arrows"></i> Split Evenly ({{splitRecipientCount}})</button>{{/if}}
+    </div>
+    <div class="sbs-currency-list">
+      {{#each currency}}<div class="sbs-currency-row">
+        <strong>{{@key}}</strong><span>{{this}}</span><input type="number" min="1" value="1">
+        {{#if ../canWithdraw}}<button type="button" data-currency-action="take" data-coin="{{@key}}">Take</button>{{/if}}
+        {{#if ../canDeposit}}<button type="button" data-currency-action="deposit" data-coin="{{@key}}">Deposit</button>{{/if}}
+      </div>{{/each}}
+    </div>
+
+    {{#if canDeposit}}<div class="sbs-container-dropzone">
+      <i class="fas fa-hand-holding-box"></i><strong>Drop Items or Journals here</strong>
+      <span>Items: drag from Actor sheets, the Items directory, or compendiums as permitted. Journals: drag a Journal Entry or Journal Page to preview and import its linked Items and recognized currency. The source Journal is never changed.</span>
+    </div>{{/if}}
+  </div>
+  <footer class="sbs-sheet-footer">{{#if isOpen}}<button type="button" data-action="close-container"><i class="fas fa-box"></i> Close Container</button>{{else}}<button type="button" data-action="dismiss"><i class="fas fa-times"></i> Done</button>{{/if}}</footer>
+</div>

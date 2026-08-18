@@ -1,0 +1,32 @@
+# SaltyBananaSlug's Lore Module bulk importer example
+SET: Chapter One — Welcome to Welch
+DESCRIPTION: People, places, and suspiciously specific historical facts from the opening chapter.
+
+LORE_TEXT: A Brief History of Welch
+Welch was founded after three rival surveyors each claimed the same patch of land.
+The resulting argument lasted nine years and is still technically unresolved.
+END_LORE
+
+LORE: The Mayor's Public Journal | journal | JournalEntry.REPLACE_WITH_YOUR_UUID
+LORE: City Map Handout | file | worlds/your-world/lore/welch-map.pdf
+LORE: Campaign Wiki | url | https://example.com/welch
+
+Q: Who currently serves as mayor of Welch?
+A: Sheriff Hawk
+B*: Horville Vant
+C: Aegis
+D: The hat guy
+EX: Horville Vant is the mayor. Sheriff Hawk runs law enforcement, which is a different flavor of administrative headache.
+---
+
+Q: Which inn is secretly operated by an ancient silver dragon?
+A: The Wandering Wayfarer
+B: The Eggplant Arms
+C: The Rusty Adjuster
+D: The Purple Wyrm
+ANSWER: D
+EXPLANATION: The Purple Wyrm's innkeeper, Y, is an ancient silver dragon.
+---
+
+# Options can continue beyond Z using AA, AB, AC, and so on.
+# Mark the correct option with an asterisk after its label, or use ANSWER: followed by the label.

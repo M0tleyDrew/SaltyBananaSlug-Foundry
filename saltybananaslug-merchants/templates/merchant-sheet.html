@@ -1,0 +1,28 @@
+<div class="sbsm-app sbsm-sheet-shell">
+  <header class="sbsm-brand compact"><img src="{{logo}}"><div><h1>{{data.name}}</h1><p>{{data.shopTypeLabel}} · {{data.status}}</p></div>{{#if isGM}}<div class="header-actions"><button type="button" data-action="edit"><i class="fas fa-gear"></i> Edit</button><button type="button" data-action="journal"><i class="fas fa-book"></i> Journal</button><button type="button" data-action="restock"><i class="fas fa-arrows-rotate"></i> Restock</button></div>{{/if}}</header>
+  {{#if data.description}}<div class="sbsm-description">{{data.description}}</div>{{/if}}
+  <div class="sbsm-customer-bar"><label>Shopping Character<select name="actor">{{#each actors}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label><span><strong>Favor:</strong> {{rates.favorName}}</span><span><strong>You Pay:</strong> {{rates.sellRate}}%</span><span><strong>Merchant Pays:</strong> {{rates.buyRate}}%</span>{{#if isGM}}<span><strong>Treasury:</strong> {{treasury}}</span>{{/if}}</div>
+
+  {{#if isGM}}
+    <div class="sbsm-sheet-scroll">
+      <div class="sbsm-dropzone"><i class="fas fa-arrow-down-to-bracket"></i><strong>GM Stock Drop Zone</strong><span>Drop Items, Journals, Journal Pages, or RollTables anywhere here to add stock. Journal and table sources are copied, never deleted.</span></div>
+      <div class="sbsm-callout"><strong>Infinite stock:</strong> open Stock Settings and enter <code>X</code>. X stock never decrements.</div>
+      <div class="sbsm-stock-list">{{#each gmItems}}<div class="sbsm-stock-row"><img src="{{img}}"><div class="grow"><strong>{{name}}</strong><small>{{type}} · Stock {{quantity}}{{#unless visible}} · Hidden{{/unless}}{{#if zero}} · Base value 0{{/if}}{{#if allowZero}} · zero-value sale enabled{{/if}}</small></div>{{#if identifiable}}<button type="button" data-identify="{{id}}" data-identified="{{#if identified}}false{{else}}true{{/if}}">{{#if identified}}Mark Unidentified{{else}}Identify{{/if}}</button>{{/if}}<button type="button" data-stock-settings="{{id}}"><i class="fas fa-sliders"></i> Stock Settings</button><button type="button" class="danger" data-remove-stock="{{id}}"><i class="fas fa-trash"></i></button></div>{{/each}}{{#unless gmItems.length}}<p><em>No stock yet. Drag something in.</em></p>{{/unless}}</div>
+    </div>
+  {{else}}
+    <nav class="sbsm-shop-tabs"><button type="button" data-tab="buy" class="{{#if activeBuy}}active{{/if}}"><i class="fas fa-cart-shopping"></i> Buy</button><button type="button" data-tab="sell" class="{{#if activeSell}}active{{/if}}"><i class="fas fa-hand-holding-dollar"></i> Sell</button></nav>
+    <div class="sbsm-sheet-scroll">
+      {{#if activeBuy}}
+        <div class="sbsm-market-grid">{{#each buyItems}}<article class="sbsm-product {{#unless inStock}}soldout{{/unless}}"><img src="{{img}}"><h3>{{name}}</h3><p class="price">{{priceText}}</p><p>Stock: {{quantity}}</p>{{#if favorRequired}}<small>Favor-gated stock</small>{{/if}}<div class="qty-controls"><button type="button" data-buy-sub="{{id}}" {{#unless cartQty}}disabled{{/unless}}>-</button><strong>{{cartQty}}</strong><button type="button" data-buy-add="{{id}}" {{#unless inStock}}disabled{{/unless}}>+</button></div></article>{{/each}}</div>
+        {{#unless buyItems.length}}<div class="sbsm-empty">This merchant currently has nothing available for you to buy.</div>{{/unless}}
+        <footer class="sbsm-cart-footer"><span><strong>Cart Total:</strong> {{buyTotalText}}</span><button type="button" class="primary" data-action="checkout-buy" {{#unless hasBuy}}disabled{{/unless}}><i class="fas fa-coins"></i> Purchase</button></footer>
+      {{/if}}
+      {{#if activeSell}}
+        <div class="sbsm-dropzone"><i class="fas fa-hand-holding-hand"></i><strong>Drag Items From Your Character Here</strong><span>Nothing transfers until you accept the offer. Add/remove items and quantities first.</span></div>
+        <div class="sbsm-sell-list">{{#each sellItems}}<div class="sbsm-sell-row {{#unless ok}}refused{{/unless}}"><img src="{{img}}"><div class="grow"><strong>{{name}}</strong>{{#if ok}}<small>{{unitText}} each · Offer {{offerText}}</small>{{else}}<small>{{reason}}</small>{{/if}}</div>{{#if ok}}<div class="qty-controls"><button type="button" data-sell-minus="{{itemId}}">-</button><strong>{{quantity}}</strong><button type="button" data-sell-plus="{{itemId}}">+</button></div>{{/if}}<button type="button" class="danger" data-sell-remove="{{itemId}}"><i class="fas fa-xmark"></i></button></div>{{/each}}</div>
+        {{#unless sellItems.length}}<div class="sbsm-empty">Drag something from your character sheet to get an offer.</div>{{/unless}}
+        <footer class="sbsm-cart-footer"><span><strong>Merchant Offer:</strong> {{sellTotalText}}</span><button type="button" class="primary" data-action="checkout-sell" {{#unless hasSell}}disabled{{/unless}}><i class="fas fa-handshake"></i> Accept Offer</button></footer>
+      {{/if}}
+    </div>
+  {{/if}}
+</div>

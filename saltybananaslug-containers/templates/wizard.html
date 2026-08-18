@@ -1,0 +1,112 @@
+<div class="sbs-wizard-shell">
+  <header class="sbs-brand-header"><img src="{{logo}}" alt="SaltyBananaSlug"><div><strong>SaltyBananaSlug's Containers</strong><span>{{#if isEdit}}Edit Container{{else}}Container Maker{{/if}}</span></div></header>
+  <nav class="sbs-wizard-tabs" aria-label="Container maker steps">
+    {{#each steps}}<button type="button" class="sbs-step-tab {{#if active}}active{{/if}}" data-step="{{idx}}">{{label}}</button>{{/each}}
+  </nav>
+  <div class="sbs-wizard-scroll">
+    <section class="sbs-step-panel" data-panel="basics">
+      <h2>Container Basics</h2>
+      <div class="sbs-grid two">
+        <label>Container Name<input name="name" type="text" placeholder="Wooden Chest"></label>
+        <label>Container Type<select name="type">{{#each typeOptions}}<option value="{{id}}">{{label}}</option>{{/each}}</select></label>
+      </div>
+      <label class="sbs-custom-type hidden">Custom Type<input name="customType" type="text" placeholder="Suspicious Meat Refrigerator"></label>
+      <label>Description<textarea name="description" rows="6" placeholder="GM notes or a useful description of the container."></textarea></label>
+      <div class="sbs-callout"><strong>Independent storage:</strong> every container gets its own hidden D&D5e Actor. It does not use Item Piles.</div>
+    </section>
+
+    <section class="sbs-step-panel" data-panel="appearance">
+      <h2>Appearance</h2>
+      <p>The selected container type automatically supplies matching Closed, Open, and Locked artwork. Replace any state with custom art if desired.</p>
+      <div class="sbs-art-layout">
+        <div class="sbs-art-fields">
+          <label>Closed Image<div class="sbs-inline"><input name="image_closed" type="text"><button type="button" data-image-state="closed"><i class="fas fa-folder-open"></i></button></div></label>
+          <label>Open Image<div class="sbs-inline"><input name="image_open" type="text"><button type="button" data-image-state="open"><i class="fas fa-folder-open"></i></button></div></label>
+          <label>Locked Image<div class="sbs-inline"><input name="image_locked" type="text"><button type="button" data-image-state="locked"><i class="fas fa-folder-open"></i></button></div></label>
+          <div class="sbs-inline preview-buttons"><button type="button" data-preview="closed">Closed</button><button type="button" data-preview="open">Open</button><button type="button" data-preview="locked">Locked</button></div>
+        </div>
+        <div class="sbs-art-preview"><div class="sbs-art-preview-label">Closed</div><img src="" alt="Container preview"></div>
+      </div>
+    </section>
+
+    <section class="sbs-step-panel" data-panel="access">
+      <h2>State & Player Access</h2>
+      <div class="sbs-grid two">
+        <label>Starting State<select name="state"><option value="closed">Closed</option><option value="open">Open</option>{{#if isGM}}<option value="locked">Locked</option>{{/if}}</select></label>
+        <label>Interaction Distance (ft)<input name="distance" type="number" min="0" step="5"><small>0 disables distance checking.</small></label>
+        <label>Players Can Open<select name="perm_open"><option value="all">All Players</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}<option value="creator">Creator</option><option value="none">GM Only</option></select></label>
+        <label>Players Can Close<select name="perm_close"><option value="all">All Players</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}<option value="creator">Creator</option><option value="none">GM Only</option></select></label>
+        <label>Inspect Contents<select name="perm_inspect"><option value="open">Only While Open</option><option value="all">Always If Unlocked</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}<option value="none">GM Only</option></select></label>
+        <label>Deposit Items<select name="perm_deposit"><option value="all">Any Player While Open</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}<option value="creator">Creator</option><option value="none">GM Only</option></select></label>
+        <label>Withdraw Items<select name="perm_withdraw"><option value="all">Any Player While Open</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}<option value="creator">Creator</option><option value="none">GM Only</option></select></label>
+      </div>
+      {{#if isGM}}<div class="sbs-callout">Selected-player permissions use the same player list configured on the Journal tab in this first build.</div>{{/if}}
+    </section>
+
+    {{#if isGM}}<section class="sbs-step-panel" data-panel="lock">
+      <h2>Lock & Key 5.0.5</h2>
+      <label class="sbs-checkbox"><input name="lock_enabled" type="checkbox"> Make this container lockable</label>
+      <div class="sbs-grid two">
+        <label>Key ID<input name="lock_keyId" type="text" placeholder="Leave blank to generate when creating a key"></label>
+        <label>Key Item Name<input name="lock_keyName" type="text" placeholder="Exact name for the key item"><small>Used exactly as entered. The same key name can be used for many locks.</small></label>
+        <label class="sbs-checkbox"><input name="lock_createKey" type="checkbox"> Create a matching Lock & Key key item when the container is saved</label>
+        <label>Password<input name="lock_password" type="text" placeholder="Optional"></label>
+        <label>Lockpick DC<input name="lock_pickDC" type="number"></label>
+        <label>Break DC<input name="lock_breakDC" type="number"></label>
+        <label>Lockpick Attempts<input name="lock_attempts" type="number"><small>-1 = unlimited</small></label>
+        <label>Required Lockpick Successes<input name="lock_successes" type="number" min="1"></label>
+        <label>Special Lockpick<input name="lock_special" type="text" placeholder="Optional required lockpick name/ID"></label>
+        <label class="sbs-checkbox"><input name="lock_lockOnClose" type="checkbox"> Automatically lock when closed</label>
+      </div>
+      <div class="sbs-callout"><strong>Lock & Key is authoritative.</strong> The container reads Lock & Key's LockedFlag and changes its artwork automatically. If “Create a matching key item” is checked, Key Item Name is required and is used exactly as typed.</div>
+    </section>{{/if}}
+
+    <section class="sbs-step-panel" data-panel="inventory">
+      <h2>Starting Inventory</h2>
+      {{#if isGM}}
+        {{#unless isEdit}}<div class="sbs-wizard-dropzone"><i class="fas fa-box-open"></i><strong>Drop Foundry Items or Journals Here</strong><span>Items from the directory, compendiums, or Actors can be staged before creation. Drop a Journal Entry or Journal Page to preview and add its linked Items and recognized currency to the starting inventory.</span></div>{{/unless}}
+        {{#if initialItems.length}}<div class="sbs-initial-items">{{#each initialItems}}<div class="sbs-item-row"><img src="{{img}}"><span>{{name}}{{#if identifiable}}<small> · {{#if identified}}Identified{{else}}Unidentified{{/if}}</small>{{/if}}</span><strong>× {{quantity}}</strong><div class="actions">{{#if identifiable}}{{#if identified}}<button type="button" data-initial-identify="{{idx}}" data-identified="false">Mark Unidentified</button>{{else}}<button type="button" data-initial-identify="{{idx}}" data-identified="true">Identify</button>{{/if}}{{/if}}<button type="button" data-remove-initial="{{idx}}"><i class="fas fa-trash"></i></button></div></div>{{/each}}</div>{{/if}}
+        <h3>Starting Currency</h3>
+        <div class="sbs-grid five currency"><label>CP<input name="currency_cp" type="number" min="0"></label><label>SP<input name="currency_sp" type="number" min="0"></label><label>EP<input name="currency_ep" type="number" min="0"></label><label>GP<input name="currency_gp" type="number" min="0"></label><label>PP<input name="currency_pp" type="number" min="0"></label></div>
+        {{#if isEdit}}<div class="sbs-callout">For safety, editing an existing container does not replace its inventory from this wizard. Open the container and drag items normally.</div>{{/if}}
+      {{else}}
+        <div class="sbs-callout"><strong>Player-created containers start empty.</strong> Create it first, open it, then drag items from an Actor inventory you own into the container. This lets the GM validate the transfer and prevents accidental item duplication.</div>
+      {{/if}}
+    </section>
+
+    <section class="sbs-step-panel" data-panel="journal">
+      <h2>Companion Journal</h2>
+      <div class="sbs-callout"><strong>A journal is always created.</strong> Default visibility is GM only. Its name is <code>Container Name — Scene Name</code>; duplicates receive 2, 3, 4…</div>
+      <div class="sbs-grid two">
+        <label>Journal Visibility<select name="journal_visibility"><option value="gm">GM Only (Default)</option><option value="all">All Players</option>{{#if isGM}}<option value="selected">Selected Players</option>{{/if}}</select></label>
+        {{#if isGM}}<div><strong>Selected Players</strong><div class="sbs-user-list">{{#each users}}<label class="sbs-checkbox"><input type="checkbox" name="journal_users" value="{{id}}" {{#if selected}}checked{{/if}}> {{name}}</label>{{/each}}</div></div>{{/if}}
+        <label class="sbs-checkbox"><input name="journal_snapshot" type="checkbox"> Keep original-contents snapshot</label>
+        <label class="sbs-checkbox"><input name="journal_log" type="checkbox"> Keep recent transaction history</label>
+      </div>
+    </section>
+
+    {{#if isGM}}<section class="sbs-step-panel" data-panel="advanced">
+      <h2>Advanced Behavior</h2>
+      <div class="sbs-grid two">
+        <label>Capacity Mode<select name="capacity_mode"><option value="unlimited">Unlimited</option><option value="items">Item Count</option><option value="weight">Weight</option><option value="both">Item Count & Weight</option></select></label>
+        <label>Empty Behavior<select name="emptyBehavior"><option value="stay">Stay on Scene</option><option value="notify">Notify GM</option><option value="close">Close Automatically</option></select></label>
+        <label>Maximum Item Count<input name="capacity_items" type="number" min="0"></label>
+        <label>Maximum Weight<input name="capacity_weight" type="number" min="0" step="0.1"></label>
+      </div>
+      <div class="sbs-callout">Capacity values are stored now; enforcement is conservative in v0.1.0 so a weird custom item cannot make the whole chest reject transfers. We can tighten this after live testing.</div>
+    </section>{{/if}}
+
+    <section class="sbs-step-panel" data-panel="summary">
+      <h2>{{#if isEdit}}Update Container{{else}}Create Container{{/if}}</h2>
+      <div class="sbs-summary-live"></div>
+      <div class="sbs-callout"><strong>Safety:</strong> creating this does not inspect, modify, migrate, or depend on any Item Piles actors or flags.</div>
+    </section>
+  </div>
+  <footer class="sbs-wizard-footer">
+    <button type="button" data-action="cancel"><i class="fas fa-times"></i> Cancel</button>
+    <span class="spacer"></span>
+    <button type="button" data-action="back"><i class="fas fa-chevron-left"></i> Back</button>
+    <button type="button" data-action="next">Next <i class="fas fa-chevron-right"></i></button>
+    <button type="button" class="hidden create" data-action="create"><i class="fas fa-check"></i> {{#if isEdit}}Save Changes{{else}}Place Container{{/if}}</button>
+  </footer>
+</div>

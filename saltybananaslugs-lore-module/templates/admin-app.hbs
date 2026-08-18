@@ -1,0 +1,106 @@
+<form class="sbs-admin-shell" autocomplete="off">
+  <header class="sbs-admin-header">
+    <img src="modules/saltybananaslugs-lore-module/assets/banana-slug.svg" alt="Banana slug logo">
+    <div><h1>Lore Module Manager</h1><p>Build chapter sets, audit player knowledge, and quietly judge their note-taking.</p></div>
+    <div class="sbs-admin-global-actions">
+      <button type="button" data-action="import-backup"><i class="fas fa-file-import"></i> Restore Backup</button>
+      <button type="button" data-action="export-backup"><i class="fas fa-file-export"></i> Export Backup</button>
+    </div>
+  </header>
+  <nav class="sbs-admin-tabs">
+    <button type="button" data-action="tab" data-tab="content" class="{{#if tabContent}}active{{/if}}"><i class="fas fa-books"></i> Sets & Content</button>
+    <button type="button" data-action="tab" data-tab="stats" class="{{#if tabStats}}active{{/if}}"><i class="fas fa-chart-column"></i> Player Statistics</button>
+  </nav>
+
+  {{#if tabContent}}
+  <div class="sbs-admin-workspace">
+    <aside class="sbs-set-sidebar">
+      <button type="button" class="sbs-primary" data-action="add-set"><i class="fas fa-plus"></i> New Lore Set</button>
+      <div class="sbs-set-list">
+        {{#each sets}}
+          <button type="button" data-action="select-set" data-set-id="{{id}}" class="sbs-admin-set {{#if selected}}active{{/if}}">
+            <strong>{{name}}</strong><span><i class="fas {{statusIcon}}"></i> {{statusLabel}}</span><small>{{questionCount}} questions · {{loreCount}} lore</small>
+          </button>
+        {{/each}}
+      </div>
+      <div class="sbs-danger-zone"><button type="button" data-action="full-reset"><i class="fas fa-radiation"></i> Complete Module Reset</button></div>
+    </aside>
+
+    <main class="sbs-admin-content">
+      {{#if selected}}
+        <section class="sbs-set-heading">
+          <div><h2>{{selected.name}}</h2><p>{{selected.description}}</p></div>
+          <div class="sbs-button-row">
+            <button type="button" data-action="toggle-published"><i class="fas {{#if selected.published}}fa-eye-slash{{else}}fa-eye{{/if}}"></i> {{#if selected.published}}Make GM Only{{else}}Publish{{/if}}</button>
+            <button type="button" data-action="edit-set"><i class="fas fa-pen"></i> Edit Set</button>
+            <button type="button" data-action="export-set"><i class="fas fa-file-arrow-down"></i> Export Text</button>
+            <button type="button" class="danger" data-action="delete-set"><i class="fas fa-trash"></i> Delete</button>
+          </div>
+        </section>
+
+        <section class="sbs-admin-section">
+          <div class="sbs-section-title"><div><h3>Questions</h3><p>{{selected.questionCount}} total</p></div><div class="sbs-button-row"><button type="button" data-action="bulk-import"><i class="fas fa-file-import"></i> Bulk Import</button><button type="button" class="sbs-primary" data-action="add-question"><i class="fas fa-plus"></i> Add Question</button></div></div>
+          <div class="sbs-admin-card-list">
+            {{#each selected.questions}}
+              <article class="sbs-admin-card">
+                <div class="sbs-number">{{number}}</div>
+                <div class="sbs-card-body"><strong>{{prompt}}</strong><span><i class="fas fa-check"></i> {{correctText}}</span><small>{{options.length}} answer options</small></div>
+                <div class="sbs-card-actions"><button type="button" class="icon" data-action="edit-question" data-question-id="{{id}}" title="Edit"><i class="fas fa-pen"></i></button><button type="button" class="icon danger" data-action="delete-question" data-question-id="{{id}}" title="Delete"><i class="fas fa-trash"></i></button></div>
+              </article>
+            {{else}}
+              <div class="sbs-empty-inline">No questions in this set yet.</div>
+            {{/each}}
+          </div>
+        </section>
+
+        <section class="sbs-admin-section">
+          <div class="sbs-section-title"><div><h3>Lore Entries</h3><p>{{selected.loreCount}} total</p></div><button type="button" class="sbs-primary" data-action="add-lore"><i class="fas fa-plus"></i> Add Lore</button></div>
+          <div class="sbs-admin-card-list">
+            {{#each selected.lore}}
+              <article class="sbs-admin-card">
+                <div class="sbs-number"><i class="fas fa-book-open"></i></div>
+                <div class="sbs-card-body"><strong>{{title}}</strong><span>{{typeLabel}}</span><small>{{preview}}</small></div>
+                <div class="sbs-card-actions"><button type="button" class="icon" data-action="edit-lore" data-lore-id="{{id}}" title="Edit"><i class="fas fa-pen"></i></button><button type="button" class="icon danger" data-action="delete-lore" data-lore-id="{{id}}" title="Delete"><i class="fas fa-trash"></i></button></div>
+              </article>
+            {{else}}
+              <div class="sbs-empty-inline">No lore entries in this set yet.</div>
+            {{/each}}
+          </div>
+        </section>
+      {{else}}
+        <div class="sbs-empty-state"><i class="fas fa-books"></i><h2>Create Your First Lore Set</h2><p>Sets can represent chapters, regions, factions, campaigns, or that one NPC everyone keeps calling “the hat guy.”</p><button type="button" class="sbs-primary" data-action="add-set">Create Lore Set</button></div>
+      {{/if}}
+    </main>
+  </div>
+  {{/if}}
+
+  {{#if tabStats}}
+  <main class="sbs-stats-page">
+    <div class="sbs-section-title"><div><h2>Player Statistics</h2><p>Every attempt, including wrong answers and the answer they should have chosen.</p></div><button type="button" class="danger" data-action="reset-scores"><i class="fas fa-rotate-left"></i> Reset All Scores</button></div>
+    <div class="sbs-player-stats-list">
+      {{#each users}}
+        <details class="sbs-player-stat" {{#if active}}open{{/if}}>
+          <summary>
+            <div><strong>{{name}}</strong><span>{{#if active}}Online{{else}}Offline{{/if}}</span></div>
+            <div class="sbs-stat-pills"><span>{{correct}} correct</span><span>{{incorrect}} wrong</span><span>{{percent}}%</span></div>
+          </summary>
+          <div class="sbs-player-stat-body">
+            <div class="sbs-set-stat-grid">
+              {{#each setRows}}<div><strong>{{setName}}</strong><span>{{correct}} correct · {{incorrect}} wrong · {{percent}}%</span></div>{{/each}}
+            </div>
+            <h4>Incorrect Answers</h4>
+            <div class="sbs-wrong-list">
+              {{#each wrongAttempts}}
+                <article><strong>{{questionPrompt}}</strong><span>Chose: {{selectedText}}</span><span>Correct: {{correctText}}</span>{{#if explanation}}<small>{{explanation}}</small>{{/if}}<small>{{answeredAtLabel}}</small></article>
+              {{else}}<p class="sbs-empty-inline">No incorrect answers recorded.</p>{{/each}}
+            </div>
+            <button type="button" class="danger" data-action="reset-user" data-user-id="{{id}}"><i class="fas fa-eraser"></i> Reset {{name}}'s Scores</button>
+          </div>
+        </details>
+      {{else}}
+        <div class="sbs-empty-state"><i class="fas fa-chart-simple"></i><h2>No Player Attempts Yet</h2><p>Either everyone is wisely studying, or nobody has clicked the button. The data cannot distinguish courage from avoidance.</p></div>
+      {{/each}}
+    </div>
+  </main>
+  {{/if}}
+</form>

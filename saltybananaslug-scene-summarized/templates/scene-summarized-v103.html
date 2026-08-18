@@ -1,0 +1,122 @@
+<form class="sbs-summary-form" autocomplete="off">
+  <header class="sbs-summary-brand">
+    <img src="{{logoPath}}" alt="SaltyBananaSlug">
+    <div>
+      <h2>SaltyBananaSlug's Scene Summarized</h2>
+      <p>Turns one Scene into an aggressively useful Journal dossier.</p>
+    </div>
+  </header>
+
+  <section class="sbs-summary-target">
+    <div class="form-group">
+      <label>Scene to summarize</label>
+      <div class="form-fields">
+        <select name="sceneId">
+          {{#each scenes}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+          {{/each}}
+        </select>
+        <button type="button" data-action="use-viewed-scene" title="Use the Scene currently shown on the canvas">
+          <i class="fas fa-crosshairs"></i> Viewed Scene
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Journal name</label>
+      <div class="form-fields">
+        <input type="text" name="journalName" value="{{journalName}}">
+      </div>
+    </div>
+
+    {{#if existingJournalName}}
+      <div class="sbs-summary-existing">
+        <i class="fas fa-book"></i>
+        <span>Existing summary: <strong>{{existingJournalName}}</strong></span>
+        <button type="button" data-action="open-existing"><i class="fas fa-arrow-up-right-from-square"></i> Open</button>
+      </div>
+    {{/if}}
+  </section>
+
+  <section class="sbs-summary-questions" aria-labelledby="sbs-summary-questions-heading">
+    <h3 id="sbs-summary-questions-heading" class="sbs-summary-question-heading">
+      <i class="fas fa-wand-magic-sparkles"></i> Optional questions that make the summary smarter
+    </h3>
+    <div class="sbs-summary-question-grid">
+      <label>
+        <span>What is this Scene for?</span>
+        <textarea name="purpose" rows="4" placeholder="Exploration, boss encounter, social scene, travel stop…">{{purpose}}</textarea>
+      </label>
+      <label>
+        <span>What should players notice first?</span>
+        <textarea name="firstImpression" rows="4" placeholder="The smell, a landmark, immediate danger, suspiciously innocent gazebo…">{{firstImpression}}</textarea>
+      </label>
+      <label>
+        <span>How does the Scene begin?</span>
+        <textarea name="entry" rows="4" placeholder="Where the party enters and what happens immediately">{{entry}}</textarea>
+      </label>
+      <label>
+        <span>What is the intended flow?</span>
+        <textarea name="flow" rows="4" placeholder="Likely beats, encounters, decisions, or order of operations">{{flow}}</textarea>
+      </label>
+      <label>
+        <span>What secrets or triggers matter?</span>
+        <textarea name="secrets" rows="4" placeholder="Hidden creatures, traps, reveals, tile triggers, GM reminders">{{secrets}}</textarea>
+      </label>
+      <label>
+        <span>What rewards or exits matter?</span>
+        <textarea name="rewards" rows="4" placeholder="Loot, clues, consequences, exits, and where the party goes next">{{rewards}}</textarea>
+      </label>
+    </div>
+  </section>
+
+  <section class="sbs-summary-options">
+    <div class="form-group">
+      <label>Player access</label>
+      <div class="form-fields">
+        <select name="audience">
+          <option value="gm" {{#if audienceGM}}selected{{/if}}>GM only</option>
+          <option value="safe" {{#if audienceSafe}}selected{{/if}}>Players can view — protect GM details</option>
+          <option value="full" {{#if audienceFull}}selected{{/if}}>Players can view everything</option>
+        </select>
+      </div>
+      <p class="hint">The protected option uses Foundry Secret blocks for hidden tokens, stats, traps, GM prompts, and technical details.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Detail level</label>
+      <div class="form-fields">
+        <select name="detailLevel">
+          <option value="overview" {{#if detailOverview}}selected{{/if}}>Overview</option>
+          <option value="detailed" {{#if detailDetailed}}selected{{/if}}>Detailed</option>
+          <option value="exhaustive" {{#if detailExhaustive}}selected{{/if}}>Exhaustive forensic inventory</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sbs-summary-check-grid">
+      <label class="checkbox"><input type="checkbox" name="updateExisting" {{checked updateExisting}}> Update this Scene's existing generated summary</label>
+      <label class="checkbox"><input type="checkbox" name="includeDescriptions" {{checked includeDescriptions}}> Include actor biographies and full Item descriptions</label>
+      <label class="checkbox"><input type="checkbox" name="embedMedia" {{checked embedMedia}}> Embed image previews and audio controls</label>
+      <label class="checkbox"><input type="checkbox" name="includeMediaIndex" {{checked includeMediaIndex}}> Add a complete Media Index page</label>
+      <label class="checkbox"><input type="checkbox" name="includeRawData" {{checked includeRawData}}> Add a raw Scene JSON page</label>
+      <label class="checkbox"><input type="checkbox" name="linkSceneJournal" {{checked linkSceneJournal}}> Set this as the Scene's linked Journal</label>
+      <label class="checkbox"><input type="checkbox" name="pinNote" {{checked pinNote}}> Pin a clickable Journal Note to the Scene</label>
+      <label class="checkbox"><input type="checkbox" name="showPlayers" {{checked showPlayers}}> Pop the finished Journal open for connected players</label>
+      <label class="checkbox"><input type="checkbox" name="openResult" {{checked openResult}}> Open the Journal for me when finished</label>
+    </div>
+  </section>
+
+  <section class="sbs-summary-preview">
+    <strong>{{selectedSceneName}}</strong>
+    <span>{{sceneCounts}}</span>
+  </section>
+
+  <footer class="sbs-summary-actions">
+    <button type="button" data-action="summarize" class="sbs-summary-primary">
+      <i class="fas fa-book-open"></i> {{summarizeLabel}}
+    </button>
+  </footer>
+
+  <p class="notes">Generated pages are marked and safely replaced on updates. Any extra pages you add manually are left alone.</p>
+</form>

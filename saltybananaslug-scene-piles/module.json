@@ -1,0 +1,36 @@
+{
+  "id": "saltybananaslug-scene-piles",
+  "title": "SaltyBananaSlug's Scene Piles",
+  "description": "Convert Item Piles into draggable Item-link Journals, optionally pin them to Scenes, and rebuild Item Piles from linked Items in Journals.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Drew / SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "esmodules": [
+    "scripts/pile-journal-bridge.js"
+  ],
+  "styles": [
+    "styles/pile-journal-bridge.css"
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "item-piles",
+        "type": "module"
+      }
+    ],
+    "recommends": [
+      {
+        "id": "itempilesdnd5e",
+        "type": "module"
+      }
+    ]
+  }
+}

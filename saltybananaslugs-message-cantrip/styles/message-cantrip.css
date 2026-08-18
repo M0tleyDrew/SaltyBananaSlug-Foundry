@@ -1,0 +1,59 @@
+.message-cantrip-form textarea {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+}
+
+.message-cantrip-form .mc-recipient-box {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-light-tertiary, #666);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.message-cantrip-form .mc-recipient-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.message-cantrip-form .mc-message-field {
+  margin-top: 8px;
+}
+
+.message-cantrip-form .mc-muted {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.message-cantrip-form .mc-incoming-message blockquote {
+  border-left: 3px solid var(--color-border-light-tertiary, #999);
+  padding-left: 8px;
+  margin-left: 0;
+}
+
+.message-cantrip-card {
+  border: 1px solid var(--color-border-light-tertiary, #777);
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.message-cantrip-card h3 {
+  margin-top: 0;
+}
+
+.message-cantrip-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.message-cantrip-title-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+

@@ -1,0 +1,50 @@
+{
+  "id": "saltybananaslug-containers",
+  "title": "SaltyBananaSlug's Containers",
+  "description": "Independent scene containers with private D&D5e inventories, automatic journal records, state artwork, GM-only shell-token isolation, strict player lock enforcement, item identification controls, player item transfers, and Lock & Key integration. Does not use Item Piles.",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "version": "0.1.10",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "system": [
+    "dnd5e"
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/containers.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": true,
+  "relationships": {
+    "requires": [
+      {
+        "id": "LocknKey",
+        "type": "module",
+        "compatibility": {
+          "minimum": "5.0.5"
+        }
+      }
+    ],
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system"
+      }
+    ]
+  },
+  "readme": "README.md"
+}

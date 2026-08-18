@@ -1,0 +1,32 @@
+<div class="sbs-cs-preview-shell">
+  <header class="sbs-cs-preview-header">
+    <div class="sbs-cs-preview-brand">
+      <img src="{{logoPath}}" alt="SaltyBananaSlug logo">
+      <div>
+        <strong>{{actorName}}</strong>
+        <span>SaltyBananaSlug character sheet / spellbook export</span>
+      </div>
+    </div>
+    <div class="sbs-cs-preview-actions">
+      <button type="button" class="sbs-cs-preview-button {{#if preferPdf}}sbs-cs-preview-emphasis{{/if}}" data-action="download-pdf">
+        <i class="fas fa-file-pdf"></i> Download PDF
+      </button>
+      <button type="button" class="sbs-cs-preview-button {{#if preferDownload}}sbs-cs-preview-emphasis{{/if}}" data-action="download-html">
+        <i class="fas fa-download"></i> Download HTML
+      </button>
+      <button type="button" data-action="print-preview" class="{{#if preferPrint}}sbs-cs-preview-emphasis{{/if}}" title="Fallback: use the browser print dialog">
+        <i class="fas fa-print"></i> Browser Print
+      </button>
+      <button type="button" data-action="close-preview"><i class="fas fa-times"></i> Close</button>
+    </div>
+  </header>
+
+  {{#if preferPdf}}
+  <div class="sbs-cs-preview-callout"><i class="fas fa-arrow-up"></i> Click <strong>Download PDF</strong> above to create a page-aware A4 version using the same SBS branding and content. PDF pages are assembled from whole headings, cards, paragraphs, list items, and table rows instead of slicing the scrolling preview.</div>
+  {{/if}}
+  {{#if preferDownload}}
+  <div class="sbs-cs-preview-callout"><i class="fas fa-arrow-up"></i> Click <strong>Download HTML</strong> above to save the styled sheet through Foundry's native file-save system. The filename is based on the character, not the current scene.</div>
+  {{/if}}
+
+  <iframe class="sbs-cs-preview-frame" title="{{actorName}} character sheet preview" sandbox="allow-same-origin allow-modals"></iframe>
+</div>

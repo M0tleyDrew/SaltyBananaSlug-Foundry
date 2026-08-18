@@ -1,0 +1,89 @@
+<form class="sbs-scene-piles-form" autocomplete="off">
+  <header class="sbs-scene-piles-brand">
+    <img src="{{logoPath}}" alt="SaltyBananaSlug">
+    <div>
+      <h2>SaltyBananaSlug's Scene Piles</h2>
+      <p>Loot goes in. Paperwork comes out. Somehow this is still fantasy.</p>
+    </div>
+  </header>
+
+  <section class="sbs-scene-piles-drop-zone" data-drop-zone>
+    <i class="fas fa-box-open"></i>
+    <div>
+      <strong>Drop Items, a Journal, or an Item Pile here</strong>
+      <p>Items append to the list. Journals and Item Piles replace the list with their contents.</p>
+    </div>
+  </section>
+
+  <div class="sbs-scene-piles-source-row">
+    <button type="button" data-action="load-selected-pile">
+      <i class="fas fa-hand-pointer"></i> Load Selected Item Pile
+    </button>
+    <button type="button" data-action="clear-items">
+      <i class="fas fa-trash"></i> Clear
+    </button>
+  </div>
+
+  <section class="sbs-scene-piles-status">
+    <div><strong>Source:</strong> {{sourceLabel}}</div>
+    <div><strong>Loaded Journal:</strong> {{loadedJournalName}}</div>
+    <div><strong>Items:</strong> {{itemCount}}</div>
+  </section>
+
+  <div class="form-group">
+    <label>Output Name</label>
+    <div class="form-fields">
+      <input type="text" name="outputName" value="{{outputName}}" placeholder="Loot Journal / Item Pile Name">
+    </div>
+  </div>
+
+  <div class="sbs-scene-piles-options">
+    <label class="checkbox">
+      <input type="checkbox" name="attachNote" {{checked attachNote}}>
+      Pin the Journal to the current Scene
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="sharePlayers" {{checked sharePlayers}}>
+      Give players Observer permission to the Journal and linked Items
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="removeOriginalPile" {{checked removeOriginalPile}}>
+      Delete the original selected pile after creating the Journal
+    </label>
+  </div>
+
+  <section class="sbs-scene-piles-item-list">
+    {{#if items.length}}
+      {{#each items}}
+        <article class="sbs-scene-piles-item-row" data-row-id="{{id}}">
+          <img src="{{img}}" alt="{{name}}">
+          <div class="sbs-scene-piles-item-details">
+            <strong>{{name}}</strong>
+            <small>{{type}} · Quantity {{quantity}}</small>
+          </div>
+          <button type="button" class="icon" data-action="remove-item" data-row-id="{{id}}" title="Remove item">
+            <i class="fas fa-times"></i>
+          </button>
+        </article>
+      {{/each}}
+    {{else}}
+      <div class="sbs-scene-piles-empty">No items loaded. The loot goblin is filing a grievance.</div>
+    {{/if}}
+  </section>
+
+  <footer class="sbs-scene-piles-actions">
+    <button type="button" data-action="create-journal" {{#unless items.length}}disabled{{/unless}}>
+      <i class="fas fa-book"></i> New Journal
+    </button>
+    <button type="button" data-action="update-journal" {{#unless canUpdateJournal}}disabled{{/unless}}>
+      <i class="fas fa-pen-to-square"></i> Update Loaded Journal
+    </button>
+    <button type="button" data-action="create-pile" {{#unless items.length}}disabled{{/unless}}>
+      <i class="fas fa-sack-dollar"></i> Create Item Pile
+    </button>
+  </footer>
+
+  <p class="notes">
+    New piles and map pins appear at the selected token, or near the center of the current view when nothing is selected.
+  </p>
+</form>

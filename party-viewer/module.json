@@ -1,0 +1,55 @@
+{
+  "id": "party-viewer",
+  "title": "SaltyBananaSlugs's Party Viewer",
+  "description": "A lightweight party dashboard, shared storage, trade offers, shared/private/GM notes tool for Foundry VTT v13 and dnd5e. Banana slug approved.",
+  "version": "0.3.9",
+  "authors": [
+    {
+      "name": "Drew Frydrych + ChatGPT"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.347"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0",
+          "verified": "5.2.4"
+        }
+      }
+    ],
+    "requires": [
+      {
+        "id": "socketlib",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.1.0",
+          "verified": "1.1.3"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/party-viewer.js"
+  ],
+  "styles": [
+    "styles/party-viewer.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "MIT",
+  "socket": true
+}

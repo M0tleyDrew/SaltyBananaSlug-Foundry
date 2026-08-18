@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="banana" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffe66d"/>
+      <stop offset="1" stop-color="#e7a928"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity=".4"/>
+    </filter>
+  </defs>
+  <circle cx="128" cy="128" r="118" fill="#214c3b" stroke="#f4d35e" stroke-width="10"/>
+  <path d="M49 145c38 28 92 26 128-9 20-19 29-41 30-64 15 38 5 82-29 111-43 37-106 36-145-4-12-12-20-26-24-41 12 4 25 7 40 7z" fill="url(#banana)" stroke="#5f4516" stroke-width="7" stroke-linejoin="round" filter="url(#shadow)"/>
+  <path d="M69 145c17-25 39-38 64-38 20 0 38 7 54 21-6 11-15 22-27 31-31 24-69 24-91-14z" fill="#d8b05f" stroke="#5f4516" stroke-width="6"/>
+  <circle cx="83" cy="128" r="5" fill="#1f1b12"/>
+  <path d="M78 116l-7-15M88 116l5-17" stroke="#5f4516" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="70" cy="99" r="4" fill="#1f1b12"/>
+  <circle cx="94" cy="97" r="4" fill="#1f1b12"/>
+  <path d="M119 176c10 5 20 6 31 3" fill="none" stroke="#8b6a2f" stroke-width="5" stroke-linecap="round"/>
+  <g fill="#fff" opacity=".9">
+    <circle cx="45" cy="73" r="5"/><circle cx="56" cy="59" r="3"/><circle cx="199" cy="167" r="5"/><circle cx="211" cy="151" r="3"/><circle cx="189" cy="187" r="3"/>
+  </g>
+  <text x="128" y="224" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="25" fill="#fff3bd" stroke="#1a2f27" stroke-width="3" paint-order="stroke">SCENE PILES</text>
+</svg>
