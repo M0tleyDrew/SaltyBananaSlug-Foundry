@@ -1,10 +1,8 @@
 name: Import current Foundry modules from Google Drive
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/import-foundry-modules.yml
+  issues:
+    types: [opened]
   workflow_dispatch:
 
 permissions:
@@ -12,6 +10,7 @@ permissions:
 
 jobs:
   import-modules:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Run SBS module import'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -39,9 +38,6 @@ jobs:
           set -euo pipefail
           shopt -s dotglob nullglob
 
-          # gdown may either place the folder contents directly in the output
-          # directory or create one wrapper folder. Find the directory that
-          # actually contains the module folders.
           SOURCE='/tmp/sbs-drive'
           if [ "$(find "$SOURCE" -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 1 ]; then
             ONLY_DIR="$(find "$SOURCE" -mindepth 1 -maxdepth 1 -type d | head -1)"
@@ -78,8 +74,6 @@ jobs:
             cp -a "$SOURCE/$module" "$module"
           done
 
-          # Explicitly do not import the Environment releases folder or the
-          # standalone Cards macro. This repo is for modules only.
           rm -rf '_SBS Environment Releases'
           rm -f 'Cards Macro.json'
 
