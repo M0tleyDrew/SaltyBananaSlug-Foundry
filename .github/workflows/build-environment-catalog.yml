@@ -1,0 +1,45 @@
+name: Build SBS Environment catalog
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sbs-environment-catalog
+  cancel-in-progress: true
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build catalog, manifests, and module packages
+        env:
+          SBS_GENERATED_AT: ${{ github.event.head_commit.timestamp || github.run_id }}
+        run: |
+          python .github/scripts/build-environment-catalog.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --root "$GITHUB_WORKSPACE" \
+            --out "$RUNNER_TEMP/sbs-environment-catalog"
+
+      - name: Publish environment-catalog branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/sbs-environment-catalog"
+          git init
+          git checkout -b environment-catalog
+          git config user.name "SaltyBananaSlug Catalog Bot"
+          git config user.email "34432002+M0tleyDrew@users.noreply.github.com"
+          git add --all
+          git commit -m "Build SBS Environment catalog from ${GITHUB_SHA}"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin environment-catalog
