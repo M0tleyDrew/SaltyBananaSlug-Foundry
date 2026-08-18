@@ -1,0 +1,20 @@
+{
+  "id": "saltybananaslugs-evidence-board",
+  "title": "SaltyBananaSlug's Evidence Board",
+  "description": "A shared corkboard-style investigation workspace for Foundry VTT v13. Drag Actors, Items, Journals, Scenes, and other documents onto boards, add notes and images, connect evidence with labeled strings, and control who can view or edit each board.",
+  "version": "0.1.0",
+  "authors": [
+    { "name": "SaltyBananaSlug" }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/evidence-board.mjs"
+  ],
+  "styles": [
+    "styles/evidence-board.css"
+  ],
+  "socket": false
+}
