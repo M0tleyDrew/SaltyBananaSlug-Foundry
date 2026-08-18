@@ -9,11 +9,23 @@ permissions:
   contents: write
   issues: write
 
+concurrency:
+  group: sbs-module-import
+  cancel-in-progress: true
+
 jobs:
   import-modules:
     if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Run SBS module import'
     runs-on: ubuntu-latest
+    timeout-minutes: 6
     steps:
+      - name: Report start to trigger issue
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' --body 'SBS module import started. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
       - name: Check out repository
         uses: actions/checkout@v4
 
@@ -36,7 +48,7 @@ jobs:
             rm -rf /tmp/sbs-drive
             mkdir -p /tmp/sbs-drive
             echo 'Downloading Google Drive module collection...'
-            gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive
+            timeout 240s gdown --folder 'https://drive.google.com/drive/folders/1ThTcLalqTZpf7m1-bO3ZMJTj0iua6keR' --output /tmp/sbs-drive
 
             echo 'Downloaded Drive tree:'
             find /tmp/sbs-drive -maxdepth 4 -type f | sort | head -250
@@ -118,7 +130,7 @@ jobs:
             echo
             echo '```text'
             if [ -f /tmp/sbs-import.log ]; then
-              tail -n 80 /tmp/sbs-import.log
+              tail -n 100 /tmp/sbs-import.log
             else
               echo 'Import log was not created; failure occurred before the import step.'
             fi
