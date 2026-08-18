@@ -1,0 +1,92 @@
+<div class="sbsenv-shell">
+  <header class="sbsenv-header">
+    <img src="{{logo}}" alt="SBS" class="sbsenv-logo">
+    <div class="sbsenv-titleblock">
+      <h1>SaltyBananaSlug's Environment</h1>
+      <p>The banana-slug nervous system. One GitHub-backed dashboard for the whole SBS ecosystem.</p>
+    </div>
+    <div class="sbsenv-header-actions">
+      <button type="button" data-action="refresh"><i class="fa-solid fa-rotate"></i> Refresh Catalog</button>
+      <button type="button" data-action="open-repo"><i class="fa-brands fa-github"></i> Open GitHub</button>
+    </div>
+  </header>
+
+  <section class="sbsenv-status {{sourceClass}}">
+    <div><strong>Catalog:</strong> {{sourceLabel}}</div>
+    <div><strong>Last checked:</strong> {{lastChecked}}</div>
+    <div><strong>Catalog generated:</strong> {{generatedAt}}</div>
+    {{#if note}}<div class="sbsenv-note"><strong>Note:</strong> {{note}}</div>{{/if}}
+    {{#if error}}<div class="sbsenv-error"><strong>GitHub error:</strong> {{error}}</div>{{/if}}
+  </section>
+
+  <section class="sbsenv-stats">
+    <article><strong>{{stats.catalogCount}}</strong><span>GitHub Modules</span></article>
+    <article><strong>{{stats.installedCount}}</strong><span>Installed</span></article>
+    <article><strong>{{stats.activeCount}}</strong><span>Active</span></article>
+    <article class="warn"><strong>{{stats.missingCount}}</strong><span>Missing</span></article>
+    <article class="update"><strong>{{stats.updatesCount}}</strong><span>Updates</span></article>
+  </section>
+
+  <details class="sbsenv-setup">
+    <summary><i class="fa-brands fa-github"></i> GitHub Catalog & Automation</summary>
+    <div class="sbsenv-setup-body">
+      <p>Environment discovers top-level folders containing <code>module.json</code> from the SBS GitHub repository. A repository workflow builds a compact catalog, patched Foundry manifests, and per-module release ZIPs into the <code>environment-catalog</code> branch whenever <code>main</code> changes.</p>
+      <p><strong>That means new SBS modules appear automatically.</strong> Environment does not need a hard-coded module list or an update every time another module is added.</p>
+      <div class="sbsenv-setup-actions">
+        <button type="button" data-action="open-repo"><i class="fa-brands fa-github"></i> Main Repository</button>
+        <button type="button" data-action="open-catalog-branch"><i class="fa-solid fa-box-archive"></i> Generated Catalog Branch</button>
+      </div>
+      <label class="sbsenv-check"><input name="checkOnReady" type="checkbox" {{#if autoCheck}}checked{{/if}}> Check GitHub for SBS updates when the GM logs in</label>
+      <label class="sbsenv-check"><input name="openOnReady" type="checkbox" {{#if autoOpen}}checked{{/if}}> Open this dashboard automatically when the GM logs in</label>
+    </div>
+  </details>
+
+  <div class="sbsenv-toolbar">
+    <input data-action="filter" type="search" placeholder="Search SBS modules and macros…">
+    <span class="sbsenv-legend"><b class="sbsenv-dot active"></b> Active <b class="sbsenv-dot inactive"></b> Inactive <b class="sbsenv-dot missing"></b> Missing <b class="sbsenv-dot update"></b> Update</span>
+  </div>
+
+  <section class="sbsenv-section">
+    <div class="sbsenv-section-title"><h2><i class="fa-solid fa-puzzle-piece"></i> SBS Modules</h2><span>{{stats.catalogCount}} in GitHub catalog · {{stats.distributionCount}} packaged</span></div>
+    <div class="sbsenv-list">
+      {{#each modules}}
+      <article class="sbsenv-row {{statusClass}}" data-search="{{title}} {{id}} {{statusLabel}}">
+        <div class="sbsenv-state"><span class="sbsenv-status-pill {{statusClass}}">{{statusLabel}}</span></div>
+        <div class="sbsenv-info">
+          <strong>{{title}}</strong>
+          <code>{{id}}</code>
+          {{#if identityMismatch}}<small class="error-text">Installed module ID does not match the GitHub manifest ID.</small>{{/if}}
+        </div>
+        <div class="sbsenv-version"><span>Installed</span><strong>{{localVersion}}</strong></div>
+        <div class="sbsenv-version"><span>GitHub</span><strong>{{remoteVersion}}</strong></div>
+        <div class="sbsenv-actions">
+          {{#if folderUrl}}<button type="button" data-action="open-folder" data-url="{{folderUrl}}" title="Open GitHub folder"><i class="fa-brands fa-github"></i></button>{{/if}}
+          {{#if canPackage}}
+            <button type="button" data-action="package" data-module-id="{{id}}"><i class="fa-solid fa-box-open"></i> {{#if missing}}Install{{else}}{{#if updateAvailable}}Update{{else}}Package{{/if}}{{/if}}</button>
+          {{else}}
+            {{#if packagePending}}<button type="button" class="secondary" disabled><i class="fa-solid fa-hourglass-half"></i> Package Pending</button>{{/if}}
+          {{/if}}
+        </div>
+      </article>
+      {{else}}<div class="sbsenv-empty">No SBS modules found.</div>{{/each}}
+    </div>
+  </section>
+
+  {{#if hasMacros}}
+  <section class="sbsenv-section">
+    <div class="sbsenv-section-title"><h2><i class="fa-solid fa-wand-magic-sparkles"></i> SBS Macros</h2><span>Root-level GitHub JSON exports</span></div>
+    <div class="sbsenv-list compact">
+      {{#each macros}}
+      <article class="sbsenv-row macro {{statusClass}}" data-search="{{title}} {{fileName}} {{statusLabel}}">
+        <div class="sbsenv-state"><span class="sbsenv-status-pill {{statusClass}}">{{statusLabel}}</span></div>
+        <div class="sbsenv-info"><strong>{{title}}</strong><code>{{fileName}}</code></div>
+        <div class="sbsenv-actions">
+          {{#if fileUrl}}<button type="button" data-action="open-folder" data-url="{{fileUrl}}"><i class="fa-brands fa-github"></i> GitHub</button>{{/if}}
+          {{#if canInstall}}<button type="button" data-action="macro-install" data-source-path="{{sourcePath}}"><i class="fa-solid fa-download"></i> {{#if installed}}{{#if updateAvailable}}Update Macro{{else}}Reinstall Macro{{/if}}{{else}}Add Macro{{/if}}</button>{{/if}}
+        </div>
+      </article>
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+</div>

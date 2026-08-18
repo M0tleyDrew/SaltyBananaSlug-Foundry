@@ -16,9 +16,14 @@ A collection of SaltyBananaSlug modules for Foundry VTT.
 - Scene Summarized
 - Web Viewer
 - Danger Zones
+- Environment
 - Factions
 - Lore Module
 - Message Cantrip
 - NPC Memories
 
-The SBS Environment module/release folder is intentionally not included in this repository.
+## SaltyBananaSlug's Environment
+
+SaltyBananaSlug's Environment uses this repository as the source of truth for the SBS module ecosystem. A GitHub workflow scans top-level folders containing `module.json` whenever `main` changes and publishes a generated `environment-catalog` branch containing a compact catalog, Foundry-ready manifests, and per-module install ZIPs.
+
+New SBS module folders are therefore discovered automatically without hard-coding them into Environment.
