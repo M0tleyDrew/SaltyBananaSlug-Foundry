@@ -38,7 +38,7 @@ jobs:
           git init
           git checkout -b environment-catalog
           git config user.name "SaltyBananaSlug Catalog Bot"
-          git config user.email "saltybananaslug@users.noreply.github.com"
+          git config user.email "the.Salty.Banana.Slug@gmail.com"
           git add --all
           git commit -m "Build SBS Environment catalog from ${GITHUB_SHA}"
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
