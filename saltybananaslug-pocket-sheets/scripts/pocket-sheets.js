@@ -242,7 +242,9 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     this.followChat = true;
     this.chatCache = { revision: -1, html: "" };
     this.chatMessageCache = new Map();
+    this._eventAbort = null;
     this._railAbort = null;
+    this._pendingActions = new Set();
   }
   async _renderHTML() {
     const showTraits = game.settings.get(MODULE_ID, "showSpecialTraits");
@@ -262,22 +264,26 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.3.2";
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.3.7";
     return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
   }
   _replaceHTML(result, content) { content.innerHTML = result; }
   _onRender(context, options) {
     super._onRender(context, options);
     const root = elementOf(this.element); if (!root) return;
+    this._eventAbort?.abort();
+    const eventAbort = new AbortController();
+    this._eventAbort = eventAbort;
+    const capture = { capture: true, signal: eventAbort.signal };
     root.querySelectorAll("[draggable]").forEach((n) => n.removeAttribute("draggable"));
-    for (const type of ["dragstart", "dragenter", "dragover", "drop"]) root.addEventListener(type, (e) => { e.preventDefault(); e.stopImmediatePropagation(); }, { capture: true });
+    for (const type of ["dragstart", "dragenter", "dragover", "drop"]) root.addEventListener(type, (e) => { e.preventDefault(); e.stopImmediatePropagation(); }, capture);
     let pointer = null, suppressUntil = 0;
-    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, { capture: true });
-    root.addEventListener("pointermove", (e) => { if (pointer?.id === e.pointerId && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > 9) pointer.moved = true; }, { capture: true });
-    root.addEventListener("pointerup", (e) => { if (pointer?.id === e.pointerId) { if (pointer.moved) suppressUntil = performance.now() + 650; pointer = null; } }, { capture: true });
-    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail")) { e.preventDefault(); e.stopImmediatePropagation(); } }, { capture: true });
-    root.addEventListener("click", (e) => this._onClick(e));
-    root.addEventListener("change", (e) => this._onChange(e));
+    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, capture);
+    root.addEventListener("pointermove", (e) => { if (pointer?.id === e.pointerId && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > 9) pointer.moved = true; }, capture);
+    root.addEventListener("pointerup", (e) => { if (pointer?.id === e.pointerId) { if (pointer.moved) suppressUntil = performance.now() + 650; pointer = null; } }, capture);
+    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
+    root.addEventListener("click", (e) => this._onClick(e), { signal: eventAbort.signal });
+    root.addEventListener("change", (e) => this._onChange(e), { signal: eventAbort.signal });
     this._installRail(root);
     const content = root.querySelector(".sbs-pocket-mobile-content");
     if (content) content.scrollTop = this.activeTab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(this.activeTab) ?? 0);
@@ -292,15 +298,27 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       if (action === "roll-skill") return await this._runAndClosePrompt(() => this.actor.rollSkill?.({ skill: key, event }));
       if (action === "roll-initiative") return await this._runAndClosePrompt(() => this.actor.rollInitiativeDialog?.({ event }));
       if (action === "roll-death-save") return this._rollDeathSave(event);
-      if (action === "use-activity" && item) return await this._useActivity(item, button.dataset.activityId, event);
-      if (action === "use-weapon-attack" && item) return await this._useWeaponAttack(item, button.dataset.activityId, event);
-      if (action === "roll-activity" && item) return await this._rollActivity(item, button.dataset.activityId, button.dataset.method, event);
+      if (action === "use-activity" && item) return await this._runExclusive(`use:${item.id}:${button.dataset.activityId}`, () => this._useActivity(item, button.dataset.activityId, event));
+      if (action === "use-weapon-attack" && item) return await this._runExclusive(`attack:${item.id}:${button.dataset.activityId}`, () => this._useWeaponAttack(item, button.dataset.activityId, event));
+      if (action === "roll-activity" && item) return await this._runExclusive(`roll:${button.dataset.method}:${item.id}:${button.dataset.activityId}`, () => this._rollActivity(item, button.dataset.activityId, button.dataset.method, event));
       if (action === "item-details" && item) return this._toggleDetails(button.closest(".sbs-pocket-item"), item);
-      if (action === "item-chat" && item) return await this._postItemToChat(item);
+      if (action === "item-chat" && item) return await this._runExclusive(`chat:${item.id}`, () => this._postItemToChat(item));
       if (action === "toggle-equipped" && item) return item.update({ "system.equipped": !item.system.equipped });
       if (action === "toggle-prepared" && item) return item.update({ "system.preparation.prepared": !item.system.preparation.prepared });
       if (action === "toggle-effect") { const effect = this.actor.effects.get(button.dataset.effectId); if (effect) return effect.update({ disabled: !effect.disabled }); }
     } catch (error) { console.error(`${MODULE_ID} | Action failed`, error); ui.notifications.error(`Pocket Sheets could not complete that action: ${error.message}`); }
+  }
+  async _runExclusive(key, action) {
+    if (this._pendingActions.has(key)) {
+      console.debug(`${MODULE_ID} | Ignoring duplicate in-flight action`, key);
+      return;
+    }
+    this._pendingActions.add(key);
+    try {
+      return await action();
+    } finally {
+      this._pendingActions.delete(key);
+    }
   }
   async _rollDeathSave(event) {
     if (typeof this.actor.rollDeathSave === "function") return this.actor.rollDeathSave({ event });
@@ -331,8 +349,8 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const activity = activities.find((entry) => (entry.id === activityId) && (entry.type === "attack"))
       ?? activities.find((entry) => entry.type === "attack")
       ?? activitiesFor(item).find((entry) => (entry.id ?? entry._id) === activityId && entry.type === "attack");
-    if (!activity) {
-      return ui.notifications.error(`${item.name} has no prepared attack activity.`);
+    if (!activity || typeof activity.use !== "function") {
+      return ui.notifications.error(`${item.name} has no usable prepared attack activity.`);
     }
 
     let hookId;
@@ -347,17 +365,58 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     });
     window.setTimeout(removeHook, 120000);
     try {
-      // Invoke the exact handler registered to dnd5e's chat-card Attack button without first posting a usage card.
-      // This deliberately bypasses Activity.use(), whose canUse gate can silently prevent the attack prompt.
-      const handler = activity.metadata?.usage?.actions?.rollAttack;
-      if (typeof handler !== "function") {
-        removeHook();
-        return ui.notifications.error(`${item.name}'s dnd5e chat card has no Attack handler.`);
+      // Midi-QOL 13 exposes a supported item-use API that can select an exact activity and advance its Workflow
+      // directly into an attack roll. This is the same workflow engine used by its chat-card Attack control, but
+      // avoids private handlers, detached cards, hidden-sidebars, and races with other modules rendering chat.
+      const midiModule = game.modules.get("midi-qol");
+      const midiApi = midiModule?.active ? (midiModule.api ?? globalThis.MidiQOL) : null;
+      if (typeof midiApi?.completeItemUse === "function") {
+        console.debug(`${MODULE_ID} | Dispatching attack through MidiQOL.completeItemUse`, {
+          item: item.name,
+          activity: activity.name,
+          activityId: activity.id ?? activityId
+        });
+        return await midiApi.completeItemUse(item, {
+          event,
+          midiOptions: {
+            activityId: activity.id ?? activityId,
+            workflowOptions: {
+              autoRollAttack: true,
+              fastForwardAttack: false
+            }
+          }
+        }, {}, {});
       }
-      const target = document.createElement("button");
-      target.dataset.action = "rollAttack";
-      handler.call(activity, event, target, null);
-      return activity;
+
+      // Midi-QOL stores its attack Workflow under the UUID of the real dnd5e usage message. A fabricated or
+      // unposted message has no matching Workflow, so its Attack action silently goes nowhere. This persisted-card
+      // route is retained as the native dnd5e fallback when Midi-QOL is not active or does not expose its API.
+      const results = await activity.use({ event, legacy: false, subsequentActions: false });
+      const message = results?.message?.id
+        ? (game.messages.get(results.message.id) ?? results.message)
+        : results?.message;
+      if (!message || typeof message.renderHTML !== "function") {
+        removeHook();
+        return ui.notifications.error(`${item.name} did not create a usable attack activity message.`);
+      }
+
+      // Render that persisted message directly. ChatMessage5e installs the same private #onChatAction listener used
+      // by the visible chat card, while the detached render avoids racing the hidden/slow sidebar DOM on phones.
+      const rendered = await message.renderHTML({ canClose: false, canDelete: false });
+      const html = elementOf(rendered);
+      const attackButton = html?.querySelector('[data-action="rollAttack"]');
+      if (!attackButton) {
+        removeHook();
+        return ui.notifications.error(`${item.name}'s native dnd5e activity card has no Attack control.`);
+      }
+
+      console.debug(`${MODULE_ID} | Dispatching persisted native Attack control`, {
+        item: item.name,
+        activity: activity.name,
+        messageId: message.id
+      });
+      attackButton.click();
+      return results;
     } catch (error) {
       removeHook();
       throw error;
@@ -371,7 +430,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
   _closeNativePrompts() {
     for (const prompt of document.querySelectorAll(".activity-usage, .activity-choice, .roll-configuration")) {
       const app = prompt.matches(".application, .app") ? prompt : prompt.closest(".application, .app");
-      if (!app || app.offsetParent === null) continue;
+      if (!app || app.hidden || getComputedStyle(app).display === "none") continue;
       const close = app.querySelector(":scope > .window-header [data-action='close'], :scope > header [data-action='close'], .window-header .close");
       close?.click();
     }
@@ -434,7 +493,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const root = elementOf(this.element), content = root?.querySelector(".sbs-pocket-mobile-content"), track = root?.querySelector(".sbs-pocket-track"), thumb = root?.querySelector(".sbs-pocket-thumb"); if (!content || !track || !thumb) return;
     const max = Math.max(0, content.scrollHeight - content.clientHeight), height = Math.max(44, track.clientHeight * Math.min(1, content.clientHeight / Math.max(1, content.scrollHeight))), travel = Math.max(0, track.clientHeight - height); thumb.style.height = `${height}px`; thumb.style.transform = `translateY(${max ? (content.scrollTop / max) * travel : 0}px)`; root.querySelector(".sbs-pocket-rail")?.classList.toggle("no-scroll", max < 2);
   }
-  async close(options = {}) { if (state.active && !options.force) return this; this._railAbort?.abort(); return super.close(options); }
+  async close(options = {}) { if (state.active && !options.force) return this; this._eventAbort?.abort(); this._railAbort?.abort(); this._pendingActions.clear(); return super.close(options); }
 }
 
 class PocketManager extends foundry.applications.api.ApplicationV2 {
@@ -464,6 +523,10 @@ function scheduleChatRefresh(messageId) {
   clearTimeout(state.chatRefreshTimer);
   state.chatRefreshTimer = setTimeout(() => state.sheet?.refreshChat(), 120);
 }
+function closePocketRollPrompt(_rolls, context) {
+  if (!state.active || context?.subject?.id !== state.actorId) return;
+  window.setTimeout(() => state.sheet?._closeNativePrompts(), 100);
+}
 async function enterPocketMode() {
   if (game.user.isGM) return; const assignment = currentAssignment(); if (!assignment.enabled) return leavePocketMode(); const actor = assignedActor(); if (!actor?.isOwner) return ui.notifications.error("Pocket Sheets needs an assigned character you own.", { permanent: true });
   if (state.sheet && state.actorId !== actor.id) await state.sheet.close({ force: true }); state.active = true; state.actorId = actor.id; document.body.classList.add("sbs-pocket-mode"); state.sheet ??= new PocketSheet(actor); state.sheet.actor = actor; state.sheet.render({ force: true });
@@ -485,6 +548,9 @@ Hooks.on("renderSidebarTab", (app, html) => { if (`${app?.constructor?.name} ${a
 Hooks.on("updateActor", (a) => scheduleRefresh(a.id));
 Hooks.on("createItem", (i) => scheduleRefresh(i.parent?.id)); Hooks.on("updateItem", (i) => scheduleRefresh(i.parent?.id)); Hooks.on("deleteItem", (i) => scheduleRefresh(i.parent?.id));
 Hooks.on("createActiveEffect", (e) => scheduleRefresh(e.parent?.id)); Hooks.on("updateActiveEffect", (e) => scheduleRefresh(e.parent?.id)); Hooks.on("deleteActiveEffect", (e) => scheduleRefresh(e.parent?.id));
+Hooks.on("dnd5e.rollAbilityCheck", closePocketRollPrompt);
+Hooks.on("dnd5e.rollSavingThrow", closePocketRollPrompt);
+Hooks.on("dnd5e.rollSkill", closePocketRollPrompt);
 Hooks.on("createChatMessage", (message) => {
   if (message.visible !== false) scheduleChatRefresh(message.id);
   if (!state.active || message.author?.id !== game.user.id) return;

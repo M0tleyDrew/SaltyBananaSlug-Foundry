@@ -40,9 +40,10 @@ The player's assigned sheet opens automatically. Disabling Pocket Mode restores 
 - Refreshes the Chat page when messages are created, changed, or deleted without rebuilding the entire mobile sheet.
 - Uses each Item's native dnd5e activities for attacks, damage, saves, healing, casting, utility actions, and normal resource consumption.
 - Uses the dnd5e 5.2 Actor roll signatures for checks, saving throws, skills, death saves, and initiative.
-- Invokes the weapon activity's registered dnd5e `rollAttack` chat-control handler directly, without posting a description card or passing through `Activity.use()` and its runtime usability gate.
+- Uses Midi-QOL's supported `completeItemUse` API with the selected attack activity ID, forces that workflow into its attack-roll stage, and keeps the attack configuration prompt enabled. Without Midi-QOL, it falls back to a persisted native dnd5e activity message and its real chat-card Attack control.
+- Replaces Pocket Sheet event listeners on every render instead of stacking another copy, and rejects duplicate in-flight item actions so one phone tap creates one workflow, one resource use, and one usage card.
 - Deduplicates activity controls to one relevant Attack and one relevant Damage/Healing button per item.
-- Automatically closes visible dnd5e activity/roll prompts after a completed Pocket Sheet roll.
+- Automatically closes visible dnd5e activity/roll prompts after a completed Pocket Sheet roll, including fixed-position check and save dialogs that do not have a DOM `offsetParent`.
 - Keeps item descriptions expandable in the Pocket Sheet and adds a separate Chat button for the native dnd5e item card.
 - Constrains native roll dialogs to the phone viewport so attack prompts cannot open off-screen.
 - Shows the full SaltyBananaSlug Pocket Sheets name and installed module version in a compact bottom footer.
