@@ -1,0 +1,24 @@
+{
+  "id": "saltybananaslugs-message-cantrip",
+  "title": "SaltyBananaSlug's Message Cantrip",
+  "description": "Private magical message popups between selected Foundry users, with private whisper chat logging. Now with maximum banana slug energy.",
+  "version": "1.0.1",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "11",
+    "verified": "13"
+  },
+  "scripts": [
+    "scripts/message-cantrip.js"
+  ],
+  "styles": [
+    "styles/message-cantrip.css"
+  ],
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-message-cantrip",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-message-cantrip.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-message-cantrip-v1.0.1.zip"
+}

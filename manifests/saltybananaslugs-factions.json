@@ -1,0 +1,60 @@
+{
+  "id": "saltybananaslugs-factions",
+  "title": "SaltyBananaSlug's Factions",
+  "description": "A GM faction, reputation, membership, relationship, and consequence manager for Foundry VTT v13 + D&D5e. Integrates with SBS NPC Memories and SBS Merchants for remembered reputation changes, merchant favor, and faction-driven NPC hostility.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "compatibility": {
+          "minimum": "5.2",
+          "verified": "5.2.4"
+        }
+      }
+    ],
+    "recommends": [
+      {
+        "id": "saltybananaslugs-npc-memories",
+        "type": "module",
+        "compatibility": {
+          "minimum": "0.1.1"
+        }
+      },
+      {
+        "id": "saltybananaslug-merchants",
+        "type": "module",
+        "compatibility": {
+          "minimum": "0.1.7"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/factions.mjs"
+  ],
+  "styles": [
+    "styles/factions.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": false,
+  "readme": "README.md",
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-factions",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-factions.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-factions-v0.1.0.zip"
+}

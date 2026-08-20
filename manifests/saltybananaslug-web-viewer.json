@@ -1,0 +1,25 @@
+{
+  "id": "saltybananaslug-web-viewer",
+  "title": "SaltyBananaSlug's Web Viewer",
+  "description": "Share website links, temporary uploaded images/audio, direct media, and monitored YouTube embeds with Foundry VTT players.",
+  "version": "1.2.0",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/web-viewer.js"
+  ],
+  "styles": [
+    "styles/web-viewer.css"
+  ],
+  "socket": true,
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-web-viewer.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-web-viewer-v1.2.0.zip",
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-web-viewer"
+}

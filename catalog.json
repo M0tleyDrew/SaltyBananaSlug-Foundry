@@ -1,0 +1,512 @@
+{
+  "ok": true,
+  "provider": "github",
+  "catalogSchema": 1,
+  "catalogMode": "published",
+  "generatedAt": "2026-08-20T01:54:14-04:00",
+  "repositoryUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry",
+  "sourceBranch": "main",
+  "catalogBranch": "environment-catalog",
+  "modules": [
+    {
+      "type": "module",
+      "id": "saltybananaslug-actor-journal",
+      "title": "SaltyBananaSlug's Actor Journal",
+      "description": "Create detailed, player-safe multi-page journal entries from D&D5e actors using a selected token, actor directory selection, or drag-and-drop.",
+      "version": "1.0.1",
+      "folderName": "saltybananaslug-actor-journal",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-actor-journal",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-actor-journal/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-actor-journal.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-actor-journal-v1.0.1.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13.347"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.2.0",
+              "verified": "5.2.4"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-card-games",
+      "title": "SaltyBananaSlug's Card Games",
+      "description": "Multiplayer Texas Hold'em, Five-Card Draw, and Blackjack with invitations, private hands, NPC seats controlled by the GM, betting, side pots, splits, doubles, insurance, and surrender.",
+      "version": "1.0.2",
+      "folderName": "saltybananaslug-card-games",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-card-games",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-card-games/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-card-games.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-card-games-v1.0.2.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13.350"
+      },
+      "relationships": {
+        "requires": [
+          {
+            "id": "socketlib",
+            "type": "module",
+            "manifest": "https://github.com/farling42/foundryvtt-socketlib/releases/latest/download/module.json"
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-character-sheets",
+      "title": "SaltyBananaSlug's Character Sheets",
+      "description": "Create player-safe expanded D&D5e character sheets or standalone spellbooks from Foundry Actors. HTML stays continuous and linked; PDF export uses semantic A4 page layout without pixel slicing.",
+      "version": "0.1.14",
+      "folderName": "saltybananaslug-character-sheets",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-character-sheets",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-character-sheets/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-character-sheets.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-character-sheets-v0.1.14.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13",
+        "maximum": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.0.0"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-containers",
+      "title": "SaltyBananaSlug's Containers",
+      "description": "Independent scene containers with private D&D5e inventories, automatic journal records, state artwork, GM-only shell-token isolation, strict player lock enforcement, item identification controls, player item transfers, and Lock & Key integration. Does not use Item Piles.",
+      "version": "0.1.10",
+      "folderName": "saltybananaslug-containers",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-containers",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-containers/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-containers.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-containers-v0.1.10.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {
+        "requires": [
+          {
+            "id": "LocknKey",
+            "type": "module",
+            "compatibility": {
+              "minimum": "5.0.5"
+            }
+          }
+        ],
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system"
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-danger-zones",
+      "title": "SaltyBananaSlug's Danger Zones",
+      "description": "GM-driven tactical danger and safe-zone telegraphs with one-shot countdown attacks, repeating hazards, encounter-tracker initiative, saves, damage, healing, messages, movement patterns, and presets.",
+      "version": "0.2.5",
+      "folderName": "saltybananaslugs-danger-zones",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-danger-zones",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-danger-zones/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-danger-zones.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-danger-zones-v0.2.5.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13.350"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.2.0"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-environment",
+      "title": "SaltyBananaSlug's Environment",
+      "description": "SaltyBananaSlug ecosystem manager for Foundry VTT: GitHub-backed module discovery, version checks, install/update manifests, release packages, and SBS macro installation.",
+      "version": "0.4.0",
+      "folderName": "saltybananaslugs-environment",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-environment",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-environment/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-environment.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-environment-v0.4.0.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13.347"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-evidence-board",
+      "title": "SaltyBananaSlug's Evidence Board",
+      "description": "A shared corkboard-style investigation workspace for Foundry VTT v13. Drag Actors, Items, Journals, Scenes, and other documents onto boards, add notes and images, connect evidence with labeled strings, and control who can view or edit each board.",
+      "version": "0.1.0",
+      "folderName": "saltybananaslugs-evidence-board",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-evidence-board",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-evidence-board/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-evidence-board.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-evidence-board-v0.1.0.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-factions",
+      "title": "SaltyBananaSlug's Factions",
+      "description": "A GM faction, reputation, membership, relationship, and consequence manager for Foundry VTT v13 + D&D5e. Integrates with SBS NPC Memories and SBS Merchants for remembered reputation changes, merchant favor, and faction-driven NPC hostility.",
+      "version": "0.1.0",
+      "folderName": "saltybananaslugs-factions",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-factions",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-factions/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-factions.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-factions-v0.1.0.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "compatibility": {
+              "minimum": "5.2",
+              "verified": "5.2.4"
+            }
+          }
+        ],
+        "recommends": [
+          {
+            "id": "saltybananaslugs-npc-memories",
+            "type": "module",
+            "compatibility": {
+              "minimum": "0.1.1"
+            }
+          },
+          {
+            "id": "saltybananaslug-merchants",
+            "type": "module",
+            "compatibility": {
+              "minimum": "0.1.7"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-item-uploader",
+      "title": "SaltyBananaSlug's Item Uploader",
+      "description": "Import batches of fully configured dnd5e Items from XLSX workbooks, including weapon attacks, rarity, descriptions, uses, embedded images, folders, scaling write-ups, and raw Foundry JSON. Includes direct, non-Blob ZIP download links for the blank template and complete 26-item Welch example.",
+      "version": "1.1.2",
+      "folderName": "saltybananaslug-item-uploader",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-item-uploader",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-item-uploader/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-item-uploader.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-item-uploader-v1.1.2.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.2.0",
+              "verified": "5.2.4"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-lore-module",
+      "title": "SaltyBananaSlug's Lore Module",
+      "description": "Organize campaign lore and multiple-choice quizzes into reusable chapter sets, track player results, and import or export complete lore collections. Includes reliable player quiz advancement and Foundry v13 settings.",
+      "version": "1.0.2",
+      "folderName": "saltybananaslugs-lore-module",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-lore-module",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-lore-module/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-lore-module.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-lore-module-v1.0.2.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-merchants",
+      "title": "SaltyBananaSlug's Merchants",
+      "description": "Comprehensive Foundry VTT v13 D&D5e merchants with private stock, player buy/sell carts, per-character favor pricing, finite treasury, Journal and RollTable inventory import, transaction ledger journals, generated or linked merchant tokens, greeting sounds, and no Item Piles dependency. Includes NPC Memories integration hooks plus a public favor API for SBS Factions and other modules.",
+      "version": "0.1.7",
+      "folderName": "saltybananaslug-merchants",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-merchants",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-merchants/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-merchants.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-merchants-v0.1.7.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system"
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-message-cantrip",
+      "title": "SaltyBananaSlug's Message Cantrip",
+      "description": "Private magical message popups between selected Foundry users, with private whisper chat logging. Now with maximum banana slug energy.",
+      "version": "1.0.1",
+      "folderName": "saltybananaslugs-message-cantrip",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-message-cantrip",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-message-cantrip/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-message-cantrip.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-message-cantrip-v1.0.1.zip",
+      "compatibility": {
+        "minimum": "11",
+        "verified": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslugs-npc-memories",
+      "title": "SaltyBananaSlug's NPC Memories",
+      "description": "A GM-facing NPC memory ledger for Foundry VTT v13 + D&D5e. Adds a Memories tab to NPC sheets and exposes a shared API for SBS Merchants, future faction tools, quests, and other modules.",
+      "version": "0.1.1",
+      "folderName": "saltybananaslugs-npc-memories",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-npc-memories",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslugs-npc-memories/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-npc-memories.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-npc-memories-v0.1.1.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "compatibility": {
+              "minimum": "5.2",
+              "verified": "5.2.4"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-pocket-sheets",
+      "title": "SaltyBananaSlug's Pocket Sheets",
+      "description": "A GM-controlled, phone-friendly, character-sheet-only mode with native dnd5e actions, live Foundry chat, and no drag and drop.",
+      "version": "0.3.12",
+      "folderName": "saltybananaslug-pocket-sheets",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-pocket-sheets",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-pocket-sheets/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-pocket-sheets.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-pocket-sheets-v0.3.12.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13",
+        "maximum": "13"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.0.0"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-quests-objectives",
+      "title": "SaltyBananaSlug's Quests & Objectives",
+      "description": "A video-game-style quest and objective tracker for Foundry VTT with GM quests, player personal quests, hidden and sequential objectives, tracking, reset tools, scene controls, floating launcher, and SBS-branded macros.",
+      "version": "0.1.6",
+      "folderName": "saltybananaslug-quests-objectives",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-quests-objectives",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-quests-objectives/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-quests-objectives.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-quests-objectives-v0.1.6.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-scene-piles",
+      "title": "SaltyBananaSlug's Scene Piles",
+      "description": "Convert Item Piles into draggable Item-link Journals, optionally pin them to Scenes, and rebuild Item Piles from linked Items in Journals.",
+      "version": "1.0.0",
+      "folderName": "saltybananaslug-scene-piles",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-scene-piles",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-scene-piles/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-scene-piles.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-scene-piles-v1.0.0.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13",
+        "maximum": "13"
+      },
+      "relationships": {
+        "requires": [
+          {
+            "id": "item-piles",
+            "type": "module"
+          }
+        ],
+        "recommends": [
+          {
+            "id": "itempilesdnd5e",
+            "type": "module"
+          }
+        ]
+      },
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-scene-summarized",
+      "title": "SaltyBananaSlug's Scene Summarized",
+      "description": "Create detailed, linked Journal dossiers from Foundry scenes, including creatures, NPCs, native SBS Containers and Merchants, inventory, optional media indexing, sounds, lights, notes, walls, regions, and optional GM context.",
+      "version": "1.0.4",
+      "folderName": "saltybananaslug-scene-summarized",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-scene-summarized",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-scene-summarized/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-scene-summarized.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-scene-summarized-v1.0.4.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13",
+        "maximum": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "saltybananaslug-web-viewer",
+      "title": "SaltyBananaSlug's Web Viewer",
+      "description": "Share website links, temporary uploaded images/audio, direct media, and monitored YouTube embeds with Foundry VTT players.",
+      "version": "1.2.0",
+      "folderName": "saltybananaslug-web-viewer",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-web-viewer",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/saltybananaslug-web-viewer/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-web-viewer.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-web-viewer-v1.2.0.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13"
+      },
+      "relationships": {},
+      "distributionReady": true
+    },
+    {
+      "type": "module",
+      "id": "party-viewer",
+      "title": "SaltyBananaSlugs's Party Viewer",
+      "description": "A lightweight party dashboard, shared storage, trade offers, shared/private/GM notes tool for Foundry VTT v13 and dnd5e. Banana slug approved.",
+      "version": "0.3.9",
+      "folderName": "party-viewer",
+      "folderUrl": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/party-viewer",
+      "sourceManifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/main/party-viewer/module.json",
+      "manifestUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/party-viewer.json",
+      "downloadUrl": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/party-viewer-v0.3.9.zip",
+      "compatibility": {
+        "minimum": "13",
+        "verified": "13.347"
+      },
+      "relationships": {
+        "systems": [
+          {
+            "id": "dnd5e",
+            "type": "system",
+            "compatibility": {
+              "minimum": "5.0.0",
+              "verified": "5.2.4"
+            }
+          }
+        ],
+        "requires": [
+          {
+            "id": "socketlib",
+            "type": "module",
+            "compatibility": {
+              "minimum": "1.1.0",
+              "verified": "1.1.3"
+            }
+          }
+        ]
+      },
+      "distributionReady": true
+    }
+  ],
+  "macros": []
+}

@@ -1,0 +1,43 @@
+{
+  "id": "saltybananaslugs-npc-memories",
+  "title": "SaltyBananaSlug's NPC Memories",
+  "description": "A GM-facing NPC memory ledger for Foundry VTT v13 + D&D5e. Adds a Memories tab to NPC sheets and exposes a shared API for SBS Merchants, future faction tools, quests, and other modules.",
+  "version": "0.1.1",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "compatibility": {
+          "minimum": "5.2",
+          "verified": "5.2.4"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/npc-memories.mjs"
+  ],
+  "styles": [
+    "styles/npc-memories.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": false,
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-npc-memories",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-npc-memories.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-npc-memories-v0.1.1.zip"
+}
