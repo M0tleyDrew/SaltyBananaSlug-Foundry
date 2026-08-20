@@ -640,6 +640,203 @@ body.sbs-pocket-mode .sbs-pocket-mobile > .window-content {
   line-height: 1.45;
 }
 
+.sbs-pocket-chat-feed {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
+}
+
+.sbs-pocket-chat-heading {
+  display: flex;
+  min-width: 0;
+  padding: 10px 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #fff5c1;
+  background: linear-gradient(135deg, #31462a, #1b2918);
+  border: 1px solid #718253;
+  border-radius: 9px;
+}
+
+.sbs-pocket-chat-heading h2,
+.sbs-pocket-chat-heading p {
+  margin: 0;
+}
+
+.sbs-pocket-chat-heading h2 {
+  color: var(--sbs-pocket-gold-light);
+  font-size: 1.15rem;
+}
+
+.sbs-pocket-chat-heading p {
+  margin-top: 2px;
+  color: #d8ddc7;
+  font-size: .75rem;
+}
+
+.sbs-pocket-chat-heading > span {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  color: #192411;
+  background: var(--sbs-pocket-gold);
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.sbs-pocket-chat-log {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+
+.sbs-pocket-chat-log .sbs-pocket-chat-message {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  padding: 9px;
+  color: #1c2418;
+  background: #f4eedf;
+  border: 1px solid #9c906c;
+  border-left: 4px solid #758756;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px #0006;
+  overflow: hidden;
+}
+
+.sbs-pocket-chat-log .sbs-pocket-chat-message.whisper,
+.sbs-pocket-chat-log .sbs-pocket-chat-message.blind {
+  border-left-color: #8a62a1;
+  background: #eee5f1;
+}
+
+.sbs-pocket-chat-log .message-header {
+  display: flex;
+  min-width: 0;
+  margin: -9px -9px 8px;
+  padding: 6px 9px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #fff5c1;
+  background: #31462a;
+  border-bottom: 1px solid var(--sbs-pocket-gold);
+}
+
+.sbs-pocket-chat-log .message-header :is(h4, .message-sender) {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #fff5c1;
+  font-size: .9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sbs-pocket-chat-log .message-metadata {
+  flex: 0 0 auto;
+  color: #d8ddc7;
+  font-size: .68rem;
+}
+
+.sbs-pocket-chat-log :is(.message-content, .chat-card, .card-content, .card-description) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-wrap: anywhere;
+}
+
+.sbs-pocket-chat-log :is(img, video, table) {
+  max-width: 100%;
+  height: auto;
+}
+
+.sbs-pocket-chat-log .dice-roll {
+  min-width: 0;
+  margin-top: 7px;
+}
+
+.sbs-pocket-chat-log .dice-formula,
+.sbs-pocket-chat-log .dice-total {
+  min-width: 0;
+  padding: 5px 7px;
+  overflow-wrap: anywhere;
+  color: #1c2418;
+  background: #fffaf0;
+  border: 1px solid #b7a878;
+  box-shadow: none;
+}
+
+.sbs-pocket-chat-log .dice-total {
+  color: #26371f;
+  border-color: #758756;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.sbs-pocket-chat-log :is(button, input, select, textarea, .card-buttons, .message-delete, .message-dismiss) {
+  display: none !important;
+}
+
+.sbs-pocket-chat-log :is(a, [data-action]) {
+  pointer-events: none;
+}
+
+.sbs-pocket-chat-empty {
+  display: flex;
+  min-height: 150px;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  color: #52604a;
+  text-align: center;
+  background: #eee7d4;
+  border: 2px dashed #758756;
+  border-radius: 9px;
+}
+
+.sbs-pocket-chat-loading {
+  display: flex;
+  min-height: 150px;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: #d8ddc7;
+  text-align: center;
+  background: #202d1b;
+  border: 1px solid #718253;
+  border-radius: 9px;
+}
+
+.sbs-pocket-chat-loading > i {
+  color: var(--sbs-pocket-gold);
+  font-size: 1.6rem;
+}
+
+.sbs-pocket-chat-empty > i {
+  color: #758756;
+  font-size: 2rem;
+}
+
+.sbs-pocket-chat-empty > span,
+.sbs-pocket-chat-note {
+  font-size: .73rem;
+}
+
+.sbs-pocket-chat-note {
+  margin: 0 2px 4px;
+  color: #c8cdb9;
+  text-align: center;
+}
+
 .sbs-pocket-empty {
   margin: 5px;
   color: #6a6a58;

@@ -16,7 +16,7 @@ The published manifest installs the matching versioned package from the reposito
 - dnd5e 5.x
 - Designed first for the official dnd5e character sheet
 
-The mobile sheet includes Attributes, Inventory, Features, Spellbook, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
+The mobile sheet includes Attributes, Inventory, Features, Spellbook, a read-only Chat history, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
 
 ## GM setup
 
@@ -35,10 +35,12 @@ The player's assigned sheet opens automatically. Disabling Pocket Mode restores 
 
 - Hides the canvas, scene navigation, controls, sidebar, hotbar, and player list.
 - Renders the real Actor's information through a dedicated responsive phone layout.
-- Includes Attributes, Inventory, Features, Spellbook, Effects, Bastions, Biography, and optionally Special Traits.
+- Includes Attributes, Inventory, Features, Spellbook, Chat, Effects, Bastions, Biography, and optionally Special Traits.
+- Shows the latest 100 chat messages visible to the current player, using Foundry's native message rendering and privacy checks for whispers and blind rolls.
+- Refreshes the Chat page when messages are created, changed, or deleted without rebuilding the entire mobile sheet.
 - Uses each Item's native dnd5e activities for attacks, damage, saves, healing, casting, utility actions, and normal resource consumption.
 - Uses the dnd5e 5.2 Actor roll signatures for checks, saving throws, skills, death saves, and initiative.
-- Creates the native weapon activity card without its unreliable auto-action, then invokes that card's real dnd5e `rollAttack` control—the same Attack button used in chat.
+- Invokes the weapon activity's registered dnd5e `rollAttack` chat-control handler directly, without posting a description card or passing through `Activity.use()` and its runtime usability gate.
 - Deduplicates activity controls to one relevant Attack and one relevant Damage/Healing button per item.
 - Automatically closes visible dnd5e activity/roll prompts after a completed Pocket Sheet roll.
 - Keeps item descriptions expandable in the Pocket Sheet and adds a separate Chat button for the native dnd5e item card.
@@ -85,6 +87,7 @@ Closing the character sheet while Pocket Mode is enabled causes it to reopen. A 
 - Confirm every ability Check and Save works regardless of proficiency, with proficient saving throws visibly marked.
 - Confirm weapons expose Attack and Damage separately and spells expose Cast or Cast & Attack.
 - Confirm containers display their contents and contained usable items retain activity buttons.
+- Open Chat and confirm public rolls and descriptions appear, while another player's private or blind messages remain hidden as Foundry intends.
 - Toggle prepared/equipped states where the normal sheet permits it.
 - Verify Bastions appears when the Actor has Bastion data or facilities.
 - Enable the Special Traits setting and confirm that page appears.
