@@ -8,8 +8,6 @@ const state = {
   sheet: null,
   manager: null,
   refreshTimer: null,
-  chatRefreshTimer: null,
-  chatRevision: 0,
   customTabs: new Map()
 };
 const esc = (value) => foundry.utils.escapeHTML(String(value ?? ""));
@@ -189,46 +187,11 @@ async function renderBiography(actor) {
   return section("Biography", `<div class="sbs-pocket-prose">${enriched}</div>`, "No biography.");
 }
 
-function renderChatLoading() {
+function renderNativeChatPortal() {
   return `<section class="sbs-pocket-chat-feed" aria-label="Visible chat history">
-    <header class="sbs-pocket-chat-heading"><div><h2><i class="fa-solid fa-comments"></i> Chat</h2><p>What the dice gods have wrought.</p></div></header>
-    <div class="sbs-pocket-chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Fetching the latest nonsense…</span></div>
-  </section>`;
-}
-
-async function renderChat(messageCache) {
-  const messages = Array.from(game.messages?.contents ?? [])
-    .filter((message) => message.visible !== false)
-    .sort((a, b) => Number(a.timestamp ?? 0) - Number(b.timestamp ?? 0))
-    .slice(-100);
-  const rendered = [];
-  const currentIds = new Set();
-  for (const message of messages) {
-    currentIds.add(message.id);
-    const cached = messageCache.get(message.id);
-    if (cached) {
-      rendered.push(cached);
-      continue;
-    }
-    try {
-      // Core renders whispers, blind rolls, dice results, and system chat cards using the current user's visibility.
-      const html = await message.renderHTML({ canClose: false, canDelete: false });
-      if (!(html instanceof HTMLElement)) continue;
-      html.classList.add("sbs-pocket-chat-message");
-      html.querySelectorAll(".message-delete, .message-dismiss, [data-action='deleteMessage']").forEach((element) => element.remove());
-      const markup = html.outerHTML;
-      messageCache.set(message.id, markup);
-      rendered.push(markup);
-    } catch (error) {
-      console.warn(`${MODULE_ID} | Could not render chat message ${message.id}`, error);
-    }
-  }
-  for (const id of messageCache.keys()) if (!currentIds.has(id)) messageCache.delete(id);
-  const count = rendered.length;
-  return `<section class="sbs-pocket-chat-feed" aria-label="Visible chat history">
-    <header class="sbs-pocket-chat-heading"><div><h2><i class="fa-solid fa-comments"></i> Chat</h2><p>What the dice gods have wrought.</p></div><span>${count} / 100</span></header>
-    <ol class="sbs-pocket-chat-log">${rendered.join("") || '<li class="sbs-pocket-chat-empty"><i class="fa-regular fa-comments"></i><strong>No visible messages yet.</strong><span>The dice are suspiciously quiet.</span></li>'}</ol>
-    <p class="sbs-pocket-chat-note"><i class="fa-solid fa-eye"></i> Read-only · latest 100 messages visible to you</p>
+    <header class="sbs-pocket-chat-heading"><div><h2><i class="fa-solid fa-comments"></i> Chat</h2><p>Foundry's actual live Chat Log. No interpretive dance.</p></div><span>Live</span></header>
+    <div class="sbs-pocket-native-chat-host"><div class="sbs-pocket-chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Opening Foundry Chat…</span></div></div>
+    <p class="sbs-pocket-chat-note"><i class="fa-solid fa-eye"></i> The same messages and rolls Foundry shows this player on desktop</p>
   </section>`;
 }
 
@@ -240,11 +203,14 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     this.activeTab = "attributes";
     this.scrollPositions = new Map();
     this.followChat = true;
-    this.chatCache = { revision: -1, html: "" };
-    this.chatMessageCache = new Map();
+    this._nativeChatElement = null;
+    this._nativeChatAnchor = null;
+    this._nativeChatOrigin = null;
+    this._nativeChatMountPromise = null;
     this._eventAbort = null;
     this._railAbort = null;
     this._pendingActions = new Set();
+    this._lastRollToastSignature = "";
   }
   async _renderHTML() {
     const showTraits = game.settings.get(MODULE_ID, "showSpecialTraits");
@@ -254,7 +220,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       { id: "inventory", label: "Inventory", icon: "fa-solid fa-backpack", render: () => renderInventory(this.actor) },
       { id: "features", label: "Features", icon: "fa-solid fa-star", render: () => renderFeatures(this.actor) },
       { id: "spellbook", label: "Spellbook", icon: "fa-solid fa-book-sparkles", render: () => renderSpells(this.actor) },
-      { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => this.activeTab === "chat" ? this._renderChat() : (this.chatCache.html || renderChatLoading()) },
+      { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => renderNativeChatPortal() },
       { id: "effects", label: "Effects", icon: "fa-solid fa-bolt", render: () => renderEffects(this.actor) },
       ...(hasBastion ? [{ id: "bastions", label: "Bastions", icon: "fa-solid fa-castle", render: () => renderBastions(this.actor) }] : []),
       ...(showTraits ? [{ id: "traits", label: "Special Traits", icon: "fa-solid fa-list-check", render: () => renderTraits(this.actor) }] : []),
@@ -264,10 +230,10 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.3.7";
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.3.12";
     return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
   }
-  _replaceHTML(result, content) { content.innerHTML = result; }
+  _replaceHTML(result, content) { this._restoreNativeChat(); content.innerHTML = result; }
   _onRender(context, options) {
     super._onRender(context, options);
     const root = elementOf(this.element); if (!root) return;
@@ -287,6 +253,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     this._installRail(root);
     const content = root.querySelector(".sbs-pocket-mobile-content");
     if (content) content.scrollTop = this.activeTab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(this.activeTab) ?? 0);
+    if (this.activeTab === "chat") this._mountNativeChat().catch((error) => this._showNativeChatError(error));
   }
   async _onClick(event) {
     const button = event.target.closest("[data-action]"); if (!button) return;
@@ -330,10 +297,13 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       ?? item.activities?.get?.(activityId)
       ?? activitiesFor(item).find((entry) => (entry.id ?? entry._id) === activityId);
     if (!activity) return ui.notifications.warn(`${item.name} no longer has that activity.`);
-    if (typeof activity.use === "function") return this._runAndClosePrompt(() => activity.use({ event, legacy: false }));
+    // dnd5e intentionally launches an Activity's subsequent attack/damage/healing action without awaiting it.
+    // Closing every roll window when use() resolves therefore closes that follow-up prompt before it can finish.
+    // Completed roll hooks handle cleanup instead; the normal usage dialog closes itself when submitted.
+    if (typeof activity.use === "function") return activity.use({ event, legacy: false });
     const macroRoll = globalThis.dnd5e?.documents?.macro?.rollItem;
-    if (typeof macroRoll === "function") return this._runAndClosePrompt(() => macroRoll(item.name, { event, activityName: activity.name }));
-    if (typeof item.use === "function") return this._runAndClosePrompt(() => item.use({ event, legacy: false, activityId }));
+    if (typeof macroRoll === "function") return macroRoll(item.name, { event, activityName: activity.name });
+    if (typeof item.use === "function") return item.use({ event, legacy: false, activityId });
     ui.notifications.warn(`${item.name}: ${activity.name || "activity"} cannot be used on this dnd5e version.`);
   }
   async _rollActivity(item, activityId, method, event) {
@@ -447,36 +417,91 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const content = await foundry.applications.ux.TextEditor.implementation.enrichHTML(String(raw), { async: true, relativeTo: item });
     return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: this.actor }), content: `<h3>${esc(item.name)}</h3>${content}` });
   }
-  async _renderChat() {
-    if (this.chatCache.revision === state.chatRevision) return this.chatCache.html;
-    const revision = state.chatRevision;
-    const html = await renderChat(this.chatMessageCache);
-    if (revision === state.chatRevision) this.chatCache = { revision, html };
-    return html;
-  }
-  async refreshChat() {
-    const root = elementOf(this.element);
-    const panel = root?.querySelector("[data-panel='chat']");
-    if (!panel) return;
-    const content = root.querySelector(".sbs-pocket-mobile-content");
-    const priorTop = content?.scrollTop ?? 0;
-    const follow = this.activeTab === "chat" && this.followChat;
-    panel.innerHTML = await this._renderChat();
-    if (content && this.activeTab === "chat") {
-      content.scrollTop = follow ? content.scrollHeight : priorTop;
-      this.scrollPositions.set("chat", content.scrollTop);
+  async _mountNativeChat() {
+    if (this._nativeChatMountPromise) return this._nativeChatMountPromise;
+    const task = this._doMountNativeChat();
+    this._nativeChatMountPromise = task;
+    try {
+      return await task;
+    } finally {
+      if (this._nativeChatMountPromise === task) this._nativeChatMountPromise = null;
     }
-    this._updateRail();
+  }
+  async _doMountNativeChat() {
+    if (!state.active || this.activeTab !== "chat") return;
+    let root = elementOf(this.element);
+    let host = root?.querySelector(".sbs-pocket-native-chat-host");
+    if (!host) return;
+
+    const chat = ui.chat;
+    if (!chat) throw new Error("Foundry's Chat Log is unavailable.");
+    if (typeof chat.activate === "function") chat.activate();
+    let nativeChat = chat.rendered ? elementOf(chat.element) : null;
+    if (!nativeChat) {
+      await chat.render({ force: true });
+      nativeChat = elementOf(chat.element);
+    }
+    if (!nativeChat) throw new Error("Foundry rendered Chat without an HTML element.");
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    if (!state.active || this.activeTab !== "chat") return;
+    root = elementOf(this.element);
+    host = root?.querySelector(".sbs-pocket-native-chat-host");
+    if (!host) return;
+    if (nativeChat.parentElement === host) return;
+
+    this._restoreNativeChat();
+    const origin = nativeChat.parentNode;
+    if (!origin) throw new Error("Foundry's Chat Log has no mount point.");
+    const anchor = document.createComment("saltybananaslug-pocket-chat");
+    origin.insertBefore(anchor, nativeChat);
+    this._nativeChatElement = nativeChat;
+    this._nativeChatAnchor = anchor;
+    this._nativeChatOrigin = origin;
+    nativeChat.classList.add("sbs-pocket-native-chat");
+    nativeChat.querySelector(".chat-log")?.classList.add("sbs-pocket-chat-log");
+    nativeChat.querySelectorAll("[draggable]").forEach((element) => element.removeAttribute("draggable"));
+    host.replaceChildren(nativeChat);
+
+    requestAnimationFrame(() => {
+      if (this.activeTab !== "chat") return;
+      const currentRoot = elementOf(this.element);
+      const content = currentRoot?.querySelector(".sbs-pocket-mobile-content");
+      if (content) {
+        const saved = this.scrollPositions.get("chat");
+        content.scrollTop = this.followChat || saved === undefined ? content.scrollHeight : saved;
+        this.scrollPositions.set("chat", content.scrollTop);
+      }
+      this._updateRail();
+    });
+  }
+  _restoreNativeChat() {
+    const nativeChat = this._nativeChatElement;
+    if (!nativeChat) return;
+    nativeChat.classList.remove("sbs-pocket-native-chat");
+    nativeChat.querySelector(".chat-log")?.classList.remove("sbs-pocket-chat-log");
+    if (this._nativeChatAnchor?.isConnected) this._nativeChatAnchor.replaceWith(nativeChat);
+    else if (this._nativeChatOrigin?.isConnected) this._nativeChatOrigin.append(nativeChat);
+    this._nativeChatElement = null;
+    this._nativeChatAnchor = null;
+    this._nativeChatOrigin = null;
+  }
+  _showNativeChatError(error) {
+    console.error(`${MODULE_ID} | Could not mount Foundry's native Chat Log`, error);
+    const host = elementOf(this.element)?.querySelector(".sbs-pocket-native-chat-host");
+    if (host) host.innerHTML = `<div class="sbs-pocket-chat-loading error"><i class="fa-solid fa-triangle-exclamation"></i><span>${esc(error?.message || "Foundry Chat could not open.")}</span></div>`;
   }
   async _onChange(event) { const input = event.target.closest("[data-update-path]"); if (input) await this.actor.update({ [input.dataset.updatePath]: input.type === "number" ? Number(input.value) : input.value }); }
   async changeTab(tab) {
-    const root = elementOf(this.element); const content = root?.querySelector(".sbs-pocket-mobile-content"); if (content) this.scrollPositions.set(this.activeTab, content.scrollTop); this.activeTab = tab;
-    root?.querySelectorAll(".sbs-pocket-mobile-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab)); root?.querySelectorAll(".sbs-pocket-panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === tab)); if (content) content.scrollTop = tab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(tab) ?? 0); this._updateRail();
-    if (tab === "chat" && this.chatCache.revision !== state.chatRevision) {
-      const panel = root?.querySelector("[data-panel='chat']");
-      if (panel && !this.chatCache.html) panel.innerHTML = renderChatLoading();
-      await this.refreshChat();
-    }
+    const root = elementOf(this.element); const content = root?.querySelector(".sbs-pocket-mobile-content");
+    if (content) this.scrollPositions.set(this.activeTab, content.scrollTop);
+    if (this.activeTab === "chat" && tab !== "chat") this._restoreNativeChat();
+    this.activeTab = tab;
+    root?.querySelectorAll(".sbs-pocket-mobile-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    root?.querySelectorAll(".sbs-pocket-panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === tab));
+    if (tab === "chat") await this._mountNativeChat().catch((error) => this._showNativeChatError(error));
+    if (content) content.scrollTop = tab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(tab) ?? 0);
+    this._updateRail();
   }
   _installRail(root) {
     this._railAbort?.abort(); const abort = new AbortController(); this._railAbort = abort;
@@ -493,7 +518,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const root = elementOf(this.element), content = root?.querySelector(".sbs-pocket-mobile-content"), track = root?.querySelector(".sbs-pocket-track"), thumb = root?.querySelector(".sbs-pocket-thumb"); if (!content || !track || !thumb) return;
     const max = Math.max(0, content.scrollHeight - content.clientHeight), height = Math.max(44, track.clientHeight * Math.min(1, content.clientHeight / Math.max(1, content.scrollHeight))), travel = Math.max(0, track.clientHeight - height); thumb.style.height = `${height}px`; thumb.style.transform = `translateY(${max ? (content.scrollTop / max) * travel : 0}px)`; root.querySelector(".sbs-pocket-rail")?.classList.toggle("no-scroll", max < 2);
   }
-  async close(options = {}) { if (state.active && !options.force) return this; this._eventAbort?.abort(); this._railAbort?.abort(); this._pendingActions.clear(); return super.close(options); }
+  async close(options = {}) { if (state.active && !options.force) return this; this._restoreNativeChat(); this._eventAbort?.abort(); this._railAbort?.abort(); this._pendingActions.clear(); return super.close(options); }
 }
 
 class PocketManager extends foundry.applications.api.ApplicationV2 {
@@ -515,23 +540,36 @@ class PocketManager extends foundry.applications.api.ApplicationV2 {
 function openManager() { if (game.user.isGM) { state.manager ??= new PocketManager(); state.manager.render({ force: true }); } }
 function addManagerButton(html) { if (!game.user.isGM) return; const root = elementOf(html); if (!root || root.querySelector(".sbs-pocket-manager-button")) return; const header = root.querySelector(".directory-header .header-actions") ?? root.querySelector(".directory-header"); if (!header) return; const button = document.createElement("button"); button.type = "button"; button.className = "sbs-pocket-manager-button"; button.innerHTML = '<i class="fa-solid fa-mobile-screen-button"></i> Pocket Sheets'; button.addEventListener("click", openManager); header.append(button); }
 function scheduleRefresh(actorId) { if (!state.active || actorId !== state.actorId) return; clearTimeout(state.refreshTimer); state.refreshTimer = setTimeout(() => state.sheet?.render({ force: true }), 180); }
-function scheduleChatRefresh(messageId) {
-  if (!state.active) return;
-  state.chatRevision += 1;
-  if (messageId) state.sheet?.chatMessageCache.delete(messageId);
-  if (state.sheet?.activeTab !== "chat") return;
-  clearTimeout(state.chatRefreshTimer);
-  state.chatRefreshTimer = setTimeout(() => state.sheet?.refreshChat(), 120);
+function showPocketRollToast(message) {
+  if (!state.active || message.visible === false) return;
+  const sheet = state.sheet;
+  if (!sheet) return;
+  const authorId = message.author?.id ?? message.user?.id ?? message._source?.user;
+  if (authorId !== game.user.id) return;
+  const rolls = Array.from(message.rolls ?? []).filter((roll) => Number.isFinite(Number(roll?.total)));
+  if (!rolls.length) return;
+  const signature = `${message.id}:${rolls.map((roll) => `${roll.formula ?? roll._formula ?? ""}=${Number(roll.total)}`).join("|")}`;
+  if (sheet._lastRollToastSignature === signature) return;
+  sheet._lastRollToastSignature = signature;
+  const roll = rolls.at(-1);
+  const root = elementOf(sheet.element); if (!root) return;
+  root.querySelector(".sbs-pocket-roll-toast")?.remove();
+  const toast = document.createElement("div"); toast.className = "sbs-pocket-roll-toast";
+  toast.innerHTML = `<span>${esc(message.flavor || message.speaker?.alias || "Roll")}</span><strong>${esc(Number(roll.total))}</strong>`;
+  root.append(toast); requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 200); }, 2400);
 }
 function closePocketRollPrompt(_rolls, context) {
-  if (!state.active || context?.subject?.id !== state.actorId) return;
+  const subject = context?.subject;
+  const actorId = subject?.actor?.id ?? subject?.item?.actor?.id ?? subject?.id;
+  if (!state.active || actorId !== state.actorId) return;
   window.setTimeout(() => state.sheet?._closeNativePrompts(), 100);
 }
 async function enterPocketMode() {
   if (game.user.isGM) return; const assignment = currentAssignment(); if (!assignment.enabled) return leavePocketMode(); const actor = assignedActor(); if (!actor?.isOwner) return ui.notifications.error("Pocket Sheets needs an assigned character you own.", { permanent: true });
   if (state.sheet && state.actorId !== actor.id) await state.sheet.close({ force: true }); state.active = true; state.actorId = actor.id; document.body.classList.add("sbs-pocket-mode"); state.sheet ??= new PocketSheet(actor); state.sheet.actor = actor; state.sheet.render({ force: true });
 }
-async function leavePocketMode() { state.active = false; state.actorId = null; clearTimeout(state.refreshTimer); clearTimeout(state.chatRefreshTimer); document.body.classList.remove("sbs-pocket-mode"); if (state.sheet) await state.sheet.close({ force: true }); state.sheet = null; }
+async function leavePocketMode() { state.active = false; state.actorId = null; clearTimeout(state.refreshTimer); if (state.sheet) await state.sheet.close({ force: true }); state.sheet = null; document.body.classList.remove("sbs-pocket-mode"); }
 function registerTab(tab) { if (!tab?.id || !tab?.label || typeof tab.render !== "function") throw new Error("Pocket Sheets tabs require id, label, and render."); state.customTabs.set(tab.id, tab); if (state.active) scheduleRefresh(state.actorId); }
 async function ensureLauncherMacro() { if (!game.user.isGM) return; const command = `game.modules.get('${MODULE_ID}').api.openManager();`; const existing = game.macros.find((m) => m.getFlag(MODULE_ID, "launcher") || m.name === "SaltyBananaSlug's Pocket Sheets"); if (existing) return existing.update({ command, img: `modules/${MODULE_ID}/assets/pocket-sheets.svg` }); return Macro.create({ name: "SaltyBananaSlug's Pocket Sheets", type: "script", img: `modules/${MODULE_ID}/assets/pocket-sheets.svg`, command, flags: { [MODULE_ID]: { launcher: true } } }); }
 
@@ -551,15 +589,8 @@ Hooks.on("createActiveEffect", (e) => scheduleRefresh(e.parent?.id)); Hooks.on("
 Hooks.on("dnd5e.rollAbilityCheck", closePocketRollPrompt);
 Hooks.on("dnd5e.rollSavingThrow", closePocketRollPrompt);
 Hooks.on("dnd5e.rollSkill", closePocketRollPrompt);
-Hooks.on("createChatMessage", (message) => {
-  if (message.visible !== false) scheduleChatRefresh(message.id);
-  if (!state.active || message.author?.id !== game.user.id) return;
-  const root = elementOf(state.sheet?.element); if (!root) return;
-  root.querySelector(".sbs-pocket-roll-toast")?.remove();
-  const toast = document.createElement("div"); toast.className = "sbs-pocket-roll-toast";
-  toast.innerHTML = `<span>${esc(message.flavor || message.speaker?.alias || "Roll")}</span><strong>${Number.isFinite(message.rolls?.[0]?.total) ? message.rolls[0].total : "Rolled"}</strong>`;
-  root.append(toast); requestAnimationFrame(() => toast.classList.add("show"));
-  setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 200); }, 2400);
-});
-Hooks.on("updateChatMessage", (message) => scheduleChatRefresh(message.id));
-Hooks.on("deleteChatMessage", (message) => scheduleChatRefresh(message.id));
+Hooks.on("dnd5e.rollAttackV2", closePocketRollPrompt);
+Hooks.on("dnd5e.rollDamageV2", closePocketRollPrompt);
+Hooks.on("dnd5e.rollFormulaV2", closePocketRollPrompt);
+Hooks.on("createChatMessage", showPocketRollToast);
+Hooks.on("updateChatMessage", showPocketRollToast);

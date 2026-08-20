@@ -1,8 +1,8 @@
 {
   "id": "saltybananaslug-pocket-sheets",
   "title": "SaltyBananaSlug's Pocket Sheets",
-  "description": "A GM-controlled, phone-friendly, character-sheet-only mode that preserves native dnd5e sheet actions while disabling drag and drop.",
-  "version": "0.3.7",
+  "description": "A GM-controlled, phone-friendly, character-sheet-only mode with native dnd5e actions, live Foundry chat, and no drag and drop.",
+  "version": "0.3.12",
   "authors": [
     {
       "name": "SaltyBananaSlug"
@@ -32,7 +32,7 @@
   ],
   "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-pocket-sheets",
   "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-pocket-sheets.json",
-  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-pocket-sheets-v0.3.7.zip",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-pocket-sheets-v0.3.12.zip",
   "license": "LICENSE",
   "readme": "README.md"
 }

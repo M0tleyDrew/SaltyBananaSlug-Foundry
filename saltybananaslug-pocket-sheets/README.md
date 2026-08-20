@@ -16,7 +16,7 @@ The published manifest installs the matching versioned package from the reposito
 - dnd5e 5.x
 - Designed first for the official dnd5e character sheet
 
-The mobile sheet includes Attributes, Inventory, Features, Spellbook, a read-only Chat history, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
+The mobile sheet includes Attributes, Inventory, Features, Spellbook, Foundry's live native Chat Log, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
 
 ## GM setup
 
@@ -36,11 +36,14 @@ The player's assigned sheet opens automatically. Disabling Pocket Mode restores 
 - Hides the canvas, scene navigation, controls, sidebar, hotbar, and player list.
 - Renders the real Actor's information through a dedicated responsive phone layout.
 - Includes Attributes, Inventory, Features, Spellbook, Chat, Effects, Bastions, Biography, and optionally Special Traits.
-- Shows the latest 100 chat messages visible to the current player, using Foundry's native message rendering and privacy checks for whispers and blind rolls.
-- Refreshes the Chat page when messages are created, changed, or deleted without rebuilding the entire mobile sheet.
+- Mounts the player's actual live Foundry Chat Log inside the Pocket Chat tab instead of rebuilding, cloning, or interpreting ChatMessages.
+- Shows the same public messages, permitted whispers, comments, dnd5e cards, Midi-QOL cards, attacks, connected damage, healing, and other rolls that Foundry renders for that player on desktop.
+- Keeps the native Chat Log's own create, update, and delete lifecycle, so a completed Midi-QOL workflow updates the same card Pocket Sheets displays.
+- Keeps Chat rendering isolated from item and activity execution.
 - Uses each Item's native dnd5e activities for attacks, damage, saves, healing, casting, utility actions, and normal resource consumption.
 - Uses the dnd5e 5.2 Actor roll signatures for checks, saving throws, skills, death saves, and initiative.
 - Uses Midi-QOL's supported `completeItemUse` API with the selected attack activity ID, forces that workflow into its attack-roll stage, and keeps the attack configuration prompt enabled. Without Midi-QOL, it falls back to a persisted native dnd5e activity message and its real chat-card Attack control.
+- Lets dnd5e finish automatic spell attack, damage, and healing follow-up actions before closing their completed roll prompt; it no longer closes the asynchronously launched follow-up as soon as casting returns.
 - Replaces Pocket Sheet event listeners on every render instead of stacking another copy, and rejects duplicate in-flight item actions so one phone tap creates one workflow, one resource use, and one usage card.
 - Deduplicates activity controls to one relevant Attack and one relevant Damage/Healing button per item.
 - Automatically closes visible dnd5e activity/roll prompts after a completed Pocket Sheet roll, including fixed-position check and save dialogs that do not have a DOM `offsetParent`.

@@ -37,6 +37,10 @@ body.sbs-pocket-mode .app:not(.sbs-pocket-sheet):not(.sbs-pocket-mobile):not(.di
   visibility: hidden;
 }
 
+body.sbs-pocket-mode .sbs-pocket-native-chat {
+  visibility: visible !important;
+}
+
 body.sbs-pocket-mode .sbs-pocket-mobile {
   visibility: visible !important;
   position: fixed !important;
@@ -685,16 +689,74 @@ body.sbs-pocket-mode .sbs-pocket-mobile > .window-content {
   font-weight: 800;
 }
 
-.sbs-pocket-chat-log {
-  display: grid;
+.sbs-pocket-native-chat-host {
+  display: block;
   min-width: 0;
+  min-height: 150px;
+}
+
+body.sbs-pocket-mode .sbs-pocket-native-chat-host > .sbs-pocket-native-chat {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+  display: flex !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  color: inherit;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+body.sbs-pocket-mode .sbs-pocket-native-chat > .window-header,
+body.sbs-pocket-mode .sbs-pocket-native-chat :is(.chat-form, .chat-input, [data-application-part="input"], [data-part-id="input"]) {
+  display: none !important;
+}
+
+body.sbs-pocket-mode .sbs-pocket-native-chat > .window-content,
+body.sbs-pocket-mode .sbs-pocket-native-chat .chat-scroll {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+body.sbs-pocket-mode .sbs-pocket-native-chat .sbs-pocket-chat-log {
+  display: grid;
+  position: static;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
   margin: 0;
   padding: 0;
   gap: 8px;
+  overflow: visible;
   list-style: none;
 }
 
-.sbs-pocket-chat-log .sbs-pocket-chat-message {
+.sbs-pocket-chat-log .message {
   display: block;
   min-width: 0;
   margin: 0;
@@ -708,8 +770,8 @@ body.sbs-pocket-mode .sbs-pocket-mobile > .window-content {
   overflow: hidden;
 }
 
-.sbs-pocket-chat-log .sbs-pocket-chat-message.whisper,
-.sbs-pocket-chat-log .sbs-pocket-chat-message.blind {
+.sbs-pocket-chat-log .message.whisper,
+.sbs-pocket-chat-log .message.blind {
   border-left-color: #8a62a1;
   background: #eee5f1;
 }
@@ -778,12 +840,53 @@ body.sbs-pocket-mode .sbs-pocket-mobile > .window-content {
   font-weight: 900;
 }
 
-.sbs-pocket-chat-log :is(button, input, select, textarea, .card-buttons, .message-delete, .message-dismiss) {
-  display: none !important;
+.sbs-pocket-local-rolls {
+  display: grid;
+  min-width: 0;
+  margin-top: 8px;
+  gap: 8px;
 }
 
-.sbs-pocket-chat-log :is(a, [data-action]) {
-  pointer-events: none;
+.sbs-pocket-local-roll {
+  min-width: 0;
+  padding: 7px;
+  background: #e9e2ce;
+  border: 1px solid #9c906c;
+  border-radius: 7px;
+}
+
+.sbs-pocket-local-roll-label {
+  color: #31462a;
+  font-size: .78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sbs-pocket-roll-dice {
+  display: flex;
+  min-width: 0;
+  padding: 5px 2px 0;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sbs-pocket-roll-die {
+  padding: 2px 5px;
+  color: #1c2418;
+  background: #fffaf0;
+  border: 1px solid #b7a878;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.sbs-pocket-roll-die.discarded {
+  opacity: .48;
+  text-decoration: line-through;
+}
+
+.sbs-pocket-chat-log :is(.message-delete, .message-dismiss, [data-action="deleteMessage"], [data-action="dismissMessage"]) {
+  display: none !important;
 }
 
 .sbs-pocket-chat-empty {
@@ -819,6 +922,10 @@ body.sbs-pocket-mode .sbs-pocket-mobile > .window-content {
 .sbs-pocket-chat-loading > i {
   color: var(--sbs-pocket-gold);
   font-size: 1.6rem;
+}
+
+.sbs-pocket-chat-loading.error > i {
+  color: #ff9c78;
 }
 
 .sbs-pocket-chat-empty > i {
