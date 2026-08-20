@@ -7,7 +7,7 @@
 - Drop handling now rejects non-inventory sheet items with a visible warning instead of trying to put Action Surge in the wagon.
 
 
-SaltyBananaSlugs's Party Viewer is a lightweight Foundry VTT v13 / dnd5e party dashboard for Drew's irresponsibly modded table. It keeps its hands to itself: no sheet overrides, no libWrapper use, no Item Piles dependency, no actor sheet monkey-patching. Tiny module, big clipboard energy.
+SaltyBananaSlugs's Party Viewer is a lightweight Foundry VTT v13 / dnd5e party dashboard for an irresponsibly modded table. It keeps its hands to itself: no sheet overrides, no libWrapper use, no Item Piles dependency, no actor sheet monkey-patching. Tiny module, big clipboard energy.
 
 ## Features
 
@@ -124,4 +124,3 @@ Added request result messages so players get a success or error notification ins
 - Added `socket: true` to the module manifest so Foundry opens the module socket channel.
 - Added a socketlib relationship and a guarded late socketlib registration fallback.
 - Player-owned inventory deposits should now be processed by the active GM client without approval prompts or timeout warnings.
-
