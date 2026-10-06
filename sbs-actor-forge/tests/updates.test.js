@@ -1,0 +1,26 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {ID,clone,setPath,markItems} from '../scripts/core.js';import {buildUpdate,CATEGORIES} from '../scripts/updates.js';
+const actor=()=>markItems({name:'Mage',type:'character',system:{abilities:{int:{value:16}},attributes:{hp:{value:24,max:24}}},prototypeToken:{name:'Mage',sight:{enabled:true}},items:[{_id:'item1',name:'Spell',type:'spell',system:{prepared:1,level:1}}],effects:[],flags:{[ID]:{key:'a',details:[{section:'Lore',label:'Quirk',value:'Old'}]}},ownership:{default:0,player:3}});
+test('three-way merge keeps local HP, name, spell preparation and inventory',()=>{const input=actor(),old=buildUpdate(null,input).data;old._id='a';old.system.attributes.hp.value=8;old.name='Player renamed';old.items[0].system.prepared=0;old.items.push({name:'Manual loot',type:'loot',_id:'loot'});const next=clone(input);next.name='New workbook name';next.system.abilities.int.value=17;next.system.attributes.hp.value=28;next.items[0].system.prepared=1;next.items[0].system.level=2;const r=buildUpdate(old,next);assert.equal(r.data.name,'Player renamed');assert.equal(r.data.system.attributes.hp.value,8);assert.equal(r.data.system.abilities.int.value,17);assert.equal(r.data.items[0].system.prepared,0);assert.equal(r.data.items[0].system.level,2);assert.equal(r.data.items.length,2);assert.ok(r.conflicts.length>=3);});
+test('merge respects deliberate local deletion; managed mode can recreate it',()=>{const next=actor(),old=buildUpdate(null,next).data;old.items=[];assert.equal(buildUpdate(old,next).data.items.length,0);assert.equal(buildUpdate(old,next,{mode:'managed'}).data.items.length,1);});
+test('replace managed removes stale Forge items and keeps manual inventory',()=>{const old=buildUpdate(null,actor()).data;old.items.push({name:'Manual loot',type:'loot',_id:'loot'});const next=actor();next.items=[];const r=buildUpdate(old,next,{mode:'managed'});assert.equal(r.data.items.length,1);assert.equal(r.data.items[0].name,'Manual loot');});
+test('category controls leave excluded items, effects, token, notes and permissions unchanged',()=>{const old=buildUpdate(null,actor()).data;const next=actor();next.items=[];next.prototypeToken={name:'Changed'};next.flags[ID].details=[];next.ownership={default:3};next.system.abilities.int.value=18;for(const mode of ['merge','managed','replace']){const r=buildUpdate(old,next,{mode,categories:['fields'],detailsSupplied:true});assert.deepEqual(r.data.items,old.items);assert.deepEqual(r.data.prototypeToken,old.prototypeToken);assert.deepEqual(r.data.ownership,old.ownership);assert.deepEqual(r.data.flags[ID].details,old.flags[ID].details);assert.equal(r.data.system.abilities.int.value,18);}});
+test('malformed update modes, mixed types and duplicate item keys cannot silently import',()=>{assert.throws(()=>buildUpdate(actor(),actor(),{mode:'potato'}));const next=actor();next.type='npc';assert.throws(()=>buildUpdate(actor(),next));next.type='character';next.items.push(clone(next.items[0]));assert.throws(()=>buildUpdate(actor(),next),/Duplicate/);});
+test('merge keeps edited public details and excludes relationship fields from stats',()=>{const next=actor(),old=buildUpdate(null,next).data;old.flags[ID].details[0].value='Local notes';next.flags[ID].details[0].value='New notes';old.system.members=[{actor:'kept'}];next.system.members=[{actor:'changed'}];const r=buildUpdate(old,next,{categories:CATEGORIES.filter(k=>k!=='relationships')});assert.equal(r.data.flags[ID].details[0].value,'Local notes');assert.equal(r.data.system.members[0].actor,'kept');});
+test('each field and item conflict can use incoming data without overwriting the remaining local edits',()=>{
+ const next=actor(),old=buildUpdate(null,next).data;old.name='Local name';old.system.attributes.hp.value=3;old.items[0].system.prepared=0;
+ next.name='Workbook name';next.system.attributes.hp.value=28;
+ const r=buildUpdate(old,next,{conflictChoices:{'field:name':'incoming'}});
+ assert.equal(r.data.name,'Workbook name');assert.equal(r.data.system.attributes.hp.value,3);assert.equal(r.data.items[0].system.prepared,0);
+ assert.equal(r.decisions.find(c=>c.key==='field:name').resolution,'incoming');assert.ok(r.decisions.some(c=>c.key.startsWith('items:')));
+ const preparation=r.decisions.find(c=>c.path.endsWith('system.prepared')).key;
+ assert.equal(buildUpdate(old,next,{conflictChoices:{[preparation]:'incoming'}}).data.items[0].system.prepared,1);
+});
+test('explicit conflict choices restore locally deleted items and replace edited public notes',()=>{
+ const next=actor(),old=buildUpdate(null,next).data;old.items=[];old.flags[ID].details[0].value='Local';next.flags[ID].details[0].value='Workbook';
+ const first=buildUpdate(old,next),deleted=first.decisions.find(c=>c.key.endsWith(':deleted')).key;
+ const chosen=buildUpdate(old,next,{conflictChoices:{[deleted]:'incoming',details:'incoming'}});
+ assert.equal(chosen.data.items.length,1);assert.equal(chosen.data.flags[ID].details[0].value,'Workbook');
+ assert.throws(()=>buildUpdate(old,next,{conflictChoices:{details:'surprise'}}),/Invalid conflict choice/);
+ const excluded=buildUpdate(old,next,{categories:[],conflictChoices:{details:'incoming'}});assert.equal(excluded.data.flags[ID].details[0].value,'Local');
+});

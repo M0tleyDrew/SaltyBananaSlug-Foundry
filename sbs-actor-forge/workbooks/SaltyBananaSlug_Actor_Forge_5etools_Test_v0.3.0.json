@@ -1,0 +1,313 @@
+{
+  "_meta": {
+    "sources": [
+      {
+        "json": "SBS030",
+        "abbreviation": "SBS",
+        "full": "SaltyBananaSlug Actor Forge Custom Test",
+        "authors": [
+          "SaltyBananaSlug"
+        ]
+      }
+    ]
+  },
+  "monster": [
+    {
+      "name": "Cinder Parcel Imp",
+      "source": "SBS030",
+      "type": "construct",
+      "size": [
+        "S"
+      ],
+      "cr": "1/2",
+      "hp": {
+        "average": 16
+      },
+      "ac": [
+        13
+      ],
+      "speed": {
+        "walk": 30
+      },
+      "str": 12,
+      "dex": 14,
+      "con": 12,
+      "int": 8,
+      "wis": 10,
+      "cha": 8,
+      "action": [
+        {
+          "name": "Parcel Slap",
+          "entries": [
+            "{@hit 4} to hit. Hit: {@damage 1d6 + 2} bludgeoning damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Northern Parcel Scout",
+      "source": "SBS030",
+      "_copy": {
+        "name": "Cinder Parcel Imp",
+        "source": "SBS030"
+      },
+      "hp": {
+        "average": 22
+      },
+      "dex": 16
+    }
+  ],
+  "spell": [
+    {
+      "name": "Courier Spark",
+      "source": "SBS030",
+      "level": 0,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "spellAttack": [
+        "R"
+      ],
+      "damageInflict": [
+        "fire"
+      ],
+      "entries": [
+        "A ranged spell attack deals {@damage 1d8} fire damage. Original test cantrip."
+      ]
+    },
+    {
+      "name": "Dispatch Patch",
+      "source": "SBS030",
+      "level": 1,
+      "school": "A",
+      "time": [
+        {
+          "number": 1,
+          "unit": "bonus"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 30
+        }
+      },
+      "components": {
+        "v": true
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "entries": [
+        "A creature regains {@dice 1d8 + 2} hit points. Original test spell."
+      ]
+    }
+  ],
+  "race": [
+    {
+      "name": "Bananaslug Kin",
+      "source": "SBS030",
+      "edition": "one",
+      "size": [
+        "S",
+        "M"
+      ],
+      "speed": 30,
+      "resist": [
+        "poison"
+      ],
+      "languageProficiencies": [
+        {
+          "common": true,
+          "choose": {
+            "from": [
+              "gnomish",
+              "elvish"
+            ],
+            "count": 1
+          }
+        }
+      ],
+      "entries": [
+        {
+          "name": "Slime Step",
+          "entries": [
+            "Your heritage makes crowded mailrooms feel like home. Passive roleplay feature for native Item Grant testing."
+          ]
+        }
+      ]
+    }
+  ],
+  "background": [
+    {
+      "name": "Dispatch Apprentice",
+      "source": "SBS030",
+      "edition": "one",
+      "skillProficiencies": [
+        {
+          "choose": {
+            "from": [
+              "arcana",
+              "investigation"
+            ],
+            "count": 1
+          }
+        }
+      ],
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "int",
+                "wis",
+                "cha"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "entries": [
+        {
+          "name": "Feature: Sealed Delivery",
+          "entries": [
+            "You can identify ordinary mail seals used by your guild. This passive feature is granted by the background."
+          ]
+        }
+      ]
+    }
+  ],
+  "class": [
+    {
+      "name": "Courier Adept",
+      "source": "SBS030",
+      "edition": "one",
+      "hd": {
+        "faces": 8
+      },
+      "casterProgression": "full",
+      "spellcastingAbility": "int",
+      "classFeatures": [
+        "Parcel Ward|Courier Adept|SBS030|1|SBS030"
+      ],
+      "entries": [
+        "An original courier mage class for testing class grants."
+      ]
+    }
+  ],
+  "classFeature": [
+    {
+      "name": "Parcel Ward",
+      "source": "SBS030",
+      "className": "Courier Adept",
+      "classSource": "SBS030",
+      "level": 1,
+      "entries": [
+        "Once per day, identify a forged mundane dispatch seal. Roleplay feature; no automatic use pool in this source record."
+      ]
+    }
+  ],
+  "item": [
+    {
+      "name": "Brass Dispatch Weight",
+      "source": "SBS030",
+      "type": "G",
+      "weight": 1,
+      "value": 100,
+      "entries": [
+        "A one-pound brass paperweight worth one gold piece. Original mundane source item."
+      ]
+    },
+    {
+      "name": "Dispatch Pike",
+      "source": "SBS030",
+      "type": "M",
+      "weaponCategory": "simple",
+      "dmg1": "1d8",
+      "dmg2": "1d10",
+      "dmgType": "P",
+      "property": [
+        "R",
+        "V"
+      ],
+      "weight": 5,
+      "value": 200,
+      "entries": [
+        "An original long-handled courier escort weapon. Native 1d8 piercing base damage, reach and versatile 1d10."
+      ]
+    },
+    {
+      "name": "Parcel Sling",
+      "source": "SBS030",
+      "type": "R",
+      "weaponCategory": "simple",
+      "dmg1": "1d4",
+      "dmgType": "B",
+      "range": "30/120",
+      "property": [
+        "A"
+      ],
+      "weight": 1,
+      "value": 100,
+      "entries": [
+        "An original courier sling. Native ranged weapon attack; pick ammunition in the native activity."
+      ]
+    }
+  ],
+  "subclass": [
+    {
+      "name": "Kiln Sealsmith",
+      "shortName": "Sealsmith",
+      "source": "SBS030",
+      "className": "Courier Adept",
+      "classSource": "SBS030",
+      "subclassFeatures": [
+        "Heatproof Seal|Courier Adept|SBS030|Sealsmith|SBS030|3|SBS030"
+      ],
+      "entries": [
+        "An original parcel-sealing specialty. Select alongside Courier Adept at level 3."
+      ]
+    }
+  ],
+  "subclassFeature": [
+    {
+      "name": "Heatproof Seal",
+      "source": "SBS030",
+      "className": "Courier Adept",
+      "classSource": "SBS030",
+      "subclassShortName": "Sealsmith",
+      "subclassSource": "SBS030",
+      "level": 3,
+      "entries": [
+        "Your guild seal stays readable after ordinary boiler heat. This native level-3 grant is a passive test feature; it supplies no damage resistance."
+      ]
+    }
+  ]
+}

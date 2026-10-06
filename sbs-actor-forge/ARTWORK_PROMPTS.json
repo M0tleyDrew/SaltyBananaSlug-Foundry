@@ -1,0 +1,273 @@
+{
+  "release": "1.0.0",
+  "author": "SaltyBananaSlug",
+  "generation_mode": "built-in image_gen",
+  "asset_count": 24,
+  "assets": [
+    {
+      "key": "pip-ashpost",
+      "name": "Pip Ashpost",
+      "kind": "actor",
+      "path": "modules/sbs-actor-forge/assets/art/pip-ashpost.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. Pip Ashpost, a small humanoid slug courier with moss-green skin, expressive amber eyes on short eyestalks, a warm earnest face, a worn teal courier coat, a leather mail satchel and one blue glowing wax-seal stamp held near the chest. A personable original fantasy character portrait.",
+      "width": 768,
+      "height": 768,
+      "bytes": 163110,
+      "sha256": "ffaca4c9e7ebff044d7b967268d145e6e28107c2f04fe05b6910f349f3ddb0cf"
+    },
+    {
+      "key": "tier-eleven",
+      "name": "Tier Eleven",
+      "kind": "actor",
+      "path": "modules/sbs-actor-forge/assets/art/tier-eleven.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. An original humanoid Signal Slug mage with glossy moss-brown slug skin, exactly two prominent amber eyes on short eyestalks, a friendly clever face without human eyes, a royal-blue courier cloak, brass clasp and a crackling electric-blue spell cupped in both hands. Chest-up fantasy character portrait in a candlelit mail depot. Must be visibly a slug humanoid, not a human, elf or dwarf. Distinct mature face and costume, unlike Pip's teal coat.",
+      "width": 768,
+      "height": 768,
+      "bytes": 157538,
+      "sha256": "b038a523d449605b720a4e186973fca1537560a15ea498c3474a27c788355af5"
+    },
+    {
+      "key": "tier-seventeen",
+      "name": "Tier Seventeen",
+      "kind": "actor",
+      "path": "modules/sbs-actor-forge/assets/art/tier-seventeen.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. An original elderly humanoid Signal Slug dispatch master with green-gold slug skin, exactly two prominent amber eyes on short eyestalks, a short silver beard below its slug mouth, scarlet-and-brass armor and glowing golden envelopes orbiting one raised hand. Calm powerful chest-up fantasy portrait in a dark magical postal depot. Must be visibly a slug humanoid, not a human, elf or dwarf. Distinct veteran face and costume, unlike Pip's teal coat.",
+      "width": 768,
+      "height": 768,
+      "bytes": 163886,
+      "sha256": "8daa4bb775934bd6448f914ebd0a012d97438a48926f24931c102bad57e41178"
+    },
+    {
+      "key": "source-pip",
+      "name": "Source Pip",
+      "kind": "actor",
+      "path": "modules/sbs-actor-forge/assets/art/source-pip.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. An original friendly humanoid slug courier with olive-green skin, two amber eyestalks, a violet velvet waistcoat, brass messenger badges and a rolled glowing green map held near the chest. Broad readable portrait, morning mist in a fantastical postal depot. This is the source-import variant of Pip Ashpost; give it a unique pose and costume.",
+      "width": 768,
+      "height": 768,
+      "bytes": 156404,
+      "sha256": "5e8aae31d72f53c14fc0d6e6550f5127b154cb81380c02a62226219fcf24ddfb"
+    },
+    {
+      "key": "courier-spark",
+      "name": "Courier Spark",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/courier-spark.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A single vivid electric-blue lightning spark stamping a hovering cream parchment envelope with a bright tiny circular magical seal. Arcane spell icon, dramatic readable lightning zigzag and envelope silhouette.",
+      "width": 512,
+      "height": 512,
+      "bytes": 55396,
+      "sha256": "13423c2c4bb02fddc3d0542915ae3f30d22c500bd80ae450706b642a7d15c4fb"
+    },
+    {
+      "key": "dispatch-burst",
+      "name": "Dispatch Burst",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/dispatch-burst.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A glowing violet wax postage seal exploding outward in a single dramatic ring of purple force energy; a few tiny parchment fragments in the halo. Distinct arcane force-damage spell icon with a bold central seal.",
+      "width": 512,
+      "height": 512,
+      "bytes": 97354,
+      "sha256": "dbdd689e3277ccf54f8f775d1774266418ca98fc0bc24e24e52d8ef26f12e4b6"
+    },
+    {
+      "key": "patchwork-mend",
+      "name": "Patchwork Mend",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/patchwork-mend.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A warm golden magical sewing needle pulling luminous gold thread through a small torn teal cloth patch. A bright healing glow repairs the tear. Distinct gentle restoration spell icon with a bold cloth-and-thread silhouette.",
+      "width": 512,
+      "height": 512,
+      "bytes": 90340,
+      "sha256": "06a17b0bc1cbc3782fbbf449f482af451687b21ca31c6e00e3d3b41b40e13da3"
+    },
+    {
+      "key": "parcel-glow",
+      "name": "Parcel Glow",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/parcel-glow.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A small square paper-wrapped parcel tied in twine levitating with a brilliant cyan light shining from its seams, softly lighting a dark depot shelf. Simple magical light spell icon; package clearly dominates the image.",
+      "width": 512,
+      "height": 512,
+      "bytes": 60444,
+      "sha256": "94c6eed48d48e3f5b96d0dfce5af4f4db59f285195eebe53b7ce5c5d24a50a36"
+    },
+    {
+      "key": "beacon-ping",
+      "name": "Beacon Ping",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/beacon-ping.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A compact brass lantern beacon with a bright amber core casting three concentric rings of warm light into surrounding night mist. Clear ringing-beacon spell icon, bold lantern silhouette.",
+      "width": 512,
+      "height": 512,
+      "bytes": 66832,
+      "sha256": "ef0f880ed39d323b077456c1876cd258c4371532896584c6770ca607826d79f4"
+    },
+    {
+      "key": "smoke-step",
+      "name": "Smoke Step",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/smoke-step.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One pair of glowing violet boot-shaped footprints disappearing into a curling plume of purple magical smoke, suggesting a short supernatural step between points. Clear smoke-and-footprints spell icon on dark stone.",
+      "width": 512,
+      "height": 512,
+      "bytes": 78084,
+      "sha256": "712f6a4a1e6b47b465c3e7f893ad6423584557ab2691179eafc36835a976ae33"
+    },
+    {
+      "key": "depot-seal",
+      "name": "Depot Seal",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/depot-seal.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A single large red wax seal stamped with a simple geometric shield symbol on folded cream parchment, encircled by a golden arcane binding glow. Protective seal spell icon. Absolutely no text or letters on parchment.",
+      "width": 512,
+      "height": 512,
+      "bytes": 84566,
+      "sha256": "3d322efe16be834865e9fc0653fed56aa9f6ded96c71858ca39be4ca169ec988"
+    },
+    {
+      "key": "parcel-ward",
+      "name": "Parcel Ward",
+      "kind": "spell",
+      "path": "modules/sbs-actor-forge/assets/art/parcel-ward.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A small twine-wrapped brown parcel suspended inside a bright emerald transparent magical shield sphere, green facets sparkling around its edges. Bold protective ward spell icon.",
+      "width": 512,
+      "height": 512,
+      "bytes": 98188,
+      "sha256": "51bbbdbb2efbd1f17f3e503d1e61bad86da55a1f3bcce5ba4d13e59f845df597"
+    },
+    {
+      "key": "signal-slug",
+      "name": "Signal Slug",
+      "kind": "species",
+      "path": "modules/sbs-actor-forge/assets/art/signal-slug.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One friendly small luminous moss-green fantasy slug with two expressive amber eyestalks and a soft emerald glow along its back, perched on a dark stone beside a tiny glowing trail. A charming species icon; a slug creature without clothing or a shell.",
+      "width": 512,
+      "height": 512,
+      "bytes": 71518,
+      "sha256": "49297fff40cb774f95a22823da550e521b8babef9fafcc05d37530361d052a9c"
+    },
+    {
+      "key": "depot-surveyor",
+      "name": "Depot Surveyor",
+      "kind": "background",
+      "path": "modules/sbs-actor-forge/assets/art/depot-surveyor.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A brass surveyor compass, rolled parchment route map and small wooden depot model arranged as a clear single cluster on a dark desk. A fantasy surveyor background icon. Map has abstract route lines and no letters.",
+      "width": 512,
+      "height": 512,
+      "bytes": 94020,
+      "sha256": "503192f184f184827e48c27b1d8d0d645405b2d32c6a463bb73d09a165ffba48"
+    },
+    {
+      "key": "arcane-courier",
+      "name": "Arcane Courier",
+      "kind": "class",
+      "path": "modules/sbs-actor-forge/assets/art/arcane-courier.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One worn enchanted teal leather mail satchel with brass buckles, three luminous cream envelopes hovering above its open flap and a small blue magic halo. A bold arcane courier class emblem.",
+      "width": 512,
+      "height": 512,
+      "bytes": 78670,
+      "sha256": "7dd52d10ce8e2a639ac3b8907838ff73642683d6b584f493bf75c1b99b92805e"
+    },
+    {
+      "key": "safe-routing",
+      "name": "Safe Routing",
+      "kind": "feature",
+      "path": "modules/sbs-actor-forge/assets/art/safe-routing.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. An unrolled parchment map with one brightly glowing golden route winding safely around dark red obstacles and ending at a small luminous brass depot marker. Bold navigation feature icon. No words or numbers anywhere on the map.",
+      "width": 512,
+      "height": 512,
+      "bytes": 104988,
+      "sha256": "7d1e2ce010113bfc97aa22eeed847c21756822fb11db2ae91b983d899c6c2e0b"
+    },
+    {
+      "key": "bright-trail",
+      "name": "Signal Slug — Bright Trail",
+      "kind": "feature",
+      "path": "modules/sbs-actor-forge/assets/art/bright-trail.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. A brilliant emerald luminous slug trail curving across dark cobblestones, ending in a tiny star-like green glow, with fresh dew sparkling along the line. The winding glowing trail itself dominates the composition; distinct passive feature icon.",
+      "width": 512,
+      "height": 512,
+      "bytes": 102604,
+      "sha256": "219adc93dae7559068631dccbd74fbded3acf4a99ac56f8545ed46dd4a22b42e"
+    },
+    {
+      "key": "route-ledger",
+      "name": "Depot Surveyor — Feature: Route Ledger",
+      "kind": "feature",
+      "path": "modules/sbs-actor-forge/assets/art/route-ledger.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One open dark brown leather route ledger with a brass clasp, parchment pages showing abstract blue map lines and a crimson ribbon bookmark; warm candlelight on its edges. Distinct background feature icon. Absolutely no writing, letters or numbers.",
+      "width": 512,
+      "height": 512,
+      "bytes": 94726,
+      "sha256": "0be6353debab702654acaf8115701593cd7a54a01f1cb052ac0f2a00ef14dd4b"
+    },
+    {
+      "key": "route-leather",
+      "name": "Route Leather",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/route-leather.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One complete brown leather light-armor cuirass with fitted straps, shoulder pads and a small brass messenger clasp displayed upright against a shadowy depot wall. Clear individual armor item icon; no person wearing it.",
+      "width": 512,
+      "height": 512,
+      "bytes": 71734,
+      "sha256": "2a3e2454694c73a980268a8345227b72c7940fa755c8ef040059e64bb7e993a2"
+    },
+    {
+      "key": "sorting-coat",
+      "name": "Sorting Coat",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/sorting-coat.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One royal-blue padded medium-armor sorting coat with overlapping riveted brass chest plates, sturdy leather straps and a high collar displayed upright. Clear individual armor item icon; no wearer.",
+      "width": 512,
+      "height": 512,
+      "bytes": 69640,
+      "sha256": "a23866a40996225ee844f6170de2bd2d335b4d0daf314ff33732a734800948c0"
+    },
+    {
+      "key": "boiler-plate",
+      "name": "Boiler Plate",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/boiler-plate.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One heavy iron-and-copper plate-armor breastplate with large industrial rivets, broad steel shoulder plates and a warm copper patina displayed upright against a dark stone depot. Clear heavy armor item icon; no wearer.",
+      "width": 512,
+      "height": 512,
+      "bytes": 87870,
+      "sha256": "4ecf6c26022044e2e6423c931a292374758cc260f313c494c9745f7718cc35ae"
+    },
+    {
+      "key": "sorting-shield",
+      "name": "Sorting Shield",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/sorting-shield.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One broad kite-shaped brass and dark teal shield with riveted edges and an embossed simple envelope symbol, leaning upright against dark stone. Clear individual shield item icon.",
+      "width": 512,
+      "height": 512,
+      "bytes": 84892,
+      "sha256": "b0f91fa34caae066733e72e4d45fe1664c704085f881681fd101cf83f2cdbb58"
+    },
+    {
+      "key": "courier-broth",
+      "name": "Courier Broth",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/courier-broth.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One round amber-glass potion bottle filled with warm golden healing broth, a wooden cork, a tiny tied sprig of green herbs, gentle glowing motes around the liquid. Clear healing consumable item icon; no label or text.",
+      "width": 512,
+      "height": 512,
+      "bytes": 79170,
+      "sha256": "a17c23df59379a7f5e92e5815d6a03202bd43698db99d0cd6d2a26facbf90d16"
+    },
+    {
+      "key": "dispatch-wand",
+      "name": "Dispatch Wand",
+      "kind": "item",
+      "path": "modules/sbs-actor-forge/assets/art/dispatch-wand.webp",
+      "prompt": "Use case: stylized-concept. Asset type: individual square Foundry VTT fantasy RPG artwork. Style: richly painted tabletop fantasy illustration, hand-painted detail, clear bold silhouette, centered subject, warm brass highlights with dark atmospheric surroundings, readable at icon size. Composition: one standalone square image, subject fills most of frame with safe margins; no panels, no collage, no montage. No words, lettering, numbers, watermark, frame or logo. One original enchanted postal wand: slim dark walnut shaft, polished brass fittings, a round blue wax-stamp tip radiating a small force-magic halo, six small amber charge beads along the handle. Full wand is visible diagonally across the square.",
+      "width": 512,
+      "height": 512,
+      "bytes": 53372,
+      "sha256": "f7067f856ecdac16944b193d73bb110cfa326aac1ff71783a67ec17c91fe41e0"
+    }
+  ],
+  "artwork_origin_release": "0.4.1"
+}

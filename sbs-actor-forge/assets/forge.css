@@ -1,0 +1,43 @@
+.sbs-forge{color:#efe9dd;background:#182524;padding:12px;border:2px solid #d9a24a;border-radius:8px}.sbs-forge h2{color:#ffd47a}.sbs-forge table{width:100%}.sbs-forge td{padding:5px;vertical-align:top}.sbs-forge input,.sbs-forge select{background:#faf4e9;color:#182524}.sbs-forge .error{color:#ffacac}.sbs-forge .warning{color:#ffd47a}.sbs-forge .scroll{max-height:440px;overflow:auto}.sbs-forge button{color:#eee}.sbs-forge pre{white-space:pre-wrap;max-height:280px;overflow:auto}
+
+.sbs-forge [hidden]{display:none!important}
+
+.sbs-forge td label{display:block;margin:6px 0}.sbs-forge td label>input,.sbs-forge td label>select{display:block;width:100%}.sbs-forge .account-permissions{margin-top:10px;border:1px solid #d9a24a;padding:8px}.sbs-forge summary{cursor:pointer;color:#ffd47a}.sbs-forge .account-permissions small{display:block;line-height:1.4}
+.sbs-forge-settings-button{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;width:100%;border:1px solid #d7a34d!important}.sbs-forge-settings-button img{width:28px;height:28px;border:0}.sbs-forge .forge-brand{width:56px;height:56px;border:0;vertical-align:middle;margin-right:8px}
+.sbs-forge label{display:block;margin:8px 0}.sbs-forge input:not([type=checkbox]):not([type=radio]),.sbs-forge select,.sbs-forge textarea{width:100%;max-width:100%;color:#182524;background:#faf4e9}.sbs-forge input[type=checkbox]{width:auto;margin-right:6px}.sbs-forge small{display:block;margin:6px 0;line-height:1.4}.sbs-forge .change-list p{padding:7px 9px;background:#223532;border-left:2px solid #d9a24a}.sbs-forge .source-record{padding:10px;border-bottom:1px solid #54736b}.sbs-forge .detail-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;padding:10px;border:1px solid #54736b;margin:8px 0}.sbs-forge .detail-row textarea{grid-column:1 / 3;min-height:90px}.sbs-forge .detail-row [data-remove]{grid-column:3;grid-row:1 / 3;align-self:center}.sbs-forge button{background:#30443d;color:#fff}.sbs-details-sheet-button{display:inline-flex!important;gap:5px;align-items:center;flex:none;width:auto!important;font-size:11px;border:1px solid #d9a24a;background:#182524;color:#ffd47a;padding:3px 6px;margin-left:8px}.sbs-details-sheet-button img{width:18px;height:18px;border:0}.sbs-forge .scroll{max-height:540px}.sbs-forge [data-diff]{font-size:12px}
+
+/* Keep every Forge dialog inside the viewport, including its longest previews. */
+.sbs-forge{box-sizing:border-box;max-width:100%;max-height:calc(100vh - 170px);overflow:auto;font-size:14px;line-height:1.4;min-height:0}
+.sbs-forge .scroll{max-height:min(540px,55vh);overflow:auto}
+.sbs-forge .portrait-control{display:flex;align-items:center;gap:6px;min-width:0}
+.sbs-forge .portrait-control input{min-width:0;flex:1}
+.sbs-forge .portrait-control button{width:auto;flex:none}
+.sbs-forge .portrait-preview{width:48px;height:48px;object-fit:contain;border:0}
+.sbs-forge .conflict-choice{border:1px solid #d9a24a;padding:8px;margin:8px 0}
+
+/* Native Biography/Description stays the sole sheet tab. Only SBS content is styled. */
+.tab.sbs-biography-host,.sbs-biography-host[role="tabpanel"],section.sbs-biography-host,.sbs-biography-host{overflow-y:auto!important;overflow-x:hidden;min-height:0;scrollbar-gutter:stable}
+.tab.sbs-biography-host>.sbs-biography,.sbs-biography-host>.sbs-biography{flex:0 0 auto;grid-column:1 / -1}
+.sbs-biography{box-sizing:border-box;max-width:100%;min-width:0;margin:16px 0 8px;padding:12px;border:1px solid #b68c45;border-radius:6px;background:#fff;color:#000;font-size:14px;line-height:1.4;text-transform:none;letter-spacing:normal}
+.sbs-biography *{box-sizing:border-box}
+.sbs-biography .sbs-biography-heading{display:flex;align-items:center;gap:8px;margin-bottom:8px;position:static}
+.sbs-biography .sbs-biography-heading img{width:26px;height:26px;border:0}
+.sbs-biography h3{font-size:16px;margin:0;border:0}
+.sbs-biography h4{font-size:14px;margin:14px 0 4px}
+.sbs-biography .sbs-detail-hint{font-size:12px;line-height:1.4;margin:4px 0 8px}
+.sbs-biography-scroll{max-height:clamp(160px,42vh,420px);overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:6px;min-width:0}
+.sbs-detail-entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:8px 0;padding:10px;min-width:0;border:1px solid #8b806e;border-radius:4px}
+.sbs-biography .sbs-detail-entry label{display:block;font-size:12px;font-weight:normal;text-transform:none;letter-spacing:normal;margin:0;min-width:0}
+.sbs-biography input,.sbs-biography textarea{display:block;width:100%;max-width:100%;min-width:0;margin:3px 0 0;padding:6px;font:normal 14px/1.4 Arial,sans-serif;letter-spacing:normal;text-transform:none;color:#000!important;-webkit-text-fill-color:#000;opacity:1!important;background:#fff;border:1px solid #8b806e;border-radius:3px}
+.sbs-biography input{height:32px}
+.sbs-biography textarea{height:100px;min-height:72px;max-height:320px;resize:vertical;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.sbs-biography .sbs-detail-value{grid-column:1 / -1}
+.sbs-biography button{height:auto;min-height:30px;width:auto;margin:0;padding:5px 9px;font:normal 12px/1.4 Arial,sans-serif;text-transform:none;letter-spacing:normal;white-space:normal}
+.sbs-biography .sbs-detail-remove{justify-self:start;grid-column:1 / -1}
+.sbs-biography-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid #8b806e;position:static}
+.sbs-biography [data-sbs-status]{font-size:12px;min-width:0}
+@media(max-width:600px){.sbs-detail-entry{grid-template-columns:minmax(0,1fr)}.sbs-biography{padding:8px}}
+
+/* Preserve readable black text in native light/dark themes and read-only sheets. */
+.sbs-biography h3,.sbs-biography h4,.sbs-biography label,.sbs-biography .sbs-detail-hint,.sbs-biography [data-sbs-status]{color:#000!important;opacity:1!important}
+.sbs-biography button{color:#000!important;background:#f3eee3;border:1px solid #8b806e}

@@ -1,0 +1,9 @@
+PASS: upstream cantrip tier calculation and DamageData produce 1d6/2d6/3d6/4d6 at all tier boundaries
+PASS: upstream limited-use cantrip grants consume their own uses and require no spell slot
+PASS: upstream DamageData scales damage/healing and preserves a fixed +2 bonus
+PASS: upstream SpellConfigurationData gives innate grants separate LR/SR uses and native activities require no class slot
+PASS: upstream class spell grant sets sourceClass, INT and always-prepared status while retaining slot casting
+PASS: upstream slot spell with an optional free-use pool creates its native Forward activity
+PASS: upstream advancement class restrictions separate original-class and multiclass proficiencies
+PASS: upstream Trait paths update actual native saves, tools, armor and weapons
+PASS: upstream item-use consumption decrements potion stacks, deletes the final bottle and spends wand charges without deleting the wand

@@ -1,0 +1,586 @@
+{
+  "spell": [
+    {
+      "name": "Courier Spark",
+      "source": "SBS050",
+      "level": 0,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "A blue spark stamps a target with a singed delivery number. Make a ranged spell attack. On a hit, deal {@damage 1d6} lightning damage. The damage is 2d6 at level 5, 3d6 at level 11, and 4d6 at level 17."
+      ],
+      "spellAttack": [
+        "R"
+      ],
+      "damageInflict": [
+        "lightning"
+      ],
+      "scalingLevelDice": {
+        "label": "lightning damage",
+        "scaling": {
+          "1": "1d6",
+          "5": "2d6",
+          "11": "3d6",
+          "17": "4d6"
+        }
+      },
+      "img": "modules/sbs-actor-forge/assets/art/courier-spark.webp"
+    },
+    {
+      "name": "Dispatch Burst",
+      "source": "SBS050",
+      "level": 1,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "Make a ranged spell attack against a creature. On a hit, the parcel seal explodes for {@damage 2d6} force damage."
+      ],
+      "spellAttack": [
+        "R"
+      ],
+      "damageInflict": [
+        "force"
+      ],
+      "entriesHigherLevel": [
+        {
+          "name": "At Higher Levels",
+          "entries": [
+            "The damage increases by {@scaledamage 1d6|1-9|1d6} for each slot level above 1st."
+          ]
+        }
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/dispatch-burst.webp"
+    },
+    {
+      "name": "Patchwork Mend",
+      "source": "SBS050",
+      "level": 1,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "The selected courier regains {@dice 1d4 + 2} hit points as a warm scrap of repair cloth settles over a wound."
+      ],
+      "entriesHigherLevel": [
+        {
+          "name": "At Higher Levels",
+          "entries": [
+            "The healing increases by {@dice 1d4} for each slot level above 1st."
+          ]
+        }
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/patchwork-mend.webp"
+    },
+    {
+      "name": "Parcel Glow",
+      "source": "SBS050",
+      "level": 0,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "A parcel gives off harmless blue light. This custom utility cantrip is granted by the species; its light effect is descriptive."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/parcel-glow.webp"
+    },
+    {
+      "name": "Beacon Ping",
+      "source": "SBS050",
+      "level": 1,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "A short audible beacon marks the target. The target must make a Dexterity saving throw or take {@damage 1d4} thunder damage. This species grant is usable once per long rest and uses the ability selected during advancement."
+      ],
+      "savingThrow": [
+        "dexterity"
+      ],
+      "damageInflict": [
+        "thunder"
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/beacon-ping.webp"
+    },
+    {
+      "name": "Smoke Step",
+      "source": "SBS050",
+      "level": 2,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "The courier folds a trail of harmless smoke around one short hop. This custom utility spell tests a once-per-short-rest species grant; its movement effect is descriptive."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/smoke-step.webp"
+    },
+    {
+      "name": "Depot Seal",
+      "source": "SBS050",
+      "level": 1,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "A decorative routing seal appears on a parcel. This utility spell tests the background spell choice and always-prepared status."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/depot-seal.webp"
+    },
+    {
+      "name": "Parcel Ward",
+      "source": "SBS050",
+      "level": 1,
+      "school": "V",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "entries": [
+        "A parcel glows with a decorative protective mark. This utility spell is the alternate background choice; its effect is descriptive."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/parcel-ward.webp"
+    }
+  ],
+  "class": [
+    {
+      "name": "Arcane Courier",
+      "source": "SBS050",
+      "hd": {
+        "faces": 8
+      },
+      "casterProgression": "full",
+      "spellcastingAbility": "int",
+      "proficiency": [
+        "int",
+        "wis"
+      ],
+      "startingProficiencies": {
+        "armor": [
+          "light",
+          "medium",
+          "shields"
+        ],
+        "weapons": [
+          "simple"
+        ],
+        "tools": [
+          "smith's tools"
+        ],
+        "skills": [
+          {
+            "choose": {
+              "from": [
+                "arcana",
+                "history",
+                "investigation",
+                "perception"
+              ],
+              "count": 2
+            }
+          }
+        ]
+      },
+      "multiclassing": {
+        "requirements": {
+          "int": 13
+        },
+        "proficienciesGained": {
+          "armor": [
+            "light"
+          ],
+          "weapons": [
+            "simple"
+          ]
+        }
+      },
+      "classFeatures": [
+        "Safe Routing|Arcane Courier|SBS050|1|SBS050"
+      ],
+      "additionalSpells": [
+        {
+          "ability": "int",
+          "prepared": {
+            "1": [
+              "Dispatch Burst|SBS050"
+            ]
+          }
+        }
+      ],
+      "entries": [
+        "A custom test class with full spell slots. Starting saves/skills belong only to the original class. Secondary class grants are a separate native advancement."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/arcane-courier.webp"
+    }
+  ],
+  "classFeature": [
+    {
+      "name": "Safe Routing",
+      "source": "SBS050",
+      "className": "Arcane Courier",
+      "classSource": "SBS050",
+      "level": 1,
+      "entries": [
+        "You know how to keep the test parcels facing upward. This passive custom feature tests Catalog-backed class feature granting."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/safe-routing.webp"
+    }
+  ],
+  "race": [
+    {
+      "name": "Signal Slug",
+      "source": "SBS050",
+      "size": [
+        "S"
+      ],
+      "speed": {
+        "walk": 30
+      },
+      "darkvision": 60,
+      "languageProficiencies": [
+        {
+          "common": true
+        }
+      ],
+      "additionalSpells": [
+        {
+          "ability": {
+            "choose": [
+              "int",
+              "cha"
+            ]
+          },
+          "known": {
+            "1": [
+              "Parcel Glow|SBS050#c"
+            ]
+          },
+          "innate": {
+            "3": {
+              "daily": {
+                "1e": [
+                  "Beacon Ping|SBS050"
+                ]
+              }
+            },
+            "5": {
+              "rest": {
+                "1e": [
+                  "Smoke Step|SBS050"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Bright Trail",
+          "entries": [
+            "You can leave decorative luminous tracks on packaging. This passive custom feature confirms that the species feature still appears alongside its native spell grants."
+          ],
+          "img": "modules/sbs-actor-forge/assets/art/bright-trail.webp"
+        }
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/signal-slug.webp"
+    }
+  ],
+  "background": [
+    {
+      "name": "Depot Surveyor",
+      "source": "SBS050",
+      "skillProficiencies": [
+        {
+          "athletics": true,
+          "persuasion": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "cartographer's tools": true,
+          "anyGamingSet": 1
+        }
+      ],
+      "languageProficiencies": [
+        {
+          "gnomish": true
+        }
+      ],
+      "additionalSpells": [
+        {
+          "ability": "int",
+          "prepared": {
+            "1": [
+              {
+                "choose": {
+                  "from": [
+                    "Depot Seal|SBS050",
+                    "Parcel Ward|SBS050"
+                  ],
+                  "count": 1
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Feature: Route Ledger",
+          "entries": [
+            "You maintain a reliable list of depot routes. This passive background feature has no combat effect."
+          ],
+          "img": "modules/sbs-actor-forge/assets/art/route-ledger.webp"
+        }
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/depot-surveyor.webp"
+    }
+  ],
+  "item": [
+    {
+      "name": "Route Leather",
+      "source": "SBS050",
+      "type": "LA",
+      "ac": 12,
+      "weight": 10,
+      "value": 4500,
+      "entries": [
+        "Light test armor. Base AC 12 plus your full Dexterity modifier."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/route-leather.webp"
+    },
+    {
+      "name": "Sorting Coat",
+      "source": "SBS050",
+      "type": "MA",
+      "ac": 14,
+      "stealth": true,
+      "weight": 20,
+      "value": 8000,
+      "entries": [
+        "Medium test armor. Base AC 14 plus Dexterity, maximum +2. Disadvantage on Stealth checks."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/sorting-coat.webp"
+    },
+    {
+      "name": "Boiler Plate",
+      "source": "SBS050",
+      "type": "HA",
+      "ac": 17,
+      "strength": 15,
+      "stealth": true,
+      "weight": 55,
+      "value": 35000,
+      "entries": [
+        "Heavy test armor. Base AC 17, no Dexterity bonus. Strength 15 required. Disadvantage on Stealth."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/boiler-plate.webp"
+    },
+    {
+      "name": "Sorting Shield",
+      "source": "SBS050",
+      "type": "S",
+      "ac": 2,
+      "weight": 6,
+      "value": 1000,
+      "entries": [
+        "A shield which adds 2 AC while equipped."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/sorting-shield.webp"
+    },
+    {
+      "name": "Courier Broth",
+      "source": "SBS050",
+      "type": "P",
+      "edition": "one",
+      "weight": 0.5,
+      "value": 1500,
+      "entries": [
+        "As a bonus action, drink the broth to regain {@dice 2d4 + 2} hit points. Each bottle is consumed when used."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/courier-broth.webp"
+    },
+    {
+      "name": "Dispatch Wand",
+      "source": "SBS050",
+      "type": "WD",
+      "weight": 1,
+      "rarity": "uncommon",
+      "reqAttune": true,
+      "charges": 6,
+      "recharge": "dawn",
+      "rechargeAmount": "{@dice 1d4 + 2}",
+      "attachedSpells": {
+        "charges": {
+          "2": [
+            "Dispatch Burst|SBS050"
+          ]
+        }
+      },
+      "entries": [
+        "The wand has six charges and requires attunement. Spend two charges to cast Dispatch Burst at its base level using your spellcasting ability. It recovers 1d4 + 2 charges at dawn, to a maximum of six. This test item has no last-charge destruction rule."
+      ],
+      "img": "modules/sbs-actor-forge/assets/art/dispatch-wand.webp"
+    }
+  ]
+}
