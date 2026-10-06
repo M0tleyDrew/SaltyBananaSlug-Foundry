@@ -1,0 +1,39 @@
+{
+  "id": "saltybananaslug-scene-piles",
+  "title": "SaltyBananaSlug's Scene Piles",
+  "description": "Convert Item Piles into draggable Item-link Journals, optionally pin them to Scenes, and rebuild Item Piles from linked Items in Journals.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "esmodules": [
+    "scripts/pile-journal-bridge.js"
+  ],
+  "styles": [
+    "styles/pile-journal-bridge.css"
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "item-piles",
+        "type": "module"
+      }
+    ],
+    "recommends": [
+      {
+        "id": "itempilesdnd5e",
+        "type": "module"
+      }
+    ]
+  },
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-scene-piles",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-scene-piles.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-scene-piles-v1.0.0.zip"
+}
