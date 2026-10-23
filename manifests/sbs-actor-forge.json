@@ -1,0 +1,39 @@
+{
+  "id": "sbs-actor-forge",
+  "title": "SaltyBananaSlug’s Actor Forge",
+  "description": "World and compendium imports with Undo, saved import presets, reusable source libraries and flexible inline Biography details. Distinct bundled artwork and native D&D5e mechanics.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0",
+          "maximum": "5.9.99"
+        }
+      }
+    ]
+  },
+  "scripts": [
+    "vendor/xlsx.full.min.js"
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "assets/forge.css"
+  ],
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/sbs-actor-forge",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/sbs-actor-forge.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/sbs-actor-forge-v1.0.0.zip"
+}
