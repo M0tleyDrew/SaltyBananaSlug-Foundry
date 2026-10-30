@@ -123,6 +123,9 @@ export async function openBiography(actor,{user,mount,onWarning=()=>{}}) {
   else if(typeof sheet.activateTab==='function')sheet.activateTab(location?.tab ?? tab,{group:location?.group ?? 'primary'});
   const panel=mount(sheet,sheet.element);
   if(!panel){onWarning('This sheet does not expose a supported Biography or Description field. Select the native D&D5e sheet in the actor’s sheet settings.');return;}
-  // Scroll the native tab to the inline section; the rest of Biography stays scrollable.
-  panel.scrollIntoView?.({block:'start',behavior:'smooth'});
+  // Opening Biography should show the native description, not skip over it
+  // to the appended SBS notes panel.
+  const root=rootOf(sheet,sheet.element);
+  const native=root?.querySelector('[data-target="system.details.biography.value"],[data-edit="system.details.biography.value"],[name="system.details.biography.value"]');
+  (native ?? location?.host ?? panel).scrollIntoView?.({block:'start',behavior:'smooth'});
 }

@@ -1,7 +1,7 @@
 import {folderLabel} from './folders.js';
 export const ID = 'sbs-actor-forge';
 export const VERSION = 2;
-export const BUILD = '1.0.0';
+export const BUILD = '1.0.2';
 export const clone = x => x === undefined ? undefined : JSON.parse(JSON.stringify(x));
 export const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const equal = (a,b) => stable(a) === stable(b);

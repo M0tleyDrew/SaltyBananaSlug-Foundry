@@ -90,6 +90,15 @@ test('vehicle notes use Description and the launcher activates native tabs witho
   await openBiography(s.actor,{user:s.env.user,mount:(app,html)=>mountBiography(app,html,s.env)});
   assert.deepEqual(calls,[{force:true,tab:'description'},['description','primary']]);assert.ok(s.panel);
 });
+test('NPC Biography shortcut scrolls to native Details rather than past the description to SBS notes',async()=>{
+  const s=await setup({type:'npc'}),scrolled=[];
+  const native=s.app.element.querySelector('[name="system.details.biography.value"]');
+  native.scrollIntoView=()=>scrolled.push('native');
+  s.panel.scrollIntoView=()=>scrolled.push('sbs');
+  s.actor.sheet={...s.app,render:async()=>{}};
+  await openBiography(s.actor,{user:s.env.user,mount:(app,html)=>mountBiography(app,html,s.env)});
+  assert.deepEqual(scrolled,['native']);
+});
 test('rendering long escaped notes retains the content without interpreting HTML',async()=>{
   const s=await setup();const text='<img src=x onerror=alert(1)> '+('Long lore line.\n'.repeat(300));
   const html=biographyHTML(s.actor,s.env,{public:[{section:'Lore',label:'Long',value:text}],private:[]});

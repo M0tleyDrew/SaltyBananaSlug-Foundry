@@ -14,6 +14,22 @@ export function fingerprint(doc) {
   function clean(v) { if(Array.isArray(v))return v.map(clean);if(v && typeof v==='object')return Object.fromEntries(Object.entries(v).filter(([k])=>k!=='_stats').map(([k,x])=>[k,clean(x)]));return v; }
   return stable(clean(doc.toObject ? doc.toObject() : doc));
 }
+
+// Check the persisted document, rather than trusting the pre-create payload.
+// Some import/migration hooks may omit native HTML fields during creation.
+export async function ensureBiography(actor,data) {
+  const expected=data.system?.details?.biography;
+  if(!expected || typeof expected!=='object')return;
+  const patch={};
+  for(const key of ['value','public']) {
+    if(typeof expected[key]!=='string' || !expected[key].trim())continue;
+    if(!actor.system?.details?.biography?.[key]?.trim())patch[`system.details.biography.${key}`]=expected[key];
+  }
+  if(!Object.keys(patch).length)return;
+  await actor.update(patch);
+  for(const path of Object.keys(patch))if(!actor.system?.details?.biography?.[path.split('.').at(-1)]?.trim())
+    throw Error(`Foundry did not retain ${path}. Biography import failed; check other actor import hooks.`);
+}
 function schemaData(data) {
   // Cast activities use a native UUID field. Validate portable Catalog references as Item UUIDs.
   const ids=new Map(catalogReferences(data).map((key,i)=>[key,'sbsSchema'+String(i).padStart(7,'0')]));
@@ -156,6 +172,7 @@ export async function importPlans(plans,env) {
       if(folders.preserved.has(p.key))result.data.flags[ID].baseline.fields.folder=old.flags[ID].baseline.fields.folder;
       t=await track('Actor',ids.get(p.key),old?.toObject() ?? null,{key:p.key,name:p.data.name});entries.set(p.key,t);
       actor=old ? await env.restore('Actor',old,{...result.data,_id:old.id}) : await env.create('Actor',{...result.data,_id:ids.get(p.key)});
+      await ensureBiography(actor,result.data);
       imported.set(p.key,actor);
       p.warnings.push(...result.conflicts,...await linkOrigins(actor));
       if(p.advance){
