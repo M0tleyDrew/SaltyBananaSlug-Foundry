@@ -1,0 +1,5379 @@
+[
+  {
+    "id": "aberrant-horror",
+    "name": "Aberrant Horror",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "aberrant-horror:aberrant-form",
+          "aberrant-horror:aberrant-mutation"
+        ],
+        "choose": 0,
+        "boons": [],
+        "flaws": [
+          "aberrant-horror:unstable-form"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "aberrant-horror:efficient-killer",
+          "aberrant-horror:writhing-tendrils"
+        ],
+        "flaws": [
+          "aberrant-horror:hideous-appearance-aberrant-horror"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "aberrant-horror:constricting-tendrils",
+          "aberrant-horror:terrifying-visage"
+        ],
+        "flaws": [
+          "aberrant-horror:unstable-existence"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "aberrant-horror:eldritch-aberration",
+          "aberrant-horror:poison-tendrils"
+        ],
+        "flaws": [
+          "aberrant-horror:entropic-abomination"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "aberrant-horror:aberrant-form",
+        "type": "aberrant-horror",
+        "name": "Aberrant Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 135,
+        "summary": "Adds Aberration type. First becoming Bloodied after either rest grants temporary HP equal to proficiency plus stage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "creatureType": "aberration",
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:aberrant-mutation",
+        "type": "aberrant-horror",
+        "name": "Aberrant Mutation",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 135,
+        "summary": "Proficiency + stage uses per short/long rest; Bonus Action selects a one-minute shell, eldritch-limb, or slime mutation. Changing mutation spends another use.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "chitinous-shell",
+            "name": "Chitinous shell",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "shell",
+            "duration": 60
+          },
+          {
+            "id": "eldritch-limbs",
+            "name": "Eldritch limbs",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "limbs",
+            "duration": 60
+          },
+          {
+            "id": "slimy-form",
+            "name": "Slimy form",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "slime",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:constricting-tendrils",
+        "type": "aberrant-horror",
+        "name": "Constricting Tendrils",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "aberrant-horror:writhing-tendrils"
+        ],
+        "spellcaster": false,
+        "page": 137,
+        "summary": "While tendrils are active, Bonus Action restrains an adjacent target after STR/DEX save; escape uses Athletics. Movement or another tendril use ends restraint.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "restrain-with-tendrils",
+            "name": "Restrain with tendrils",
+            "kind": "save",
+            "activation": "bonus",
+            "save": "str",
+            "dc": "8+@prof+@stage",
+            "range": 5,
+            "condition": "restrained",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:efficient-killer",
+        "type": "aberrant-horror",
+        "name": "Efficient Killer",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 135,
+        "summary": "Improves eldritch limbs: piercing offers a 20/60-foot d6×2 barb; bludgeoning/slashing add d8 and Slow/Graze mastery respectively.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:eldritch-aberration",
+        "type": "aberrant-horror",
+        "name": "Eldritch Aberration",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": true,
+        "page": 137,
+        "summary": "Once per turn after a limb hit, spend a spell slot for d6 per slot level in a selected elemental type; a rolled six knocks the target Prone.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "gate": "slots",
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:entropic-abomination",
+        "type": "aberrant-horror",
+        "name": "Entropic Abomination",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 137,
+        "summary": "Replaces Unstable Existence. Failed saves and the first Bloodied event after a long rest can worsen the current Unstable Form result.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-entropic-abomination",
+            "name": "Resolve Entropic Abomination",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "replaces": [
+          "aberrant-horror:unstable-existence"
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:hideous-appearance-aberrant-horror",
+        "type": "aberrant-horror",
+        "name": "Hideous Appearance (Aberrant Horror)",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 136,
+        "summary": "Stress can reveal the true appearance after a CON save: DC 13/16/20 at stages 2/3/4. Witness reactions require GM judgment.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-hideous-appearance-(aberrant-horror)",
+            "name": "Resolve Hideous Appearance (Aberrant Horror)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:poison-tendrils",
+        "type": "aberrant-horror",
+        "name": "Poison Tendrils",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "aberrant-horror:writhing-tendrils"
+        ],
+        "spellcaster": false,
+        "page": 137,
+        "summary": "Poison resistance and Poisoned immunity. Active tendrils can affect chosen adjacent creatures for 3d6 Poison at their turn start; CON save negates.",
+        "effects": [
+          {
+            "key": "system.traits.dr.value",
+            "value": "poison",
+            "mode": 2,
+            "when": "always"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "poisoned",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [
+          {
+            "id": "tendril-poison",
+            "name": "Tendril poison",
+            "kind": "save",
+            "activation": "special",
+            "save": "con",
+            "dc": "8+@prof+@stage",
+            "formula": "3d6",
+            "damageType": "poison",
+            "range": 5,
+            "onSave": "none"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:terrifying-visage",
+        "type": "aberrant-horror",
+        "name": "Terrifying Visage",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 136,
+        "summary": "Manifesting mutations/tendrils can frighten one seeing target within 30 feet for one minute; WIS save, with 24-hour immunity on success.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "terrifying-visage",
+            "name": "Terrifying visage",
+            "kind": "save",
+            "activation": "special",
+            "save": "wis",
+            "dc": "8+@prof+@stage",
+            "range": 30,
+            "condition": "frightened",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:unstable-existence",
+        "type": "aberrant-horror",
+        "name": "Unstable Existence",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 137,
+        "summary": "A natural 1–2 on a save against a spell reveals your appearance and may worsen your Unstable Form result.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-unstable-existence",
+            "name": "Resolve Unstable Existence",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:unstable-form",
+        "type": "aberrant-horror",
+        "name": "Unstable Form",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 135,
+        "summary": "After a damaging adventuring day, a long rest prompts d100 on the stage-specific Unstable Form table; the result lasts until the next long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-unstable-form",
+            "name": "Resolve Unstable Form",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "aberrant-horror:writhing-tendrils",
+        "type": "aberrant-horror",
+        "name": "Writhing Tendrils",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 136,
+        "summary": "Bonus Action, one minute, proficiency uses per short/long rest. Provides reaction push/attack interference and Bonus Action Disengage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "manifest-tendrils",
+            "name": "Manifest tendrils",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "tendrils",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "fey",
+    "name": "Fey",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "fey:fey-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "fey:servant-of-the-autumn-court",
+          "fey:servant-of-the-spring-court",
+          "fey:servant-of-the-summer-court",
+          "fey:servant-of-the-winter-court"
+        ],
+        "flaws": [
+          "fey:planar-binding-fey"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fey:magic-tricks",
+          "fey:two-faced"
+        ],
+        "flaws": [
+          "fey:queen-s-command"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fey:dreams-and-nightmares",
+          "fey:illusionary-cloak",
+          "fey:tooth-and-claw"
+        ],
+        "flaws": [
+          "fey:weakened-constitution"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fey:greater-magic-tricks",
+          "fey:twilight-glamour"
+        ],
+        "flaws": [
+          "fey:seasonally-affected"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "fey:dreams-and-nightmares",
+        "type": "fey",
+        "name": "Dreams and Nightmares",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Bonus Action, Humanoid within 30 feet, WIS save or Paralyzed for one minute. Repeat CON saves after damage/end turn; optional concentration penalizes those saves. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "dream-or-nightmare",
+            "name": "Dream or nightmare",
+            "kind": "save",
+            "activation": "bonus",
+            "save": "wis",
+            "dc": "8+@prof+@stage",
+            "range": 30,
+            "condition": "paralyzed",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:fey-form",
+        "type": "fey",
+        "name": "Fey Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "Adds Fey type. After a long rest, choose Acid, Cold, Fire, Lightning, Psychic, or Thunder resistance.",
+        "effects": [
+          {
+            "key": "system.traits.dr.value",
+            "value": "$resistance",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "resistance",
+            "label": "resistance",
+            "options": [
+              "acid",
+              "cold",
+              "fire",
+              "lightning",
+              "psychic",
+              "thunder"
+            ],
+            "count": 1,
+            "rest": "lr"
+          }
+        ],
+        "creatureType": "fey",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:greater-magic-tricks",
+        "type": "fey",
+        "name": "Greater Magic Tricks",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "fey:magic-tricks"
+        ],
+        "spellcaster": false,
+        "page": 141,
+        "summary": "Court determines one spell each at levels 3–5. Each can be cast once per long rest without slots/components; transformation save DC applies.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:illusionary-cloak",
+        "type": "fey",
+        "name": "Illusionary Cloak",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Magic action disguises your general-size humanoid appearance for one hour; DC 20 Investigation can expose the illusion. Unconsciousness or death ends it.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "illusionary-disguise",
+            "name": "Illusionary disguise",
+            "kind": "toggle",
+            "activation": "action",
+            "state": "disguise",
+            "duration": 3600
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:magic-tricks",
+        "type": "fey",
+        "name": "Magic Tricks",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Court determines a cantrip and level 1–2 spells. Each can be cast once per long rest without slots/components; transformation save DC applies.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:planar-binding-fey",
+        "type": "fey",
+        "name": "Planar Binding (Fey)",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "After either rest, the first save against an enemy spell has disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-planar-binding-(fey)",
+            "name": "Resolve Planar Binding (Fey)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:queen-s-command",
+        "type": "fey",
+        "name": "Queen's Command",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Tribute is due twice yearly. Rejected tribute imposes disadvantage on all d20 tests until atonement; unresolved failure can cause planar removal after one week.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-queen's-command",
+            "name": "Resolve Queen's Command",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:seasonally-affected",
+        "type": "fey",
+        "name": "Seasonally Affected",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 141,
+        "summary": "Death saves have disadvantage. Court determines an unavoidable damage vulnerability: Spring Necrotic, Summer Cold, Autumn Radiant, Winter Fire.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-seasonally-affected",
+            "name": "Resolve Seasonally Affected",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:servant-of-the-autumn-court",
+        "type": "fey",
+        "name": "Servant of the Autumn Court",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "Bonus Action teleport up to 30 feet; one eligible creature near departure/arrival takes d6 Poison. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:servant-of-the-spring-court",
+        "type": "fey",
+        "name": "Servant of the Spring Court",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "Bonus Action teleport up to 30 feet; one eligible creature near departure/arrival takes d6 Thunder. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:servant-of-the-summer-court",
+        "type": "fey",
+        "name": "Servant of the Summer Court",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "Bonus Action teleport up to 30 feet; one eligible creature near departure/arrival takes d6 Fire. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:servant-of-the-winter-court",
+        "type": "fey",
+        "name": "Servant of the Winter Court",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 139,
+        "summary": "Bonus Action teleport up to 30 feet; one eligible creature near departure/arrival takes d6 Cold. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:tooth-and-claw",
+        "type": "fey",
+        "name": "Tooth and Claw",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Bonus Action manifests d6 Slashing natural attacks for one minute. Conditional bonus attack; once per round may add 2d6 Psychic and force a stun save. Proficiency + stage uses per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "manifest-natural-weapons",
+            "name": "Manifest natural weapons",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "fey-claws",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:twilight-glamour",
+        "type": "fey",
+        "name": "Twilight Glamour",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 141,
+        "summary": "Magic action grants Invisible for one hour; offensive actions shorten the remaining duration to one minute. Two uses per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "become-invisible",
+            "name": "Become invisible",
+            "kind": "toggle",
+            "activation": "action",
+            "state": "invisible",
+            "duration": 3600
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 2,
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:two-faced",
+        "type": "fey",
+        "name": "Two-Faced",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 140,
+        "summary": "Magic action affects seeing creatures within 30 feet, CHA save against 8 + CHA + stage. Court determines Stunned, Charmed, Poisoned, or Frightened; proficiency uses per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "court-visage",
+            "name": "Court visage",
+            "kind": "save",
+            "activation": "action",
+            "save": "cha",
+            "dc": "8+@cha+@stage",
+            "range": 30,
+            "condition": "$courtCondition",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fey:weakened-constitution",
+        "type": "fey",
+        "name": "Weakened Constitution",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 141,
+        "summary": "First becoming Bloodied after initiative: DC 20 CON or gain Exhaustion. Magic action can spend stage Hit Dice to remove Exhaustion from this flaw.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-weakened-constitution",
+            "name": "Resolve Weakened Constitution",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "fiend",
+    "name": "Fiend",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "fiend:fiendish-soul"
+        ],
+        "choose": 1,
+        "boons": [
+          "fiend:devilish-contractor",
+          "fiend:infernal-smite"
+        ],
+        "flaws": [
+          "fiend:fiend-bound"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fiend:daemonic-brand",
+          "fiend:enhanced-contract"
+        ],
+        "flaws": [
+          "fiend:fiend-form"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fiend:devilish-subcontractor",
+          "fiend:overwhelming-brand"
+        ],
+        "flaws": [
+          "fiend:pull-of-the-netherworld"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "fiend:abyssal-resistance",
+          "fiend:infernal-summons",
+          "fiend:ultimate-brand"
+        ],
+        "flaws": [
+          "fiend:true-name"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "fiend:abyssal-resistance",
+        "type": "fiend",
+        "name": "Abyssal Resistance",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "Chosen Fiendish Soul damage type becomes immune; the other two become resistant. Nonmagical weapon/unarmed physical damage is resisted.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:daemonic-brand",
+        "type": "fiend",
+        "name": "Daemonic Brand",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "Bonus Action, seeing target within 60 feet, WIS save. One-minute brand applies -2 saves, first-attack advantage, or no healing. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:devilish-contractor",
+        "type": "fiend",
+        "name": "Devilish Contractor",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "Track willingly signed eligible contracts and their Gifts of Damnation. Gift stage cannot exceed yours; one gift active unless upgraded. Switching normally requires a long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:devilish-subcontractor",
+        "type": "fiend",
+        "name": "Devilish Subcontractor",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "fiend:enhanced-contract"
+        ],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "Up to two contracted Gifts of Damnation may be active; only one gift may be switched after a rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:enhanced-contract",
+        "type": "fiend",
+        "name": "Enhanced Contract",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "A contracted gift can be switched after either rest; switching grants 5 × stage temporary HP.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:fiend-bound",
+        "type": "fiend",
+        "name": "Fiend Bound",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "Death saves have disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-fiend-bound",
+            "name": "Resolve Fiend Bound",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:fiend-form",
+        "type": "fiend",
+        "name": "Fiend Form",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "Stress can reveal true appearance after CON save: DC 13/16/20 at stages 2/3/4. Witness attitude changes are adjudicated.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-fiend-form",
+            "name": "Resolve Fiend Form",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:fiendish-soul",
+        "type": "fiend",
+        "name": "Fiendish Soul",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "Adds Fiend type; Deception advantage; choose Acid, Cold, or Fire resistance.",
+        "effects": [
+          {
+            "key": "system.traits.dr.value",
+            "value": "$resistance",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "resistance",
+            "label": "Fiendish Soul damage type",
+            "options": [
+              "acid",
+              "cold",
+              "fire"
+            ],
+            "count": 1
+          }
+        ],
+        "creatureType": "fiend",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:infernal-smite",
+        "type": "fiend",
+        "name": "Infernal Smite",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 143,
+        "summary": "After a qualifying hit/cantrip, spend one use for stage d6 extra damage of your Fiendish Soul type. Once on your turn; proficiency + stage uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "infernal-smite",
+            "name": "Infernal smite",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "@stage d6",
+            "damageType": "$soulResistance"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:infernal-summons",
+        "type": "fiend",
+        "name": "Infernal Summons",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "Magic action calls up to four friendly CR≤4 Fiends within 30 feet for up to one minute. GM chooses arrivals; they act after you and follow verbal commands.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:overwhelming-brand",
+        "type": "fiend",
+        "name": "Overwhelming Brand",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "fiend:daemonic-brand"
+        ],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "A branded creature can additionally be blinded, or slowed to half Speed with up to 10-foot horizontal repositioning on your turn.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:pull-of-the-netherworld",
+        "type": "fiend",
+        "name": "Pull of the Netherworld",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "First natural 1 on a d20 test after a short rest deals unavoidable 6d6 Psychic. Reaching zero this way kills; revival requires level 7+ magic.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-pull-of-the-netherworld",
+            "name": "Resolve Pull of the Netherworld",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:true-name",
+        "type": "fiend",
+        "name": "True Name",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "A qualified nearby creature knowing your name can impose control after DC 20 CHA save; includes Charmed, disadvantage on saves, attacks against you advantaged, and no healing/temp HP.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-true-name",
+            "name": "Resolve True Name",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:ultimate-brand",
+        "type": "fiend",
+        "name": "Ultimate Brand",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "fiend:overwhelming-brand"
+        ],
+        "spellcaster": false,
+        "page": 144,
+        "summary": "Reaction can dictate a branded target's turn. It repeats its WIS save afterward; success prevents further control by this brand.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-joyous-life",
+        "type": "fiend",
+        "name": "Gift of Joyous Life",
+        "stage": 1,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Bloodied turn start can roll a Hit Die for healing; a 1 instead causes 1 unavoidable Force. Once per short/long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-prodigious-talent",
+        "type": "fiend",
+        "name": "Gift of Prodigious Talent",
+        "stage": 1,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Choose two skill expertises. Natural 1–2 on those checks loses half maximum Hit Dice, recovered only after two long rests.",
+        "effects": [
+          {
+            "key": "system.skills.$skills0.value",
+            "value": "2",
+            "mode": 4,
+            "when": "always"
+          },
+          {
+            "key": "system.skills.$skills1.value",
+            "value": "2",
+            "mode": 4,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "skills",
+            "label": "skills",
+            "options": [
+              "acr",
+              "ani",
+              "arc",
+              "ath",
+              "dec",
+              "his",
+              "ins",
+              "itm",
+              "inv",
+              "med",
+              "nat",
+              "prc",
+              "prf",
+              "per",
+              "rel",
+              "slt",
+              "ste",
+              "sur"
+            ],
+            "count": 2
+          }
+        ],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-unsurpassed-fortune",
+        "type": "fiend",
+        "name": "Gift of Unsurpassed Fortune",
+        "stage": 1,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Reaction to nearby enemy success: d20≥6 changes it to failure and refunds reaction; otherwise take stage d6 unavoidable Psychic. Once per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-liberating-freedom",
+        "type": "fiend",
+        "name": "Gift of Liberating Freedom",
+        "stage": 2,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Bonus Action wings grant half walking Speed flight without heavy armor; one-hour total daily budget. Bloodied or Unconscious ends manifestation.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.fly",
+            "value": "@walk/2",
+            "mode": 4,
+            "when": "fiend-wings"
+          }
+        ],
+        "actions": [
+          {
+            "id": "manifest-fiend-wings",
+            "name": "Manifest fiend wings",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "fiend-wings",
+            "duration": 3600
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-unfettered-glory",
+        "type": "fiend",
+        "name": "Gift of Unfettered Glory",
+        "stage": 2,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Qualifying melee/unarmed/cantrip damage can add 2 × stage Force; short-rest Hit Dice heal 2 fewer each.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "unfettered-glory",
+            "name": "Unfettered glory",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "2*@stage",
+            "damageType": "force"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-second-chances",
+        "type": "fiend",
+        "name": "Gift of Second Chances",
+        "stage": 3,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Reaction at zero HP rolls a Hit Die: 2+ restores that many HP; a 1 adds a death-save failure. Once per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-unconditional-love",
+        "type": "fiend",
+        "name": "Gift of Unconditional Love",
+        "stage": 3,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Reaction to a visible failed save within 30 feet grants d10 + stage temporary HP; a 1 instead knocks you Prone. Once per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "reactive-protection",
+            "name": "Reactive protection",
+            "kind": "temphp",
+            "activation": "reaction",
+            "formula": "1d10+@stage",
+            "special": "love-gift"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-martial-prowess",
+        "type": "fiend",
+        "name": "Gift of Martial Prowess",
+        "stage": 4,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "Once per turn, reroll a missed weapon/unarmed attack and spend three Hit Dice; hit adds their sum as Force, miss deals their sum to you as Psychic. A successful reroll locks the gift until long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "fiend:gift-of-unbridled-power",
+        "type": "fiend",
+        "name": "Gift of Unbridled Power",
+        "stage": 4,
+        "kind": "gift",
+        "requires": [
+          "fiend:devilish-contractor"
+        ],
+        "spellcaster": false,
+        "page": 145,
+        "summary": "After a short rest, spend two Hit Dice: recover slot levels totaling the higher roll and take twice their sum as Psychic. Once per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "hag",
+    "name": "Hag",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "hag:hag-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "hag:the-green-sisterhood",
+          "hag:the-red-sisterhood",
+          "hag:the-sea-sisterhood"
+        ],
+        "flaws": [
+          "hag:hideous-appearance-hag"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "hag:adept-of-the-green-sisterhood",
+          "hag:adept-of-the-red-sisterhood",
+          "hag:adept-of-the-sea-sisterhood"
+        ],
+        "flaws": [
+          "hag:iron-sensitivity"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "hag:master-of-the-green-sisterhood",
+          "hag:master-of-the-red-sisterhood",
+          "hag:master-of-the-sea-sisterhood"
+        ],
+        "flaws": [
+          "hag:purity-s-pain"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "hag:evil-eye",
+          "hag:grandmother-s-curse"
+        ],
+        "flaws": [
+          "hag:arch-crone-s-hunger"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "hag:adept-of-the-green-sisterhood",
+        "type": "hag",
+        "name": "Adept of the Green Sisterhood",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "hag:the-green-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "Grants d6 Slashing Claw. Cast Invisibility without a slot stage times per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "claw",
+            "name": "Claw",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "1d6",
+            "damageType": "slashing",
+            "ability": "best"
+          },
+          {
+            "id": "cast-invisibility",
+            "name": "Cast Invisibility",
+            "kind": "spell",
+            "activation": "action",
+            "spell": "Invisibility"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:adept-of-the-red-sisterhood",
+        "type": "hag",
+        "name": "Adept of the Red Sisterhood",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "hag:the-red-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "Grants d6 Slashing Claw. Cast Charm Person without a slot stage times per long rest, DC 12 + stage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "claw",
+            "name": "Claw",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "1d6",
+            "damageType": "slashing",
+            "ability": "best"
+          },
+          {
+            "id": "cast-charm-person",
+            "name": "Cast Charm Person",
+            "kind": "spell",
+            "activation": "action",
+            "spell": "Charm Person"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:adept-of-the-sea-sisterhood",
+        "type": "hag",
+        "name": "Adept of the Sea Sisterhood",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "hag:the-sea-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "Grants d6 Slashing Claw. Cast Disguise Self without a slot stage times per long rest, DC 12 + stage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "claw",
+            "name": "Claw",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "1d6",
+            "damageType": "slashing",
+            "ability": "best"
+          },
+          {
+            "id": "cast-disguise-self",
+            "name": "Cast Disguise Self",
+            "kind": "spell",
+            "activation": "action",
+            "spell": "Disguise Self"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:arch-crone-s-hunger",
+        "type": "hag",
+        "name": "Arch-Crone's Hunger",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 149,
+        "summary": "Requires daily vile nourishment. Missing it causes locked Exhaustion; forced normal food requires DC 18 CON or further Exhaustion.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-arch-crone's-hunger",
+            "name": "Resolve Arch-Crone's Hunger",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:evil-eye",
+        "type": "hag",
+        "name": "Evil Eye",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 149,
+        "summary": "Magic action against a seeing, Bloodied Beast/Humanoid within 30 feet: WIS save versus 14 + CHA. Failure sets HP to zero; success takes 6d8 Psychic. Once per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "evil-eye",
+            "name": "Evil eye",
+            "kind": "save",
+            "activation": "action",
+            "save": "wis",
+            "dc": "14+@cha",
+            "formula": "6d8",
+            "damageType": "psychic",
+            "range": 30,
+            "onSave": "full",
+            "notes": "Only a Bloodied Beast/Humanoid seeing your true form. On failure set HP to zero instead of rolling damage."
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:grandmother-s-curse",
+        "type": "hag",
+        "name": "Grandmother's Curse",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 149,
+        "summary": "Choose a Shadowsteel curse, always prepared; one component-free, slot-free casting per day.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:hag-form",
+        "type": "hag",
+        "name": "Hag Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 147,
+        "summary": "Adds Fey type. Unarmored AC is 13 + DEX. Choose proficiency in STR, INT, or CHA saving throws.",
+        "effects": [
+          {
+            "key": "system.abilities.$save.proficient",
+            "value": "1",
+            "mode": 4,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "save",
+            "label": "saving throw proficiency",
+            "options": [
+              "str",
+              "int",
+              "cha"
+            ],
+            "count": 1
+          }
+        ],
+        "creatureType": "fey",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:hideous-appearance-hag",
+        "type": "hag",
+        "name": "Hideous Appearance (Hag)",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 147,
+        "summary": "Persuasion disadvantage. First sight of your reflection after either rest requires DC 18 WIS or Exhaustion. Social reactions require adjudication.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-hideous-appearance-(hag)",
+            "name": "Resolve Hideous Appearance (Hag)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:iron-sensitivity",
+        "type": "hag",
+        "name": "Iron Sensitivity",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "First iron/steel weapon damage after either rest: DC 15 CON or Stunned through the end of your next turn.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-iron-sensitivity",
+            "name": "Resolve Iron Sensitivity",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:master-of-the-green-sisterhood",
+        "type": "hag",
+        "name": "Master of the Green Sisterhood",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "hag:adept-of-the-green-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "Extra Claw in Attack action; Claw adds d6 Poison. Choose Hag Eye/Gasdra ritual. Once per long rest, Hit Dice can recover a qualifying spell slot.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "ritual",
+            "label": "ritual",
+            "options": [
+              "hag-eye",
+              "gasdra"
+            ],
+            "count": 1
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:master-of-the-red-sisterhood",
+        "type": "hag",
+        "name": "Master of the Red Sisterhood",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "hag:adept-of-the-red-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 148,
+        "summary": "Extra Claw in Attack action; Claw adds d4 Psychic and heals that damage. Can obscure magical influence in memory; Hit Die can fund Bonus Action Charm Person.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:master-of-the-sea-sisterhood",
+        "type": "hag",
+        "name": "Master of the Sea Sisterhood",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "hag:adept-of-the-sea-sisterhood"
+        ],
+        "spellcaster": false,
+        "page": 149,
+        "summary": "Extra Claw in Attack action; Claw adds d6 Slashing. Bonus Action frightful gaze; Hit Die can grant temporary water breathing.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:purity-s-pain",
+        "type": "hag",
+        "name": "Purity's Pain",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 149,
+        "summary": "Witnessing a GM-defined pure source causes turn-start 3d6 + CHA Psychic and suppresses Hag boons. First such damage after rest requires DC 18 WIS or Frightened while witnessing it.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-purity's-pain",
+            "name": "Resolve Purity's Pain",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:the-green-sisterhood",
+        "type": "hag",
+        "name": "The Green Sisterhood",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 147,
+        "summary": "Darkvision +60 feet; air/water breathing; voice/sound mimicry, contested by Insight against 8 + CHA + stage.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.darkvision",
+            "value": "60",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:the-red-sisterhood",
+        "type": "hag",
+        "name": "The Red Sisterhood",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 147,
+        "summary": "Darkvision 60 feet. Deception/Persuasion proficiency, or expertise if already proficient. Form changes are prevented except qualifying invisibility illusions.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.darkvision",
+            "value": "60",
+            "mode": 4,
+            "when": "always"
+          },
+          {
+            "key": "system.skills.dec.value",
+            "value": "expertise",
+            "mode": 2,
+            "when": "always"
+          },
+          {
+            "key": "system.skills.per.value",
+            "value": "expertise",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "hag:the-sea-sisterhood",
+        "type": "hag",
+        "name": "The Sea Sisterhood",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 147,
+        "summary": "Darkvision 60 feet; amphibious; swim at walking Speed or existing swim +10. Magic-action gaze deals stage d8 Psychic after a failed WIS save.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.darkvision",
+            "value": "60",
+            "mode": 4,
+            "when": "always"
+          },
+          {
+            "key": "system.attributes.movement.swim",
+            "value": "swim-plus",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [
+          {
+            "id": "sea-gaze",
+            "name": "Sea gaze",
+            "kind": "save",
+            "activation": "action",
+            "save": "wis",
+            "dc": "8+@cha+@stage",
+            "formula": "@stage d8",
+            "damageType": "psychic",
+            "range": 30,
+            "onSave": "none"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "lich",
+    "name": "Lich",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "lich:undead-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "lich:lich-magica",
+          "lich:memori-lichdom"
+        ],
+        "flaws": [
+          "lich:soul-vessel"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lich:acolyte-of-undeath",
+          "lich:binding-curse",
+          "lich:corrupting-magic"
+        ],
+        "flaws": [
+          "lich:hideous-appearance-lich"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lich:eldritch-concentration",
+          "lich:master-of-undeath",
+          "lich:unholy-healing"
+        ],
+        "flaws": [
+          "lich:necromantic-dystrophia"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lich:eldritch-omniscience",
+          "lich:lord-of-undeath",
+          "lich:soul-shattering-attack"
+        ],
+        "flaws": [
+          "lich:weight-of-the-ages"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "lich:acolyte-of-undeath",
+        "type": "lich",
+        "name": "Acolyte of Undeath",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 152,
+        "summary": "Reaction after killing a Humanoid can create a controlled Zombie. Maximum three; use the native creature stat block and track commands/initiative.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:binding-curse",
+        "type": "lich",
+        "name": "Binding Curse",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 152,
+        "summary": "Bonus Action within 30 feet, CHA save versus 12 + stage. One-minute tether and +2d6 Necrotic on your weapon/unarmed hits. Three uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "binding-curse",
+            "name": "Binding curse",
+            "kind": "save",
+            "activation": "bonus",
+            "save": "cha",
+            "dc": "12+@stage",
+            "range": 30,
+            "duration": 60,
+            "notes": "A failed save also creates the 30-foot tether and your +2d6 Necrotic weapon/unarmed rider."
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 3,
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:corrupting-magic",
+        "type": "lich",
+        "name": "Corrupting Magic",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 152,
+        "summary": "Eligible spell kills can heal stage d6, deal stage d6 Poison to a nearby creature, or impose one nonstacking Exhaustion level.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:eldritch-concentration",
+        "type": "lich",
+        "name": "Eldritch Concentration",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Spend the soul-vessel charge and gain Exhaustion to sustain two concentration spells. A third or loss of concentration ends both. Once per short/long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:eldritch-omniscience",
+        "type": "lich",
+        "name": "Eldritch Omniscience",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Learn/prepare four additional spells; after either rest gain an additional chosen-level slot. Spell kills can instantly charge the vessel.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:hideous-appearance-lich",
+        "type": "lich",
+        "name": "Hideous Appearance (Lich)",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 152,
+        "summary": "Stress can reveal true appearance after CON save: DC 13/16/20 at stages 2/3/4; witnesses' attitudes require GM judgment.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-hideous-appearance-(lich)",
+            "name": "Resolve Hideous Appearance (Lich)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:lich-magica",
+        "type": "lich",
+        "name": "Lich Magica",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 151,
+        "summary": "Bonus Action spends the soul-vessel charge for a qualifying slot recovery, next-spell save penalty, or stage d6 additional spell damage/healing.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:lord-of-undeath",
+        "type": "lich",
+        "name": "Lord of Undeath",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "lich:master-of-undeath"
+        ],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Acolyte of Undeath can create a Ghoul instead of a Zombie.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:master-of-undeath",
+        "type": "lich",
+        "name": "Master of Undeath",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "lich:acolyte-of-undeath"
+        ],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Nearby controlled transformation undead attack with advantage. Reaction vessel-charge expenditure can preserve one at 1 HP and grant movement/attack, except against Radiant damage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:memori-lichdom",
+        "type": "lich",
+        "name": "Memori Lichdom",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 151,
+        "summary": "Charged vessel makes weapon/unarmed attacks magical and reaction attacks advantaged. After a hit, a Bonus Action and Hit Die can add Necrotic damage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:necromantic-dystrophia",
+        "type": "lich",
+        "name": "Necromantic Dystrophia",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Without a vessel charge: no Dash/Dodge/Disengage/reactions, CON-save disadvantage, and no appearance disguise.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-necromantic-dystrophia",
+            "name": "Resolve Necromantic Dystrophia",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:soul-vessel",
+        "type": "lich",
+        "name": "Soul Vessel",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 151,
+        "summary": "Track a one-soul vessel, charge, captured CR, durability, and capture uses (2 × stage per long rest). Capture range 60 feet; soul CR must reach half character level. Handles resurrection timing narratively.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-soul-vessel",
+            "name": "Resolve Soul Vessel",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:soul-shattering-attack",
+        "type": "lich",
+        "name": "Soul-Shattering Attack",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Spend the captured soul to add its CR to one weapon/unarmed attack and damage; a killing hit can refund it. 4 + proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:undead-form",
+        "type": "lich",
+        "name": "Undead Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 151,
+        "summary": "Adds Undead type. Cannot be excluded from Turn Undead; no aging, air, food, drink, or sleep requirements.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "creatureType": "undead",
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:unholy-healing",
+        "type": "lich",
+        "name": "Unholy Healing",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "With charged vessel, Magic action starts one-minute healing of 10 HP each turn. Three uses per long rest; charge remains.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "begin-unholy-healing",
+            "name": "Begin unholy healing",
+            "kind": "toggle",
+            "activation": "action",
+            "state": "unholy-healing",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 3,
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lich:weight-of-the-ages",
+        "type": "lich",
+        "name": "Weight of the Ages",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 153,
+        "summary": "Destruction of the soul vessel kills the lich and destroys its body.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-weight-of-the-ages",
+            "name": "Resolve Weight of the Ages",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "lycanthrope",
+    "name": "Lycanthrope",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lycanthrope:hybrid-bear-form",
+          "lycanthrope:hybrid-rat-form",
+          "lycanthrope:hybrid-wolf-form"
+        ],
+        "flaws": [
+          "lycanthrope:lust-for-the-hunt"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lycanthrope:hunter-s-focus",
+          "lycanthrope:iron-pelt",
+          "lycanthrope:kindred-form"
+        ],
+        "flaws": [
+          "lycanthrope:silver-sensitivity"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lycanthrope:bestial-vigor",
+          "lycanthrope:shapeshifter-s-savagery"
+        ],
+        "flaws": [
+          "lycanthrope:frayed-thoughts"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "lycanthrope:hybrid-form-affinity",
+          "lycanthrope:savage-instincts"
+        ],
+        "flaws": [
+          "lycanthrope:ultimate-predator"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "lycanthrope:bestial-vigor",
+        "type": "lycanthrope",
+        "name": "Bestial Vigor",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "Maximum HP + character level. Hybrid turn start grants 5 temporary HP if your current temporary HP is lower.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:frayed-thoughts",
+        "type": "lycanthrope",
+        "name": "Frayed Thoughts",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "INT checks and saves have disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-frayed-thoughts",
+            "name": "Resolve Frayed Thoughts",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:hunter-s-focus",
+        "type": "lycanthrope",
+        "name": "Hunter's Focus",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 156,
+        "summary": "Hybrid Bonus Action marks one creature within 60 feet for one hour; melee hits against prey add d6 of their damage type. Finding prey grants Perception/Survival advantage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:hybrid-bear-form",
+        "type": "lycanthrope",
+        "name": "Hybrid Bear Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 155,
+        "summary": "Adds Monstrosity type. Magic-action hybrid: STR floor 20, climb at walking Speed, proficient d8 Claw, Bonus Action grapple after hit; no spells/concentration. Lasts stage hours.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "20",
+            "mode": 4,
+            "when": "hybrid"
+          },
+          {
+            "key": "system.attributes.movement.climb",
+            "value": "@walk",
+            "mode": 4,
+            "when": "hybrid"
+          }
+        ],
+        "actions": [
+          {
+            "id": "hybrid-form",
+            "name": "Hybrid form",
+            "kind": "form",
+            "activation": "action",
+            "mode": "hybrid"
+          },
+          {
+            "id": "revert",
+            "name": "Revert",
+            "kind": "form",
+            "activation": "action",
+            "mode": "normal"
+          }
+        ],
+        "choices": [],
+        "creatureType": "monstrosity",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:hybrid-form-affinity",
+        "type": "lycanthrope",
+        "name": "Hybrid Form Affinity",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "Voluntary hybrid allows normal speech and spellcasting with component exemptions; allies within 20 feet gain Wisdom-check/save advantage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:hybrid-rat-form",
+        "type": "lycanthrope",
+        "name": "Hybrid Rat Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 155,
+        "summary": "Adds Monstrosity type. Magic-action hybrid: DEX floor 18, Stealth expertise, d6 Claw/Bite, Bonus Action Hide/Disengage or conditional attack; no spells/concentration. Lasts stage hours.",
+        "effects": [
+          {
+            "key": "system.abilities.dex.value",
+            "value": "18",
+            "mode": 4,
+            "when": "hybrid"
+          },
+          {
+            "key": "system.skills.ste.value",
+            "value": "2",
+            "mode": 4,
+            "when": "hybrid"
+          }
+        ],
+        "actions": [
+          {
+            "id": "hybrid-form",
+            "name": "Hybrid form",
+            "kind": "form",
+            "activation": "action",
+            "mode": "hybrid"
+          },
+          {
+            "id": "revert",
+            "name": "Revert",
+            "kind": "form",
+            "activation": "action",
+            "mode": "normal"
+          }
+        ],
+        "choices": [],
+        "creatureType": "monstrosity",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:hybrid-wolf-form",
+        "type": "lycanthrope",
+        "name": "Hybrid Wolf Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 155,
+        "summary": "Adds Monstrosity type. Magic-action hybrid: STR floor 18, walking Speed +10, d8 Claw/Bite, Bonus Action Dash or conditional attack; no spells/concentration. Lasts stage hours.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "18",
+            "mode": 4,
+            "when": "hybrid"
+          },
+          {
+            "key": "system.attributes.movement.walk",
+            "value": "10",
+            "mode": 2,
+            "when": "hybrid"
+          }
+        ],
+        "actions": [
+          {
+            "id": "hybrid-form",
+            "name": "Hybrid form",
+            "kind": "form",
+            "activation": "action",
+            "mode": "hybrid"
+          },
+          {
+            "id": "revert",
+            "name": "Revert",
+            "kind": "form",
+            "activation": "action",
+            "mode": "normal"
+          }
+        ],
+        "choices": [],
+        "creatureType": "monstrosity",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:iron-pelt",
+        "type": "lycanthrope",
+        "name": "Iron Pelt",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 156,
+        "summary": "Hybrid physical resistance; magical or silvered weapons bypass it.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:kindred-form",
+        "type": "lycanthrope",
+        "name": "Kindred Form",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 156,
+        "summary": "Use 2024 Polymorph statistics for Wolf, Black Bear, or Giant Rat; equipment drops, and speech becomes animal communication. Native reversion restores original statistics.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "animal-form",
+            "name": "Animal form",
+            "kind": "form",
+            "activation": "action",
+            "mode": "animal"
+          },
+          {
+            "id": "revert",
+            "name": "Revert",
+            "kind": "form",
+            "activation": "action",
+            "mode": "normal"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:lust-for-the-hunt",
+        "type": "lycanthrope",
+        "name": "Lust for the Hunt",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 156,
+        "summary": "First Bloodied event after either rest: DC 10 WIS or forced feral hybrid; full-moon light automatically fails. Full-HP turn-start save, Remove Curse, or one hour can end form.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-lust-for-the-hunt",
+            "name": "Resolve Lust for the Hunt",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:savage-instincts",
+        "type": "lycanthrope",
+        "name": "Savage Instincts",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "Hybrid Claw/Bite against a Bloodied target adds d8 Slashing.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:shapeshifter-s-savagery",
+        "type": "lycanthrope",
+        "name": "Shapeshifter's Savagery",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "Hybrid Claw/Bite adds d8 Slashing; Charmed/Frightened immunity while hybrid.",
+        "effects": [
+          {
+            "key": "system.traits.ci.value",
+            "value": "charmed",
+            "mode": 2,
+            "when": "hybrid"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "frightened",
+            "mode": 2,
+            "when": "hybrid"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:silver-sensitivity",
+        "type": "lycanthrope",
+        "name": "Silver Sensitivity",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 156,
+        "summary": "All forms: physical damage from silvered weapons is vulnerable and cannot be resisted.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-silver-sensitivity",
+            "name": "Resolve Silver Sensitivity",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "lycanthrope:ultimate-predator",
+        "type": "lycanthrope",
+        "name": "Ultimate Predator",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 157,
+        "summary": "Sensed Bloodied creatures impose WIS-save disadvantage. Sensed Unconscious creatures trigger turn-start DC 15 WIS or feral form; success protects until long rest. Hybrid kills lock reversion until dawn.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-ultimate-predator",
+            "name": "Resolve Ultimate Predator",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "ooze",
+    "name": "Ooze",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "ooze:ooze-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "ooze:mutable-corpus",
+          "ooze:slimy-mien"
+        ],
+        "flaws": [
+          "ooze:sluggish"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "ooze:elastic-limbs",
+          "ooze:viscous-durability"
+        ],
+        "flaws": [
+          "ooze:melted-appearance"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "ooze:corrosive-membrane",
+          "ooze:engulf"
+        ],
+        "flaws": [
+          "ooze:physical-deterioration"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "ooze:legion-of-slime",
+          "ooze:mimic-object"
+        ],
+        "flaws": [
+          "ooze:slippery-ego"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "ooze:corrosive-membrane",
+        "type": "ooze",
+        "name": "Corrosive Membrane",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "Ooze duration becomes ten minutes. Melee attackers take d6 + stage Acid; nonmagical weapons/ammunition corrode. Touch can dissolve two feet of wood/metal per minute.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "corrosive-retaliation",
+            "name": "Corrosive retaliation",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "1d6+@stage",
+            "damageType": "acid"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:elastic-limbs",
+        "type": "ooze",
+        "name": "Elastic Limbs",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Reach +5 feet; climb at walking Speed, including ceilings. Grappled targets have disadvantage escaping your grip.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.climb",
+            "value": "@walk",
+            "mode": 4,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:engulf",
+        "type": "ooze",
+        "name": "Engulf",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "Ooze duration becomes ten minutes. Magic-action STR save versus 10 + STR + stage engulfs an adjacent same-size-or-smaller target; Restrained, suffocating, 4d6 Acid each turn, repeat end-turn save.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "engulf",
+            "name": "Engulf",
+            "kind": "save",
+            "activation": "action",
+            "save": "str",
+            "dc": "10+@str+@stage",
+            "range": 5,
+            "condition": "restrained",
+            "duration": 600
+          },
+          {
+            "id": "engulf-turn-damage",
+            "name": "Engulf turn damage",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "4d6",
+            "damageType": "acid"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:legion-of-slime",
+        "type": "ooze",
+        "name": "Legion of Slime",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "Ooze form lasts until rest. Once per long rest, a Bloodied-triggering hit allows reaction splitting into two smaller bodies sharing actions and dividing HP; equipment is not copied.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:melted-appearance",
+        "type": "ooze",
+        "name": "Melted Appearance",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Influence checks against non-Aberrations/non-Oozes have disadvantage. Vision is limited to Blindsight range; blindness beyond it must be adjudicated spatially.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-melted-appearance",
+            "name": "Resolve Melted Appearance",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:mimic-object",
+        "type": "ooze",
+        "name": "Mimic Object",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "Ooze form lasts until rest. Magic action assumes an object form up to two sizes smaller; equipment drops. Reaction adhesion grapples a touching creature with penalized escapes.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:mutable-corpus",
+        "type": "ooze",
+        "name": "Mutable Corpus",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Each Ooze manifestation can choose breathlessness, a humanoid disguise, or Stealth advantage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:ooze-form",
+        "type": "ooze",
+        "name": "Ooze Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Adds Ooze type and +30-foot Blindsight. Bonus Action manifests one-minute amorphous form with Grappled/Restrained immunity; proficiency + stage uses per long rest.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.blindsight",
+            "value": "30",
+            "mode": 2,
+            "when": "always"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "grappled",
+            "mode": 2,
+            "when": "ooze"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "restrained",
+            "mode": 2,
+            "when": "ooze"
+          }
+        ],
+        "actions": [
+          {
+            "id": "manifest-ooze",
+            "name": "Manifest Ooze",
+            "kind": "form",
+            "activation": "bonus",
+            "mode": "ooze"
+          },
+          {
+            "id": "revert",
+            "name": "Revert",
+            "kind": "form",
+            "activation": "bonus",
+            "mode": "normal"
+          }
+        ],
+        "choices": [],
+        "creatureType": "ooze",
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:physical-deterioration",
+        "type": "ooze",
+        "name": "Physical Deterioration",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "Radiant vulnerability and disadvantage on DEX checks/saves.",
+        "effects": [
+          {
+            "key": "system.traits.dv.value",
+            "value": "radiant",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:slimy-mien",
+        "type": "ooze",
+        "name": "Slimy Mien",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Manifested Ooze gains Charmed immunity, +30-foot Blindsight, and nearby Ooze communication.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.blindsight",
+            "value": "30",
+            "mode": 2,
+            "when": "ooze"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "charmed",
+            "mode": 2,
+            "when": "ooze"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:slippery-ego",
+        "type": "ooze",
+        "name": "Slippery Ego",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 160,
+        "summary": "First Bloodied after long rest or natural 1 on a save can cause loss of self: no spells/magic items/communication and compelled attacks. End-turn DC 18 WIS or rest restores control.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-slippery-ego",
+            "name": "Resolve Slippery Ego",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:sluggish",
+        "type": "ooze",
+        "name": "Sluggish",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Walking Speed loses 5 feet per transformation stage. Tracking checks against your trail have advantage.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.walk",
+            "value": "-5*@stage",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "ooze:viscous-durability",
+        "type": "ooze",
+        "name": "Viscous Durability",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 159,
+        "summary": "Acid and Frightened immunity; choose Cold, Fire, or Lightning resistance.",
+        "effects": [
+          {
+            "key": "system.traits.di.value",
+            "value": "acid",
+            "mode": 2,
+            "when": "always"
+          },
+          {
+            "key": "system.traits.ci.value",
+            "value": "frightened",
+            "mode": 2,
+            "when": "always"
+          },
+          {
+            "key": "system.traits.dr.value",
+            "value": "$resistance",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "resistance",
+            "label": "resistance",
+            "options": [
+              "cold",
+              "fire",
+              "lightning"
+            ],
+            "count": 1
+          }
+        ],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "primordial",
+    "name": "Primordial",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "primordial:elemental-affinity",
+          "primordial:primordial-form"
+        ],
+        "choose": 0,
+        "boons": [],
+        "flaws": [
+          "primordial:planar-binding-primordial"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "primordial:dual-nature",
+          "primordial:elemental-surge"
+        ],
+        "flaws": [
+          "primordial:roiling-elements"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "primordial:aura-of-awakening",
+          "primordial:master-of-many",
+          "primordial:primeval-body"
+        ],
+        "flaws": [
+          "primordial:elemental-imbalance"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "primordial:elemental-mastery",
+          "primordial:primordial-aura"
+        ],
+        "flaws": [
+          "primordial:primordial-chaos"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "primordial:aura-of-awakening",
+        "type": "primordial",
+        "name": "Aura of Awakening",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 162,
+        "summary": "Choose a changeable elemental aura: nearby DEX-save bonus, reactive Fire enhancement, initiative-triggered temporary HP, or reactive movement/grapple aid.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "aura",
+            "label": "aura",
+            "options": [
+              "air",
+              "fire",
+              "earth",
+              "water"
+            ],
+            "count": 1,
+            "rest": "lr"
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:dual-nature",
+        "type": "primordial",
+        "name": "Dual Nature",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 161,
+        "summary": "Choose a second, distinct Elemental Affinity and gain its benefits.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "element",
+            "label": "element",
+            "options": [
+              "air",
+              "earth",
+              "fire",
+              "water"
+            ],
+            "count": 1,
+            "uniqueGroup": "affinity"
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:elemental-affinity",
+        "type": "primordial",
+        "name": "Elemental Affinity",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 161,
+        "summary": "Choose Air/Lightning resistance, Earth/Bludgeoning resistance, Fire/Fire resistance, or Water/Cold resistance; each grants its associated reactive or conditional benefit.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "element",
+            "label": "element",
+            "options": [
+              "air",
+              "earth",
+              "fire",
+              "water"
+            ],
+            "count": 1,
+            "uniqueGroup": "affinity"
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:elemental-imbalance",
+        "type": "primordial",
+        "name": "Elemental Imbalance",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 162,
+        "summary": "Elemental damage prompts d6; on 1 that instance becomes vulnerable regardless of defenses and splashes original damage to adjacent creatures, CON DC 15 halves.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-elemental-imbalance",
+            "name": "Resolve Elemental Imbalance",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:elemental-mastery",
+        "type": "primordial",
+        "name": "Elemental Mastery",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "primordial:master-of-many"
+        ],
+        "spellcaster": false,
+        "page": 163,
+        "summary": "Adds the fourth affinity. Limited-use reactive 6d6 elemental retaliation and one-turn empowerment of all four elements.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "elemental-retaliation",
+            "name": "Elemental retaliation",
+            "kind": "save",
+            "activation": "reaction",
+            "save": "dex",
+            "dc": "8+@con+@stage",
+            "formula": "6d6",
+            "damageType": "fire",
+            "range": 5
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@con",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:elemental-surge",
+        "type": "primordial",
+        "name": "Elemental Surge",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 161,
+        "summary": "CON-modifier uses per long rest; choose a scaling Lightning attack, Bludgeoning save/temporary HP, Fire cone, or ranged healing. Scaling depends on stage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "lightning-strike",
+            "name": "Lightning strike",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "(@stage+1)d8",
+            "damageType": "lightning",
+            "ability": "con",
+            "range": 60
+          },
+          {
+            "id": "earth-shard",
+            "name": "Earth shard",
+            "kind": "save",
+            "activation": "action",
+            "save": "con",
+            "dc": "8+@con+@stage",
+            "formula": "(@stage+1)d6+@con",
+            "damageType": "bludgeoning",
+            "range": 30
+          },
+          {
+            "id": "flame-wave",
+            "name": "Flame wave",
+            "kind": "save",
+            "activation": "action",
+            "save": "dex",
+            "dc": "8+@con+@stage",
+            "formula": "@stage d8+@con",
+            "damageType": "fire",
+            "range": 15
+          },
+          {
+            "id": "aquatic-rejuvenation",
+            "name": "Aquatic rejuvenation",
+            "kind": "heal",
+            "activation": "action",
+            "formula": "@stage d8+@con",
+            "damageType": "healing",
+            "range": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@con",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:master-of-many",
+        "type": "primordial",
+        "name": "Master of Many",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "primordial:dual-nature"
+        ],
+        "spellcaster": false,
+        "page": 162,
+        "summary": "Choose a third, distinct Elemental Affinity and gain its benefits.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "element",
+            "label": "element",
+            "options": [
+              "air",
+              "earth",
+              "fire",
+              "water"
+            ],
+            "count": 1,
+            "uniqueGroup": "affinity"
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:planar-binding-primordial",
+        "type": "primordial",
+        "name": "Planar Binding (Primordial)",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 161,
+        "summary": "Death saves have disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-planar-binding-(primordial)",
+            "name": "Resolve Planar Binding (Primordial)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:primeval-body",
+        "type": "primordial",
+        "name": "Primeval Body",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 162,
+        "summary": "No aging, sleep, breath, or food. Choose Bludgeoning/Cold/Fire/Lightning resistance, upgraded to immunity if already resistant.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "resistance",
+            "label": "resistance/immunity",
+            "options": [
+              "bludgeoning",
+              "cold",
+              "fire",
+              "lightning"
+            ],
+            "count": 1
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:primordial-aura",
+        "type": "primordial",
+        "name": "Primordial Aura",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "primordial:aura-of-awakening"
+        ],
+        "spellcaster": false,
+        "page": 163,
+        "summary": "Chosen creatures within 15 feet gain a selected elemental resistance, or immunity when already resistant; selection changes after rests or with a Bonus Action.",
+        "effects": [],
+        "actions": [],
+        "choices": [
+          {
+            "key": "resistance",
+            "label": "aura resistance",
+            "options": [
+              "bludgeoning",
+              "cold",
+              "fire",
+              "lightning"
+            ],
+            "count": 1,
+            "rest": "sr"
+          }
+        ],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:primordial-chaos",
+        "type": "primordial",
+        "name": "Primordial Chaos",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 163,
+        "summary": "Natural 1 on a save against a spell deals unavoidable 8d6 Force in addition to the spell's effects.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-primordial-chaos",
+            "name": "Resolve Primordial Chaos",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:primordial-form",
+        "type": "primordial",
+        "name": "Primordial Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 161,
+        "summary": "Adds Elemental type; CON +1, maximum 20.",
+        "effects": [
+          {
+            "key": "system.abilities.con.value",
+            "value": "1",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "creatureType": "elemental",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "primordial:roiling-elements",
+        "type": "primordial",
+        "name": "Roiling Elements",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 162,
+        "summary": "Stress may require CON DC 13/16/20 at stages 2/3/4; revealed nature imposes disadvantage on all d20 tests for one minute.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-roiling-elements",
+            "name": "Resolve Roiling Elements",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "seraph",
+    "name": "Seraph",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "seraph:celestial-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "seraph:angelic-wings",
+          "seraph:holy-strikes"
+        ],
+        "flaws": [
+          "seraph:planar-binding-seraph"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "seraph:divine-clemency",
+          "seraph:sacred-retribution"
+        ],
+        "flaws": [
+          "seraph:blinding-radiance"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "seraph:bow-of-celestial-judgement",
+          "seraph:cleanse-affliction",
+          "seraph:protective-wings"
+        ],
+        "flaws": [
+          "seraph:beacon-to-darkness"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "seraph:aura-of-holy-purge",
+          "seraph:aura-of-righteous-mercy",
+          "seraph:bow-of-celestial-domination"
+        ],
+        "flaws": [
+          "seraph:seraph-corruption"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "seraph:angelic-wings",
+        "type": "seraph",
+        "name": "Angelic Wings",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Bonus Action manifests wings for one hour; fly at walking Speed if not heavily armored. Stage uses per short/long rest.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.fly",
+            "value": "@walk",
+            "mode": 4,
+            "when": "wings"
+          }
+        ],
+        "actions": [
+          {
+            "id": "manifest-wings",
+            "name": "Manifest wings",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "wings",
+            "duration": 3600
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:aura-of-holy-purge",
+        "type": "seraph",
+        "name": "Aura of Holy Purge",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Conscious 20-foot aura: an ally may react to turn a weapon hit into a critical; both gain Exhaustion. Each ally once per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:aura-of-righteous-mercy",
+        "type": "seraph",
+        "name": "Aura of Righteous Mercy",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Conscious 20-foot aura: an ally may react to remain at 1 HP instead of zero; both gain Exhaustion. Each ally once per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:beacon-to-darkness",
+        "type": "seraph",
+        "name": "Beacon to Darkness",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "GM-defined evil causes corruption: disadvantage against evil foes and altered ally relationships. Atonement requires prayer and stage-scaled expenditure.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-beacon-to-darkness",
+            "name": "Resolve Beacon to Darkness",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:blinding-radiance",
+        "type": "seraph",
+        "name": "Blinding Radiance",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Stress can reveal radiance after stage-based CON save; nearby seeing non-enemies make DC 15 CHA or are Blinded for a minute. Attacks against you gain advantage for a minute.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-blinding-radiance",
+            "name": "Resolve Blinding Radiance",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:bow-of-celestial-domination",
+        "type": "seraph",
+        "name": "Bow of Celestial Domination",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "seraph:bow-of-celestial-judgement"
+        ],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Manifested bow can affect a second adjacent target; Necrotic resistance becomes immunity and turn-start temporary HP becomes 15.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:bow-of-celestial-judgement",
+        "type": "seraph",
+        "name": "Bow of Celestial Judgement",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Bonus Action manifests bow for one minute, stage uses per long rest. Magic-action DEX save within 120 feet deals 6d6 Radiant, or 10d6 to Fey/Fiend/Undead; half on success. Necrotic resistance and 5 temporary HP each turn.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "manifest-bow",
+            "name": "Manifest bow",
+            "kind": "toggle",
+            "activation": "bonus",
+            "state": "celestial-bow",
+            "duration": 60
+          },
+          {
+            "id": "radiant-bow",
+            "name": "Radiant bow",
+            "kind": "save",
+            "activation": "action",
+            "save": "dex",
+            "dc": "8+@prof+@stage",
+            "formula": "6d6",
+            "damageType": "radiant",
+            "range": 120,
+            "when": "celestial-bow"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:celestial-form",
+        "type": "seraph",
+        "name": "Celestial Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Adds Celestial type and Radiant resistance.",
+        "effects": [
+          {
+            "key": "system.traits.dr.value",
+            "value": "radiant",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "creatureType": "celestial",
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:cleanse-affliction",
+        "type": "seraph",
+        "name": "Cleanse Affliction",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "seraph:divine-clemency"
+        ],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Divine Clemency also grants temporary HP matching its healing, next-test advantage for a minute, and removes one eligible condition.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:divine-clemency",
+        "type": "seraph",
+        "name": "Divine Clemency",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Reaction to nearby ally damage casts level-1 Healing Word without a slot. Stage uses per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "reactive-healing-word",
+            "name": "Reactive Healing Word",
+            "kind": "spell",
+            "activation": "reaction",
+            "spell": "Healing Word"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:holy-strikes",
+        "type": "seraph",
+        "name": "Holy Strikes",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Spend one use after a weapon/unarmed/cantrip hit for stage d6 Radiant. Proficiency + stage uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "holy-strike",
+            "name": "Holy strike",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "@stage d6",
+            "damageType": "radiant"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:planar-binding-seraph",
+        "type": "seraph",
+        "name": "Planar Binding (Seraph)",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Death saves have disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-planar-binding-(seraph)",
+            "name": "Resolve Planar Binding (Seraph)",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:protective-wings",
+        "type": "seraph",
+        "name": "Protective Wings",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "seraph:angelic-wings"
+        ],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "While wings manifest, fly Speed +10 and grapple-defense advantage; reaction can penalize a nearby weapon attack and split damage if the ally is hit.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.fly",
+            "value": "10",
+            "mode": 2,
+            "when": "wings"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:sacred-retribution",
+        "type": "seraph",
+        "name": "Sacred Retribution",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 167,
+        "summary": "Reaction lets a nearby attacking ally make one additional weapon/unarmed attack with d8 extra Radiant. Stage uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "seraph:seraph-corruption",
+        "type": "seraph",
+        "name": "Seraph Corruption",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 168,
+        "summary": "Natural 1 on a save causes a one-minute episode: turn-start d10 unavoidable Psychic, no healing/temp HP, and adverse first-attack/first-target-save effects.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-seraph-corruption",
+            "name": "Resolve Seraph Corruption",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "shadowsteel-ghoul",
+    "name": "Shadowsteel Ghoul",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "shadowsteel-ghoul:shadowsteel-curser",
+          "shadowsteel-ghoul:shadowsteel-weapon"
+        ],
+        "flaws": [
+          "shadowsteel-ghoul:debilitating-magic"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 2,
+        "boons": [
+          "shadowsteel-ghoul:magic-resistance",
+          "shadowsteel-ghoul:shadowsteel-absorption",
+          "shadowsteel-ghoul:shadowsteel-caster",
+          "shadowsteel-ghoul:shadowsteel-weapon-master"
+        ],
+        "flaws": [
+          "shadowsteel-ghoul:friendless"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [
+          "shadowsteel-ghoul:cursed-claw"
+        ],
+        "choose": 0,
+        "boons": [],
+        "flaws": [
+          "shadowsteel-ghoul:healing-resistance"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "shadowsteel-ghoul:shadowsteel-arcane-vessel",
+          "shadowsteel-ghoul:shadowsteel-fury"
+        ],
+        "flaws": [
+          "shadowsteel-ghoul:shadowsteel-explosion"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "shadowsteel-ghoul:cursed-claw",
+        "type": "shadowsteel-ghoul",
+        "name": "Cursed Claw",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 172,
+        "summary": "Proficient STR/DEX Claw deals 2d6; two attacks per Attack action or one Bonus Action. Hit can impose a random Shadowsteel curse after CON save.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "claw",
+            "name": "Claw",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "2d6",
+            "damageType": "slashing",
+            "ability": "best"
+          },
+          {
+            "id": "shadowsteel-infection",
+            "name": "Shadowsteel infection",
+            "kind": "save",
+            "activation": "action",
+            "save": "con",
+            "dc": "8+@con+@prof",
+            "range": 5,
+            "condition": "",
+            "notes": "Apply one random Stage 1 Shadowsteel curse only if none is already present."
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:debilitating-magic",
+        "type": "shadowsteel-ghoul",
+        "name": "Debilitating Magic",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Choose an ability score; reduce it by 2.",
+        "effects": [
+          {
+            "key": "system.abilities.$ability.value",
+            "value": "-2",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [
+          {
+            "key": "ability",
+            "label": "ability reduced by two",
+            "options": [
+              "str",
+              "dex",
+              "con",
+              "int",
+              "wis",
+              "cha"
+            ],
+            "count": 1
+          }
+        ],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:friendless",
+        "type": "shadowsteel-ghoul",
+        "name": "Friendless",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "CHA-check disadvantage; cannot receive normal living-creature ally/friendly benefits.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-friendless",
+            "name": "Resolve Friendless",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:healing-resistance",
+        "type": "shadowsteel-ghoul",
+        "name": "Healing Resistance",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 172,
+        "summary": "Healing is halved, except full recovery at a long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-healing-resistance",
+            "name": "Resolve Healing Resistance",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:magic-resistance",
+        "type": "shadowsteel-ghoul",
+        "name": "Magic Resistance",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Saves against spells have advantage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-absorption",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Absorption",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Unarmored AC +1.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-arcane-vessel",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Arcane Vessel",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "shadowsteel-ghoul:shadowsteel-caster"
+        ],
+        "spellcaster": false,
+        "page": 172,
+        "summary": "Slot-cast spell can penalize one target's save or grant spell-attack advantage. Proficiency uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-caster",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Caster",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "shadowsteel-ghoul:shadowsteel-curser"
+        ],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Grants Shadowsteel Master if absent. With a Shadowsteel component, spend a Hit Die to recover a qualifying spell slot; spellcasting-modifier uses per long rest.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-curser",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Curser",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Grants Shadowsteel Adept if absent; Shadowsteel curse cast times halve and save DC rises by 1.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-explosion",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Explosion",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 172,
+        "summary": "First Bloodied/zero-HP event after rest causes a 60-foot living-creature blast: CON DC 20, 4d10 Force and Stunned on failure; half damage only on success.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "shadowsteel-explosion",
+            "name": "Shadowsteel explosion",
+            "kind": "save",
+            "activation": "special",
+            "save": "con",
+            "dc": "20",
+            "formula": "4d10",
+            "damageType": "force",
+            "range": 60,
+            "condition": "stunned",
+            "duration": 6
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-fury",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Fury",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 172,
+        "summary": "After Shadowsteel Weapon/Claw attacks, Bonus Action makes another attack; hit can impose Exhaustion after a CON save.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-weapon",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Weapon",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Bind one melee weapon at a long rest; counts magical. Dropping a creature to zero with it grants d8 temporary HP for one hour.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "shadowsteel-ghoul:shadowsteel-weapon-master",
+        "type": "shadowsteel-ghoul",
+        "name": "Shadowsteel Weapon Master",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [
+          "shadowsteel-ghoul:shadowsteel-weapon"
+        ],
+        "spellcaster": false,
+        "page": 171,
+        "summary": "Bound Shadowsteel Weapon damage +4.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "specter",
+    "name": "Specter",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "specter:spectral-form"
+        ],
+        "choose": 1,
+        "boons": [
+          "specter:ghastly-touch",
+          "specter:incorporeal-movement"
+        ],
+        "flaws": [
+          "specter:drawn-to-darkness"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "specter:ethereal-phasing",
+          "specter:haunting-flight"
+        ],
+        "flaws": [
+          "specter:untethered-from-life"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "specter:draining-flight",
+          "specter:paralyzing-touch"
+        ],
+        "flaws": [
+          "specter:fraying-reality"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [],
+        "choose": 1,
+        "boons": [
+          "specter:call-of-unmaking",
+          "specter:possession"
+        ],
+        "flaws": [
+          "specter:pull-of-oblivion"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "specter:call-of-unmaking",
+        "type": "specter",
+        "name": "Call of Unmaking",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 177,
+        "summary": "Bonus Action marks chosen hearing creatures within 30 feet after CON save, excluding Construct/Undead. For one minute, each damage event adds d6 Necrotic. Once per long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "mark-of-unmaking",
+            "name": "Mark of Unmaking",
+            "kind": "save",
+            "activation": "bonus",
+            "save": "con",
+            "dc": "8+@prof+@stage",
+            "range": 30,
+            "duration": 60,
+            "notes": "Chosen hearing targets; exclude Construct/Undead. Marked damage events add d6 Necrotic."
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:draining-flight",
+        "type": "specter",
+        "name": "Draining Flight",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "specter:incorporeal-movement",
+          "specter:haunting-flight"
+        ],
+        "spellcaster": false,
+        "page": 176,
+        "summary": "Incorporeal Movement can activate as a Bonus Action; flight doubles. Once per turn, passing through a creature can deal 6d6 Psychic and frighten after CON save; separate use recovers on either rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "pass-through-drain",
+            "name": "Pass-through drain",
+            "kind": "save",
+            "activation": "special",
+            "save": "con",
+            "dc": "8+@prof+@stage",
+            "formula": "6d6",
+            "damageType": "psychic",
+            "condition": "frightened",
+            "duration": 6,
+            "range": 0
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:drawn-to-darkness",
+        "type": "specter",
+        "name": "Drawn to Darkness",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "Death saves have disadvantage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-drawn-to-darkness",
+            "name": "Resolve Drawn to Darkness",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:ethereal-phasing",
+        "type": "specter",
+        "name": "Ethereal Phasing",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "Cast Blink without a slot stage times per long rest. While active, turn start grants proficiency + stage temporary HP.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "cast-blink",
+            "name": "Cast Blink",
+            "kind": "spell",
+            "activation": "action",
+            "spell": "Blink",
+            "state": "blink",
+            "duration": 60
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:fraying-reality",
+        "type": "specter",
+        "name": "Fraying Reality",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 176,
+        "summary": "First Bloodied event after either rest: DC 15 CHA or Confusion for one minute.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-fraying-reality",
+            "name": "Resolve Fraying Reality",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:ghastly-touch",
+        "type": "specter",
+        "name": "Ghastly Touch",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "After an adjacent melee hit, add d6 Necrotic once per turn; proficiency + stage uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "ghastly-touch",
+            "name": "Ghastly touch",
+            "kind": "damage",
+            "activation": "special",
+            "formula": "1d6",
+            "damageType": "necrotic"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof+@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:haunting-flight",
+        "type": "specter",
+        "name": "Haunting Flight",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "Fly at walking Speed; while flying, Bonus Action can frighten one target within 30 feet for one minute after WIS save. Fear use recovers on either rest.",
+        "effects": [
+          {
+            "key": "system.attributes.movement.fly",
+            "value": "@walk",
+            "mode": 4,
+            "when": "always"
+          }
+        ],
+        "actions": [
+          {
+            "id": "haunting-fear",
+            "name": "Haunting fear",
+            "kind": "save",
+            "activation": "bonus",
+            "save": "wis",
+            "dc": "8+@prof+@stage",
+            "condition": "frightened",
+            "duration": 60,
+            "range": 30
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:incorporeal-movement",
+        "type": "specter",
+        "name": "Incorporeal Movement",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "Magic action until next turn start: pass through solids and resist all damage except Force. Ending inside solid matter causes d10 Force and displacement. Proficiency uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "become-incorporeal",
+            "name": "Become incorporeal",
+            "kind": "toggle",
+            "activation": "action",
+            "state": "incorporeal",
+            "duration": 6
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@prof",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:paralyzing-touch",
+        "type": "specter",
+        "name": "Paralyzing Touch",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [
+          "specter:ghastly-touch"
+        ],
+        "spellcaster": false,
+        "page": 176,
+        "summary": "Ghastly Touch becomes 2d6 Necrotic; optional CON save causes Paralyzed on failure or Prone on success. Stage uses per short/long rest.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "paralyzing-rider",
+            "name": "Paralyzing rider",
+            "kind": "save",
+            "activation": "action",
+            "save": "con",
+            "dc": "8+@prof+@stage",
+            "range": 5,
+            "condition": "paralyzed",
+            "onSaveCondition": "prone",
+            "duration": 6
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:possession",
+        "type": "specter",
+        "name": "Possession",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 177,
+        "summary": "Magic action against Humanoid/Beast: CHA DC 15. A failed save allows one-hour possession with specified retained mental traits. Once per short/long rest; target control/statistics require adjudication.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "possession",
+            "name": "Possession",
+            "kind": "save",
+            "activation": "action",
+            "save": "cha",
+            "dc": "15",
+            "condition": "incapacitated",
+            "duration": 3600,
+            "range": 5,
+            "notes": "Possession control/stat replacement requires the GM; target must be Humanoid/Beast."
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": 1,
+          "recovery": "sr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:pull-of-oblivion",
+        "type": "specter",
+        "name": "Pull of Oblivion",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 177,
+        "summary": "Natural 1 on a d20 test deals unavoidable 4d6 Force; reaching zero kills. Revival requires level 7+ magic.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-pull-of-oblivion",
+            "name": "Resolve Pull of Oblivion",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:spectral-form",
+        "type": "specter",
+        "name": "Spectral Form",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "Adds Undead type, no aging, and Necrotic resistance upgraded to immunity if already resistant. Cannot be excluded from Turn Undead.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "creatureType": "undead",
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "specter:untethered-from-life",
+        "type": "specter",
+        "name": "Untethered from Life",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 175,
+        "summary": "All healing is halved, rounded down.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-untethered-from-life",
+            "name": "Resolve Untethered from Life",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  },
+  {
+    "id": "vampire",
+    "name": "Vampire",
+    "source": "GrimHollowPG24",
+    "version": 1,
+    "stages": [
+      {
+        "stage": 1,
+        "grants": [
+          "vampire:fanged-bite"
+        ],
+        "choose": 1,
+        "boons": [
+          "vampire:fzeg-bloodline",
+          "vampire:soman-bloodline",
+          "vampire:strigoi-bloodline"
+        ],
+        "flaws": [
+          "vampire:the-sanguine-curse"
+        ]
+      },
+      {
+        "stage": 2,
+        "grants": [],
+        "choose": 2,
+        "boons": [
+          "vampire:eyes-of-the-night",
+          "vampire:grave-touched-soul",
+          "vampire:inhuman-reflexes",
+          "vampire:undead-resilience"
+        ],
+        "flaws": [
+          "vampire:greater-sanguine-curse"
+        ]
+      },
+      {
+        "stage": 3,
+        "grants": [],
+        "choose": 2,
+        "boons": [
+          "vampire:beguiler-s-charm",
+          "vampire:improved-fanged-bite",
+          "vampire:mist-form",
+          "vampire:sangromancy-specialist"
+        ],
+        "flaws": [
+          "vampire:supreme-sanguine-curse"
+        ]
+      },
+      {
+        "stage": 4,
+        "grants": [
+          "vampire:regeneration"
+        ],
+        "choose": 1,
+        "boons": [
+          "vampire:final-fzeg-bloodline",
+          "vampire:final-soman-bloodline",
+          "vampire:final-strigoi-bloodline"
+        ],
+        "flaws": [
+          "vampire:ultimate-sanguine-curse"
+        ]
+      }
+    ],
+    "features": [
+      {
+        "id": "vampire:beguiler-s-charm",
+        "type": "vampire",
+        "name": "Beguiler's Charm",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Magic action charms one seeing Humanoid/Beast within 30 feet for 24 hours after CHA save. Can renew; damage or charming another target ends the previous charm.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "beguiling-charm",
+            "name": "Beguiling charm",
+            "kind": "save",
+            "activation": "action",
+            "save": "cha",
+            "dc": "8+@cha+@prof",
+            "condition": "charmed",
+            "duration": 86400,
+            "range": 30,
+            "notes": "One target only, Humanoid/Beast; renew or end on damage as specified."
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:eyes-of-the-night",
+        "type": "vampire",
+        "name": "Eyes of the Night",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Darkvision +60 feet, including an existing range.",
+        "effects": [
+          {
+            "key": "system.attributes.senses.darkvision",
+            "value": "60",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:fanged-bite",
+        "type": "vampire",
+        "name": "Fanged Bite",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 179,
+        "summary": "Proficient STR/DEX d6 Piercing bite. A blood-bearing target makes CON save against additional Necrotic damage; you heal the actual Necrotic damage dealt.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "bite",
+            "name": "Bite",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "1d6",
+            "damageType": "piercing",
+            "ability": "best"
+          },
+          {
+            "id": "bite-blood-drain",
+            "name": "Bite blood drain",
+            "kind": "save",
+            "activation": "action",
+            "save": "con",
+            "dc": "8+@prof+@stage",
+            "formula": "1d6",
+            "damageType": "necrotic",
+            "range": 5,
+            "onSave": "none",
+            "notes": "Only against a target with blood; heal actual Necrotic damage dealt."
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:final-fzeg-bloodline",
+        "type": "vampire",
+        "name": "Final Fzeg Bloodline",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "vampire:fzeg-bloodline"
+        ],
+        "spellcaster": false,
+        "page": 181,
+        "summary": "Further STR +2 (maximum 20); Claw becomes 3d6 with three Attack-action claws; additional Speed +10 and nonmagical/nonsilver physical resistance.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "2",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          },
+          {
+            "key": "system.attributes.movement.walk",
+            "value": "10",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:final-soman-bloodline",
+        "type": "vampire",
+        "name": "Final Soman Bloodline",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "vampire:soman-bloodline"
+        ],
+        "spellcaster": false,
+        "page": 181,
+        "summary": "Further STR/DEX +1 (maximum 20); Bite Necrotic becomes 3d8. Qualifying Humanoid bite/feeding deaths can create controlled Vampire Spawn, maximum two.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "1",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          },
+          {
+            "key": "system.abilities.dex.value",
+            "value": "1",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:final-strigoi-bloodline",
+        "type": "vampire",
+        "name": "Final Strigoi Bloodline",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [
+          "vampire:strigoi-bloodline"
+        ],
+        "spellcaster": false,
+        "page": 181,
+        "summary": "Further DEX +2 (maximum 20); summon 2d4 eligible swarms/wolves on a Bonus Action, and four slot-free Misty Steps per long rest including reactive use.",
+        "effects": [
+          {
+            "key": "system.abilities.dex.value",
+            "value": "2",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:fzeg-bloodline",
+        "type": "vampire",
+        "name": "Fzeg Bloodline",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 179,
+        "summary": "STR +2 (maximum 20), Speed +10, proficient STR d8 Slashing Claw; Claw Attack action allows Bonus Action Fanged Bite.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "2",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          },
+          {
+            "key": "system.attributes.movement.walk",
+            "value": "10",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [
+          {
+            "id": "claw",
+            "name": "Claw",
+            "kind": "attack",
+            "activation": "action",
+            "formula": "1d8",
+            "damageType": "slashing",
+            "ability": "str"
+          }
+        ],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:grave-touched-soul",
+        "type": "vampire",
+        "name": "Grave-Touched Soul",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Necrotic resistance, upgraded to immunity if already resistant.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:greater-sanguine-curse",
+        "type": "vampire",
+        "name": "Greater Sanguine Curse",
+        "stage": 2,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Sunlight imposes disadvantage on all d20 tests. Feeding interval becomes four days.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-greater-sanguine-curse",
+            "name": "Resolve Greater Sanguine Curse",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:improved-fanged-bite",
+        "type": "vampire",
+        "name": "Improved Fanged Bite",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Attack action can make two bites. Bonus Action bite requires no bite in that turn's Attack action.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:inhuman-reflexes",
+        "type": "vampire",
+        "name": "Inhuman Reflexes",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "DEX saves have advantage.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:mist-form",
+        "type": "vampire",
+        "name": "Mist Form",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Component-free, slot-free Gaseous Form stage times per long rest; action or reaction before physical damage.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "cast-gaseous-form",
+            "name": "Cast Gaseous Form",
+            "kind": "spell",
+            "activation": "action",
+            "spell": "Gaseous Form"
+          }
+        ],
+        "choices": [],
+        "uses": {
+          "max": "@stage",
+          "recovery": "lr"
+        },
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:regeneration",
+        "type": "vampire",
+        "name": "Regeneration",
+        "stage": 4,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 181,
+        "summary": "Turn start heals 15 HP when current HP is 1–59; fails in sunlight or after Radiant damage since your previous turn ended.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:sangromancy-specialist",
+        "type": "vampire",
+        "name": "Sangromancy Specialist",
+        "stage": 3,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": true,
+        "page": 180,
+        "summary": "Stage additional d12 Sangromancy Dice, restored at long rest; successful Bite healing restores one. Can augment Necrotic cantrips with up to two qualifying Hit Dice.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "gate": "cantrip",
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:soman-bloodline",
+        "type": "vampire",
+        "name": "Soman Bloodline",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 179,
+        "summary": "STR/DEX +1 (maximum 19), Bite advantage, Bite Necrotic becomes d8, and climb at walking Speed.",
+        "effects": [
+          {
+            "key": "system.abilities.str.value",
+            "value": "1",
+            "mode": 2,
+            "when": "always",
+            "cap": 19
+          },
+          {
+            "key": "system.abilities.dex.value",
+            "value": "1",
+            "mode": 2,
+            "when": "always",
+            "cap": 19
+          },
+          {
+            "key": "system.attributes.movement.climb",
+            "value": "@walk",
+            "mode": 4,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:strigoi-bloodline",
+        "type": "vampire",
+        "name": "Strigoi Bloodline",
+        "stage": 1,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 179,
+        "summary": "DEX +2 (maximum 20); advantage Bite uses 2d4 Piercing. Bonus Action Hide outside sunlight; Stealth proficiency or existing-proficiency expertise.",
+        "effects": [
+          {
+            "key": "system.abilities.dex.value",
+            "value": "2",
+            "mode": 2,
+            "when": "always",
+            "cap": 20
+          },
+          {
+            "key": "system.skills.ste.value",
+            "value": "expertise",
+            "mode": 2,
+            "when": "always"
+          }
+        ],
+        "actions": [],
+        "choices": [],
+        "coverage": "assisted",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:supreme-sanguine-curse",
+        "type": "vampire",
+        "name": "Supreme Sanguine Curse",
+        "stage": 3,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Sunlight turn start deals unavoidable d10 Radiant; stressful events may reveal true appearance. Feeding interval becomes two days.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-supreme-sanguine-curse",
+            "name": "Resolve Supreme Sanguine Curse",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:the-sanguine-curse",
+        "type": "vampire",
+        "name": "The Sanguine Curse",
+        "stage": 1,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 179,
+        "summary": "Uninvited private-residence entry causes d20 disadvantage and unavoidable turn-start d4 Psychic. Feed within seven days or enter a GM-controlled feeding frenzy.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-the-sanguine-curse",
+            "name": "Resolve The Sanguine Curse",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:ultimate-sanguine-curse",
+        "type": "vampire",
+        "name": "Ultimate Sanguine Curse",
+        "stage": 4,
+        "kind": "flaw",
+        "requires": [],
+        "spellcaster": false,
+        "page": 181,
+        "summary": "Feeding becomes daily. While incapacitated/stunned/unconscious, a qualifying critical wooden/silver piercing hit requires DC 20 CON or death and ash.",
+        "effects": [],
+        "actions": [
+          {
+            "id": "resolve-ultimate-sanguine-curse",
+            "name": "Resolve Ultimate Sanguine Curse",
+            "kind": "reference",
+            "activation": "special"
+          }
+        ],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      },
+      {
+        "id": "vampire:undead-resilience",
+        "type": "vampire",
+        "name": "Undead Resilience",
+        "stage": 2,
+        "kind": "boon",
+        "requires": [],
+        "spellcaster": false,
+        "page": 180,
+        "summary": "Once per long rest, a non-Radiant drop to zero can leave you at 1 HP instead.",
+        "effects": [],
+        "actions": [],
+        "choices": [],
+        "coverage": "manual",
+        "manual": "Apply contextual restrictions, targets, follow-up saves, and secondary consequences described in the summary unless the generated activity explicitly handles them."
+      }
+    ]
+  }
+]
