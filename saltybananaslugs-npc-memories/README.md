@@ -1,4 +1,4 @@
-# SaltyBananaSlug's NPC Memories v0.1.1
+# SaltyBananaSlug's NPC Memories v0.1.2
 
 A GM-facing memory system for Foundry VTT v13 + D&D5e 5.2.x.
 
@@ -170,3 +170,9 @@ Restart Foundry and enable **SaltyBananaSlug's NPC Memories**.
 - Fixed saving by removing the nested form from the D&D5e NPC sheet.
 - Related Actor/token drops now intercept the native sheet drop handler so they do not trigger Actor transformation behavior.
 - Added more tolerant drag-data parsing and clearer errors.
+
+## 0.1.2 — Memories tab visibility fix
+
+The memory panel now uses native tab attributes and active-state styling. It stays hidden on Features, Inventory, Spells, Effects, Biography and Special Traits. The API targets the navigation control when opening Memories. Memory storage and journal records are unchanged.
+
+Close Foundry, replace the module folder with the folder in the test ZIP, restart, and test switching between Biography and Memories. No actor reimport is required for this fix.

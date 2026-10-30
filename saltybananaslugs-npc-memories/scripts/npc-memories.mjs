@@ -954,7 +954,7 @@ async function onNpcSheetRender(app, element) {
 
   if (app._sbsOpenMemoriesRequested) {
     app._sbsOpenMemoriesRequested = false;
-    const tab = root.querySelector('[data-tab="memories"]');
+    const tab = root.querySelector('nav [data-tab="memories"], .sheet-tabs [data-tab="memories"]');
     tab?.click();
   }
 }

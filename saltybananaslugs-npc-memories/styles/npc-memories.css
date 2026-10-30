@@ -5,6 +5,12 @@
   overflow: hidden;
 }
 
+/* The ledger is a native tab panel, never a persistent sheet overlay. */
+.sbs-npc-memories-part:not(.active),
+.sbs-npc-memories-part[hidden] {
+  display: none !important;
+}
+
 .sbs-memory-host {
   height: 100%;
   min-height: 0;
