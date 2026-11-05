@@ -35,7 +35,7 @@ SaltyBananaSlugs's Party Viewer is a lightweight Foundry VTT v13 / dnd5e party d
 - Move/copy items from owned actors into shared storage.
 - Take items from shared storage into an actor.
 - Shared currency per storage container.
-- Trade offers with accept/decline.
+- Separate two-sided trade sessions with item/currency offers, both-player readiness, and explicit completion.
 - Transaction log.
 - GM permission/visibility settings.
 - Notes system:
