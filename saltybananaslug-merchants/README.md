@@ -1,4 +1,4 @@
-# SaltyBananaSlug's Merchants v0.1.8
+# SaltyBananaSlug's Merchants v0.1.9
 
 A standalone Foundry VTT v13 + D&D5e merchant/storefront system. It does **not** use Item Piles.
 
@@ -177,3 +177,11 @@ SBS Factions and other GM-side modules may use:
 - Refresh stock after a rejected checkout and remove unavailable quantities from the cart.
 
 Regression checks: `node --test saltybananaslug-merchants/tests/*.test.mjs`
+
+
+## v0.1.9 visible table imports and GM shopping
+
+- **Add Stock from Table** in the merchant header opens a world table picker, optional compendium UUID, roll count, and roll/all-results modes. The new-merchant Inventory step has the same button. Dragging tables still works.
+- Imports display progress and errors in the dialog and report how many results were added or skipped.
+- **Shop as Character** lets the GM select a character and buy/sell through the normal transaction service. These are real transactions, using the character's coins and inventory and the merchant's stock limits. **Manage Stock** returns to administration.
+- Merchant headers display the installed module version so updates can be checked directly.

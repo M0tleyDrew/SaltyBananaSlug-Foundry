@@ -23,7 +23,7 @@ function setup(q=1,stock={}){
   const inv=actor('inventory'),customer=actor('customer'),item=new Item(q,stock);inv.items.set(item.id,item);
   const config={isMerchant:true,inventoryActorId:inv.id,status:'open',pricing:{sellRate:100},favor:{levels:[]},treasury:{addCustomerPayments:false}};
   const token={uuid:'Scene.scene.Token.shop',name:'Shop',getFlag:()=>config};
-  globalThis.game={user:{isGM:true,name:'GM'},actors:new Map([[inv.id,inv],[customer.id,customer]]),scenes:new Map(),journal:new Map(),items:new Map(),packs:new Map()};
+  globalThis.game={user:{isGM:true,name:'GM'},actors:new Map([[inv.id,inv],[customer.id,customer]]),scenes:new Map(),journal:new Map(),items:new Map(),packs:new Map(),modules:new Map()};
   return {inv,customer,item,token};
 }
 const purchase=(env,lines=[{itemId:'potion',quantity:1}],tokenDoc=env.token)=>buyFromMerchant({tokenDoc,actor:env.customer,lines});
@@ -80,4 +80,33 @@ test('fresh storefront data clears sold-out or missing cart entries and caps rem
   sheet.remoteSnapshot={items:[{id:'potion',quantity:0,inStock:false},{id:'other',quantity:2,maxPerCustomer:1,priceCp:100}]};
   sheet.buyCart.set('potion',1);sheet.buyCart.set('missing',1);sheet.buyCart.set('other',5);
   const data=sheet.getData();assert.deepEqual([...sheet.buyCart],[['other',1]]);assert.equal(data.buyItems[0].cartQty,0);
+});
+
+
+test('GM shopping exposes the real storefront and can buy the final item without a player',async()=>{
+  const env=setup(1);env.customer.type='character';game.actors.filter=predicate=>[...game.actors.values()].filter(predicate);
+  const {MerchantSheet}=await import('../scripts/apps/merchant-sheet.js');
+  const sheet=new MerchantSheet(env.token);sheet.selectedActorId=env.customer.id;sheet.render=()=>{};
+  assert.equal(sheet.getData().manageStock,true);sheet.shopAsCharacter=true;
+  const data=sheet.getData();assert.equal(data.manageStock,false);assert.equal(data.shopAsCharacter,true);assert.equal(data.buyItems[0].inStock,true);
+  globalThis.ui={notifications:{info(){},error(){}}};sheet.buyCart.set('potion',1);await sheet._checkoutBuy();
+  assert.equal(quantityOf(env.item),0);assert.equal(env.customer.items.size,1);assert.equal(sheet.getData().buyItems[0].inStock,false);assert.equal(sheet.buyCart.size,0);
+});
+
+test('visible table picker imports selected tables, prevents double clicks, and keeps errors open for retry',async()=>{
+  setup();const {openStockTableDialog}=await import('../scripts/apps/table-picker.js');
+  const notices=[];globalThis.ui={notifications:{info:m=>notices.push(m),error:m=>notices.push(m)}};
+  globalThis.Dialog=class{constructor(data){this.data=data;this.closed=false;}render(){return this;}async close(){this.closed=true;}};
+  const selected={uuid:'RollTable.potions',documentName:'RollTable',name:'Potions'};game.tables={contents:[selected]};globalThis.fromUuid=async()=>selected;
+  let imports=0,finish;const gate=new Promise(resolve=>finish=resolve);
+  const dialog=openStockTableDialog({onImport:async(t,opts)=>{imports++;assert.equal(t,selected);assert.equal(opts.count,3);await gate;return {items:[{}],skipped:[]};}});
+  assert.match(dialog.data.content,/Roll table to add items/);assert.match(dialog.data.content,/RollTable.potions/);
+  const nodes={table:{value:''},uuid:{value:''},mode:{value:'draw'},count:{value:'3'},status:{textContent:''}};
+  const root={querySelector:selector=>selector.includes('status')?nodes.status:nodes[selector.match(/name='([^']+)'/)[1]]};
+  const callback=dialog.data.buttons.import.callback;
+  const oldError=console.error;console.error=()=>{};
+  try{callback([root]);await dialog.close();await new Promise(setImmediate);assert.equal(dialog.closed,false);assert.match(nodes.status.textContent,/Choose a RollTable/);
+    nodes.table.value=selected.uuid;callback([root]);callback([root]);await dialog.close();await new Promise(setImmediate);assert.equal(imports,1);assert.equal(dialog.closed,false);
+    finish();await new Promise(setImmediate);assert.equal(dialog.closed,true);assert.match(notices.at(-1),/Added 1/);
+  }finally{console.error=oldError;}
 });

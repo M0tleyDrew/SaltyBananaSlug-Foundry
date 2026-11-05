@@ -1,9 +1,10 @@
 <div class="sbsm-app sbsm-sheet-shell">
-  <header class="sbsm-brand compact"><img src="{{logo}}"><div><h1>{{data.name}}</h1><p>{{data.shopTypeLabel}} · {{data.status}}</p></div>{{#if isGM}}<div class="header-actions"><button type="button" data-action="edit"><i class="fas fa-gear"></i> Edit</button><button type="button" data-action="journal"><i class="fas fa-book"></i> Journal</button><button type="button" data-action="restock"><i class="fas fa-arrows-rotate"></i> Restock</button></div>{{/if}}</header>
+  <header class="sbsm-brand compact"><img src="{{logo}}"><div><h1>{{data.name}}</h1><p>{{data.shopTypeLabel}} · {{data.status}} · v{{version}}</p></div>{{#if isGM}}<div class="header-actions"><button type="button" data-action="table-stock"><i class="fas fa-dice-d20"></i> Add Stock from Table</button><button type="button" data-action="shop-as-character">{{#if shopAsCharacter}}Manage Stock{{else}}Shop as Character{{/if}}</button><button type="button" data-action="edit"><i class="fas fa-gear"></i> Edit</button><button type="button" data-action="journal"><i class="fas fa-book"></i> Journal</button><button type="button" data-action="restock"><i class="fas fa-arrows-rotate"></i> Restock</button></div>{{/if}}</header>
   {{#if data.description}}<div class="sbsm-description">{{data.description}}</div>{{/if}}
   <div class="sbsm-customer-bar"><label>Shopping Character<select name="actor">{{#each actors}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label><span><strong>Favor:</strong> {{rates.favorName}}</span><span><strong>You Pay:</strong> {{rates.sellRate}}%</span><span><strong>Merchant Pays:</strong> {{rates.buyRate}}%</span>{{#if isGM}}<span><strong>Treasury:</strong> {{treasury}}</span>{{/if}}</div>
 
-  {{#if isGM}}
+  {{#if shopAsCharacter}}<div class="sbsm-callout"><strong>GM shopping:</strong> purchases and sales use the selected character’s actual inventory and coins. Finite stock limits apply.</div>{{/if}}
+  {{#if manageStock}}
     <div class="sbsm-sheet-scroll">
       <div class="sbsm-dropzone"><i class="fas fa-arrow-down-to-bracket"></i><strong>GM Stock Drop Zone</strong><span>Drop Items, Journals, Journal Pages, or RollTables anywhere here to add stock. Journal and table sources are copied, never deleted.</span></div>
       <div class="sbsm-callout"><strong>Infinite stock:</strong> open Stock Settings and enter <code>X</code>. X stock never decrements.</div>
