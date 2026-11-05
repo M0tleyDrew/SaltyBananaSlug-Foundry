@@ -1,4 +1,4 @@
-# SaltyBananaSlug's Merchants v0.1.7
+# SaltyBananaSlug's Merchants v0.1.8
 
 A standalone Foundry VTT v13 + D&D5e merchant/storefront system. It does **not** use Item Piles.
 
@@ -166,3 +166,14 @@ SBS Factions and other GM-side modules may use:
 - `game.sbsMerchants.findByActor(actor)` — returns SBS merchant TokenDocuments using that Actor.
 - `game.sbsMerchants.getFavorLevels(token)` — returns the merchant's configured favor tiers.
 - `game.sbsMerchants.setRelation(token, actor, patch)` — updates a customer relationship through the merchant's normal ledger/config path. `patch.reason`, `patch.source`, and `patch.emitHook` are control fields and are not stored as customer pricing data.
+
+
+## v0.1.8 stock and RollTable fixes
+
+- Resolve Foundry v13 RollTable Item results using `documentUuid`, including compendium links; retain legacy result support.
+- Report empty, depleted, and unresolvable table results instead of claiming an empty import succeeded. Source tables are never depleted by stocking.
+- Validate combined purchase quantities against stored stock before charging or transferring items. Zero stock cannot be purchased; explicit infinite stock remains available.
+- Serialize purchases sharing the same inventory, including different merchant tokens.
+- Refresh stock after a rejected checkout and remove unavailable quantities from the cart.
+
+Regression checks: `node --test saltybananaslug-merchants/tests/*.test.mjs`

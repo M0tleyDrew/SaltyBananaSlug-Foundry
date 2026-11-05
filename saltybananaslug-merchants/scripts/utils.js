@@ -15,7 +15,12 @@ export function getMerchantData(doc){
 export function activeGM(){return game.users?.activeGM ?? game.users?.find(u=>u.active&&u.isGM) ?? null;}
 export function escapeHtml(v=""){return String(v).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#039;",'"':"&quot;"}[c]));}
 export function notifyError(err,prefix="Merchant error"){console.error(`${MODULE_ID} | ${prefix}`,err);ui.notifications.error(`${prefix}: ${err?.message??err}`);}
-export function quantityOf(item){const q=Number(foundry.utils.getProperty(item,"system.quantity"));return Number.isFinite(q)&&q>=0?q:1;}
+export function quantityOf(item){
+  // Stored stock is authoritative, even when system preparation changes the display value.
+  const raw=foundry.utils.getProperty(item?._source,"system.quantity")??foundry.utils.getProperty(item,"system.quantity");
+  if(raw===undefined)return 1; // Item types without a quantity field.
+  const q=Number(raw);return Number.isFinite(q)?Math.max(0,Math.floor(q)):0;
+}
 export function setQuantity(data,q){foundry.utils.setProperty(data,"system.quantity",Math.max(0,Number(q)||0));return data;}
 export function isInventoryActor(actor){return Boolean(actor?.getFlag?.(MODULE_ID,"isInventory"));}
 export function isShellActor(actor){return Boolean(actor?.getFlag?.(MODULE_ID,"isShell"));}
