@@ -58,6 +58,9 @@ export function stageItem(item,quantity=1,source="drag"){return stagedItem(item,
 export async function stageJournal(doc,user=game.user){const p=await parseJournal(doc,user);return{...p,items:p.items.map(x=>stagedItem(x.item,x.quantity,`Journal: ${p.sourceName}`))};}
 
 async function resultDocument(result){
+  // v13 stores linked world and compendium documents as UUIDs.
+  if(result?.documentUuid)try{const d=await fromUuid(result.documentUuid);if(d)return d;}catch(_){ }
+
   if(typeof result?.getDocument==="function")try{const d=await result.getDocument();if(d)return d;}catch(_){ }
   const id=result?.documentId??result?.documentID??result?.document?.id;
   const col=result?.documentCollection??result?.documentCollectionName??result?.collection;
@@ -72,9 +75,10 @@ export async function previewRollTable(table,{mode="draw",count=1}={}){
   if(table?.documentName!=="RollTable")throw new Error("Drop a Foundry RollTable.");
   const results=[];
   if(mode==="all")results.push(...(table.results?.contents??[]));
-  else{for(let i=0;i<Math.max(1,Math.min(100,Number(count)||1));i++){const rolled=await table.roll({recursive:true});results.push(...(rolled?.results??[]));}}
+  else{for(let i=0;i<Math.max(1,Math.min(100,Math.floor(Number(count)||1)));i++){const rolled=await table.roll({recursive:true});results.push(...(rolled?.results??[]));}}
   const items=[],skipped=[];
-  for(const r of results){const doc=await resultDocument(r);if(doc?.documentName==="Item")items.push(doc);else skipped.push({text:r?.text??r?.name??"Table result",reason:"Result is not a linked Item"});}
+  for(const r of results){let doc=null;try{doc=await resultDocument(r);}catch(_){ }if(doc?.documentName==="Item")items.push(doc);else skipped.push({text:r?.text??r?.name??"Table result",reason:"Result is not a linked Item"});}
+  if(!items.length)throw new Error(results.length?`No linked Items could be imported from “${table.name}”. Use Item document results or check their links.`:`“${table.name}” returned no results. Check its formula, result ranges, and drawn/depleted results.`);
   return{tableName:table.name,items,skipped};
 }
 export async function stageRollTable(table,opts={}){const p=await previewRollTable(table,opts);return{...p,items:p.items.map(i=>stagedItem(i,1,`RollTable: ${table.name}`))};}

@@ -5,7 +5,7 @@ import {createMerchantJournal, renameMerchantJournal, syncMerchantJournal, syncM
 import {parseJournal, previewRollTable, stageItem, stageJournal, stageRollTable} from "./importers.js";
 
 const operationTails=new Map();
-async function withMerchantOperation(tokenDoc,fn){const key=tokenDoc?.uuid??tokenDoc?.id;if(!key)return fn();const previous=operationTails.get(key)??Promise.resolve();let release;const gate=new Promise(r=>release=r);const tail=previous.catch(()=>{}).then(()=>gate);operationTails.set(key,tail);await previous.catch(()=>{});try{return await fn();}finally{release();if(operationTails.get(key)===tail)operationTails.delete(key);}}
+async function withMerchantOperation(tokenDoc,fn){const key=getMerchantData(tokenDoc)?.inventoryActorId??tokenDoc?.uuid??tokenDoc?.id;if(!key)return fn();const previous=operationTails.get(key)??Promise.resolve();let release;const gate=new Promise(r=>release=r);const tail=previous.catch(()=>{}).then(()=>gate);operationTails.set(key,tail);await previous.catch(()=>{});try{return await fn();}finally{release();if(operationTails.get(key)===tail)operationTails.delete(key);}}
 
 
 function merchantChangeSummary(old,next){
@@ -127,7 +127,11 @@ export async function removeMerchantStock(tokenDoc,itemId){if(!game.user.isGM)th
 
 export async function buyFromMerchant({tokenDoc,user=game.user,actor,lines=[]}){
   return withMerchantOperation(tokenDoc,async()=>{const data=validateInteraction(tokenDoc,user,actor);const inv=game.actors.get(data.inventoryActorId);if(!inv)throw new Error("Merchant inventory missing.");let total=0;const prepared=[];
-    for(const line of lines){const item=inv.items.get(line.itemId);if(!item||!itemVisibleForCustomer(item,data,actor))throw new Error("One of the requested items is no longer available.");const s=stockSettings(item),qty=Math.max(1,Math.floor(Number(line.quantity)||1));if(!s.infinite&&quantityOf(item)<qty)throw new Error(`${item.name} does not have enough stock.`);if(s.maxPerCustomer&&qty>s.maxPerCustomer)throw new Error(`${item.name} is limited to ${s.maxPerCustomer} per purchase.`);const unit=priceForCustomer(item,data,actor,"sell");total+=unit*qty;prepared.push({item,qty,unit,s});}
+    // Combine repeated lines before validating so one request cannot oversell a stack.
+    const requested=new Map();
+    if(!Array.isArray(lines)||!lines.length)throw new Error("Your purchase cart is empty.");
+    for(const line of lines){const qty=Number(line?.quantity);if(!line?.itemId||!Number.isSafeInteger(qty)||qty<1)throw new Error("Invalid purchase quantity.");const combined=(requested.get(line.itemId)??0)+qty;if(!Number.isSafeInteger(combined))throw new Error("Invalid purchase quantity.");requested.set(line.itemId,combined);}
+    for(const [itemId,qty] of requested){const item=inv.items.get(itemId);if(!item||!itemVisibleForCustomer(item,data,actor))throw new Error("One of the requested items is no longer available.");const s=stockSettings(item);if(!s.infinite&&quantityOf(item)<qty)throw new Error(`${item.name} does not have enough stock.`);if(s.maxPerCustomer&&qty>s.maxPerCustomer)throw new Error(`${item.name} is limited to ${s.maxPerCustomer} per purchase.`);const unit=priceForCustomer(item,data,actor,"sell");total+=unit*qty;prepared.push({item,qty,unit,s});}
     const playerCp=currencyToCopper(currencyOf(actor));if(playerCp<total)throw new Error(`You need ${formatCopper(total)}, but only have ${formatCopper(playerCp)}.`);
     await spendActorCopper(actor,total);const merchantCp=currencyToCopper(currencyOf(inv));if(data.treasury?.addCustomerPayments!==false){let credit=total;if(data.treasury?.capAtMaximum&&!data.treasury?.unlimited){const cap=Math.max(0,Number(data.treasury?.maxFundsCp??merchantCp));credit=Math.max(0,Math.min(total,cap-merchantCp));}if(credit>0)await addActorCopper(inv,credit);}
     for(const p of prepared){await addItemToActor(actor,p.item,p.qty,{}, {stripMerchantFlags:true});if(!p.s.infinite)await p.item.update({"system.quantity":Math.max(0,quantityOf(p.item)-p.qty)});}

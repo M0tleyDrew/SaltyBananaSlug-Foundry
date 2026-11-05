@@ -1,4 +1,4 @@
-# SaltyBananaSlug's Merchants v0.1.7
+# SaltyBananaSlug's Merchants v0.1.9
 
 A standalone Foundry VTT v13 + D&D5e merchant/storefront system. It does **not** use Item Piles.
 
@@ -166,3 +166,22 @@ SBS Factions and other GM-side modules may use:
 - `game.sbsMerchants.findByActor(actor)` — returns SBS merchant TokenDocuments using that Actor.
 - `game.sbsMerchants.getFavorLevels(token)` — returns the merchant's configured favor tiers.
 - `game.sbsMerchants.setRelation(token, actor, patch)` — updates a customer relationship through the merchant's normal ledger/config path. `patch.reason`, `patch.source`, and `patch.emitHook` are control fields and are not stored as customer pricing data.
+
+
+## v0.1.8 stock and RollTable fixes
+
+- Resolve Foundry v13 RollTable Item results using `documentUuid`, including compendium links; retain legacy result support.
+- Report empty, depleted, and unresolvable table results instead of claiming an empty import succeeded. Source tables are never depleted by stocking.
+- Validate combined purchase quantities against stored stock before charging or transferring items. Zero stock cannot be purchased; explicit infinite stock remains available.
+- Serialize purchases sharing the same inventory, including different merchant tokens.
+- Refresh stock after a rejected checkout and remove unavailable quantities from the cart.
+
+Regression checks: `node --test saltybananaslug-merchants/tests/*.test.mjs`
+
+
+## v0.1.9 visible table imports and GM shopping
+
+- **Add Stock from Table** in the merchant header opens a world table picker, optional compendium UUID, roll count, and roll/all-results modes. The new-merchant Inventory step has the same button. Dragging tables still works.
+- Imports display progress and errors in the dialog and report how many results were added or skipped.
+- **Shop as Character** lets the GM select a character and buy/sell through the normal transaction service. These are real transactions, using the character's coins and inventory and the merchant's stock limits. **Manage Stock** returns to administration.
+- Merchant headers display the installed module version so updates can be checked directly.
