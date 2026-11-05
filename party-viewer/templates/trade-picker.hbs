@@ -1,0 +1,10 @@
+<div class="pv-app pv-trade-picker">
+  <h2>Start a Trade</h2>
+  <p>Select your character and an online player. Their trade window opens automatically. Only offered items are shared.</p>
+  <label>Your character<select name="source">{{#each sources}}<option value="{{id}}">{{name}}</option>{{/each}}</select></label>
+  <label>Trade with<select name="target">{{#each targets}}<option value="{{value}}">{{name}}</option>{{/each}}</select></label>
+  <button type="button" data-action="start" {{#unless sources.length}}disabled{{/unless}} {{#unless targets.length}}disabled{{/unless}}>Open Trade</button>
+  {{#unless targets.length}}<p>No other online player with a party character is available.</p>{{/unless}}
+  <h3>Open Trades</h3><button type="button" data-action="refresh">Refresh List</button>
+  {{#each sessions}}<button type="button" data-session="{{id}}">{{name}}</button>{{else}}<p>No open trades. GMs can view active trades here.</p>{{/each}}
+</div>

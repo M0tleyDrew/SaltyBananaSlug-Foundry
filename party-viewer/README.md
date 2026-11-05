@@ -1,5 +1,21 @@
 # SaltyBananaSlugs's Party Viewer
 
+## v0.4.0 — Separate trades and linked inventories
+
+Click **Trades ↗** to open a separate window; it no longer replaces the dashboard with a trade tab. Select your party character and another online player's character. A two-sided offer window opens for both players. Drag physical inventory items from your selected character's sheet onto your side, set quantities, and enter coins (CP/SP/EP/GP/PP). Save the currency offer, then click **Ready**. **Complete Trade** enables only after both players are ready; either participant or a GM viewing the trade can complete it. The GM opens **Trades ↗** and selects an open trade to observe.
+
+Only offered items are displayed, not everybody's inventory. Changing an offer clears both ready checks. Current ownership, quantities, and coins are checked again before completion. Failed transfers attempt to restore all affected items and coins. An offer does not reserve or move inventory until completion. Empty containers can be traded; empty a nonempty container first.
+
+Trade windows update only for their own session. Actor/item changes elsewhere no longer redraw them. Relevant external changes to offered items or insufficient coins clear readiness. Party dashboard refreshes are limited to party/linked actors, coalesced, and deferred while a form field is focused.
+
+In **Storage** or the GM storage editor, set **Inventory UUID** to a world Actor (including a vehicle), scene Token, or actor-owned container Item. An SBS container token resolves its actual inventory rather than its empty shell. The linked document is the inventory source: deposits and withdrawals change its real stock, and opening that actor/vehicle token's sheet shows the same inventory. The Party Viewer entry does not create a separate duplicate stash.
+
+Linking an existing shared stash moves its remaining items and coins into the linked inventory once. Clearing its UUID unlinks the entry and leaves stock on the original document. A bag Item link includes its nested contents; coins are kept on that bag's Party Viewer flag rather than using all of its owner's coins. Direct editing of linked coins/manual creation of linked loot is GM-only. SBS container links continue to check the container module's locks and access rules for player interactions.
+
+Open trade offers live on the active primary GM client. Reopen **Trades ↗** to resume a session after closing its window. If that GM reloads or disconnects, uncompleted offers must be started again; items have not moved. All clients should run the same module version.
+
+Validation: `node --test party-viewer/tests/*.test.mjs`. Includes transaction, rollback, permissions, socket synchronization, linked inventory, and migration tests. A three-client browser simulation checks the real trade controls and socket protocol; live Foundry-world verification remains necessary.
+
 ## SaltyBananaSlugs's Party Viewer v0.3.9
 
 - Player deposits from owned actor sheets still auto-route through the active GM client, but now include safer source item data and clearer timeout diagnostics if the GM client never responds.

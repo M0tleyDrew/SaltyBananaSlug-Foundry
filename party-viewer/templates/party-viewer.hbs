@@ -4,7 +4,7 @@
     <nav class="pv-tabs">
       <button class="{{#if (pvEq activeTab 'dashboard')}}active{{/if}}" data-tab="dashboard">Party</button>
       <button class="{{#if (pvEq activeTab 'storage')}}active{{/if}}" data-tab="storage">Storage</button>
-      <button class="{{#if (pvEq activeTab 'trades')}}active{{/if}}" data-tab="trades">Trades</button>
+      <button class="{{#if (pvEq activeTab 'trades')}}active{{/if}}" data-tab="trades" title="Open separate trade window">Trades ↗</button>
       <button class="{{#if (pvEq activeTab 'notes')}}active{{/if}}" data-tab="notes">Notes</button>
       {{#if isGM}}<button class="{{#if (pvEq activeTab 'gm')}}active{{/if}}" data-tab="gm">GM</button>{{/if}}
     </nav>
@@ -112,6 +112,7 @@
         <div>
           {{#if ../isGM}}
           <div class="pv-form-row compact pv-storage-edit-row">
+            <label class="pv-grow">Inventory UUID <input name="containerLinkedUuid" value="{{linkedUuid}}" placeholder="Actor, vehicle, Token, or container Item UUID"></label>
             <label class="pv-grow">Storage Name <input class="pv-container-field" name="containerEditName" value="{{name}}"></label>
             <label>Type
               <select class="pv-container-field" name="containerEditType">
@@ -139,6 +140,8 @@
         </div>
       </header>
 
+      {{#if linkedUuid}}<div class="pv-linked-inventory"><strong>Linked inventory:</strong> {{linkedName}} <button type="button" data-action="open-linked-inventory" data-container-id="{{id}}">Open Linked Inventory</button><p>Uses the linked inventory directly. Actor or vehicle tokens show the same stock on their sheet.</p>{{#if ../isGM}}<p>Linking moves existing shared stock and coins into the linked inventory. Clearing the UUID unlinks without deleting its inventory.</p>{{/if}}</div>{{/if}}
+      {{#if linkError}}<p class="pv-trade-error">{{linkError}}</p>{{/if}}
       <div class="pv-drop-zone" data-container-id="{{id}}">
         <i class="fas fa-hand-holding-box"></i>
         Drop items here from character sheets, the Items sidebar, or compendiums.
@@ -146,7 +149,7 @@
 
       <div class="pv-currency">
         {{#each currency as |amount coin|}}
-          <label>{{coin}} <input class="pv-currency-input" name="currency-{{coin}}" type="number" min="0" value="{{amount}}"></label>
+          <label>{{coin}} <input class="pv-currency-input" name="currency-{{coin}}" type="number" min="0" value="{{amount}}" {{#if ../linkedUuid}}{{#unless ../../isGM}}disabled{{/unless}}{{/if}}></label>
         {{/each}}
       </div>
 
@@ -170,7 +173,7 @@
         {{/each}}
       </div>
 
-      <div class="pv-manual-item pv-box inset">
+      {{#if allowManual}}<div class="pv-manual-item pv-box inset">
         <h4>Add Manual Loot</h4>
         <div class="pv-form-row">
           <label>Name <input name="itemName" placeholder="Blackened Silver Reliquary"></label>
@@ -184,6 +187,7 @@
           <button type="button" data-action="add-manual-item" data-container-id="{{id}}">Add</button>
         </div>
       </div>
+      {{/if}}
     </article>
     {{else}}
       <p class="pv-empty">No shared storage yet. The GM can create a wagon, chest, mule bags, or whatever container the party will immediately abuse.</p>
@@ -191,64 +195,7 @@
   </section>
   {{/if}}
 
-  {{#if (pvEq activeTab 'trades')}}
-  <section class="pv-panel pv-trades">
-    <div class="pv-trade-form pv-box">
-      <h2>Offer Trade / Give Item</h2>
-      <div class="pv-form-row">
-        <label>Offer item
-          <select name="tradeItem">
-            {{#each tradeActorItems}}
-              <optgroup label="{{name}}">
-                {{#each items}}<option value="{{../id}}|{{id}}">{{name}} ×{{quantity}}</option>{{/each}}
-              </optgroup>
-            {{/each}}
-          </select>
-        </label>
-        <label>Qty <input name="tradeQuantity" type="number" min="1" value="1"></label>
-        <label>To
-          <select name="tradeTarget">
-            {{#each tradeTargetActors}}<option value="{{id}}">{{name}}</option>{{/each}}
-          </select>
-        </label>
-      </div>
-      <div class="pv-form-row">
-        <label class="pv-grow">Request / note <input name="requestText" placeholder="For 10 gp, for that potion, because I am charming, etc."></label>
-        <button type="button" data-action="create-trade" {{#unless tradeActorItems.length}}disabled{{/unless}}>Send Offer</button>
-      </div>
-      {{#unless tradeActorItems.length}}<p class="pv-muted">No tradeable items found on party actors you own.</p>{{/unless}}
-    </div>
 
-    <div class="pv-box">
-      <div class="pv-section-title inline">
-        <h2>Trade Offers</h2>
-        {{#if isGM}}<button type="button" data-action="clear-resolved-trades">Clear Resolved</button>{{/if}}
-      </div>
-      {{#each trades}}
-      <article class="pv-trade {{status}}">
-        <img src="{{itemImg}}" alt="{{itemName}}">
-        <div class="pv-grow">
-          <strong>{{quantity}} × {{itemName}}</strong>
-          <div>{{fromActorName}} → {{toActorName}}</div>
-          <div class="pv-muted">Offered by {{fromUserName}} • {{createdLabel}}</div>
-          {{#if requestText}}<div class="pv-note">{{requestText}}</div>{{/if}}
-          <span class="pv-pill {{status}}">{{status}}</span>
-        </div>
-        {{#if (pvEq status 'pending')}}
-          {{#if canResolve}}
-          <button type="button" data-action="accept-trade" data-trade-id="{{id}}">Accept</button>
-          <button type="button" data-action="decline-trade" data-trade-id="{{id}}">Decline</button>
-          {{/if}}
-        {{else}}
-          <div class="pv-muted">Resolved by {{resolvedByName}}</div>
-        {{/if}}
-      </article>
-      {{else}}
-        <p class="pv-empty">No trade offers. Capitalism has briefly failed. Treasure this moment.</p>
-      {{/each}}
-    </div>
-  </section>
-  {{/if}}
 
   {{#if (pvEq activeTab 'notes')}}
   <section class="pv-panel pv-notes">
@@ -374,6 +321,7 @@
     <div class="pv-create-container pv-box">
       <h2>Create Shared Storage</h2>
       <div class="pv-form-row">
+        <label>Inventory UUID (optional) <input name="containerUuid" placeholder="Actor / vehicle / Token / container Item UUID"></label>
         <label>Name <input name="containerName" placeholder="Wagon Storage"></label>
         <label>Type
           <select name="containerType">
@@ -399,6 +347,7 @@
       {{#each containers}}
       <div class="pv-gm-storage-row pv-box inset" data-container-id="{{id}}">
         <div class="pv-form-row compact">
+          <label class="pv-grow">Inventory UUID <input name="containerLinkedUuid" value="{{linkedUuid}}" placeholder="Actor, vehicle, Token, or container Item UUID"></label>
           <label class="pv-grow">Name <input name="containerEditName" value="{{name}}"></label>
           <label>Type
             <select name="containerEditType">

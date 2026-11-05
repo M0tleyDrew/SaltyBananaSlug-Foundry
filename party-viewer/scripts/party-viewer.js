@@ -1,5 +1,12 @@
+import {itemCopy} from "./trade-engine.js";
+import {setupPartyTrades,openPartyTrades,invalidateTradeActor} from "./trade-ui.js";
+import {resolveInventory,refreshLinked,configureLink,addLinkedItem,removeLinkedItem,linkedAccess} from "./linked-storage.js";
+
+// All Party Viewer mutations share one GM queue, including trade completion.
+let partyOperationTail=Promise.resolve();
+function runPartyOperation(fn){const next=partyOperationTail.catch(()=>{}).then(fn);partyOperationTail=next.catch(()=>{});return next;}
 const MODULE_ID = "party-viewer";
-const MODULE_VERSION = "0.3.9";
+const MODULE_VERSION = "0.4.0";
 const SOCKET = `module.${MODULE_ID}`;
 const TEMPLATE = `modules/${MODULE_ID}/templates/party-viewer.hbs`;
 const ICON = `modules/${MODULE_ID}/assets/party-viewer.svg`;
@@ -108,6 +115,10 @@ function cloneData(data) {
     playersTake: c.playersTake !== false,
     playersAdd: c.playersAdd !== false,
     currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0, ...(c.currency ?? {}) },
+    linkedUuid: c.linkedUuid || "",
+    linkedActorId: c.linkedActorId || "",
+    linkedName: c.linkedName || "",
+    linkError: c.linkError || "",
     items: c.items ?? []
   }));
 
@@ -222,7 +233,8 @@ function getPath(obj, ...paths) {
 }
 
 function getItemQuantity(data) {
-  const q = getPath(data, "system.quantity", "system.quantity.value");
+  const raw = data?._source?.system?.quantity ?? getPath(data, "system.quantity");
+  const q = typeof raw==="object"?raw?.value:raw;
   return Number.isFinite(Number(q)) ? Number(q) : 1;
 }
 
@@ -696,9 +708,13 @@ function healthStatus(value, max) {
   return "Healthy";
 }
 
-async function mutatePartyData(action, payload = {}, userId = game.user.id) {
+function mutatePartyData(action,payload={},userId=game.user.id){return runPartyOperation(()=>applyPartyMutation(action,payload,userId));}
+async function applyPartyMutation(action, payload = {}, userId = game.user.id) {
+  const undoOnSave=[];
   const data = getPartyData();
+  if(!game.users.get(userId))throw new Error("Requesting player was not found.");
   const requestingIsGM = requesterIsGM(userId);
+  for(const c of data.containers)if(c.linkedUuid)await refreshLinked(c);
   switch (action) {
     case "add-roster": {
       if (!requestingIsGM) throw new Error("Only the GM can add party members.");
@@ -741,6 +757,7 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
         currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
         items: []
       };
+      if(payload.linkedUuid){const undo=await configureLink(container,payload.linkedUuid);if(undo)undoOnSave.push(undo);}
       data.containers.push(container);
       addLog(data, `${userName(userId)} created storage: ${container.name}.`, userId);
       break;
@@ -758,6 +775,7 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       if (!requestingIsGM) throw new Error("Only the GM can edit storage containers.");
       const container = data.containers.find(c => c.id === payload.containerId);
       if (!container) throw new Error("Storage not found.");
+      if(payload.linkedUuid!==undefined){const undo=await configureLink(container,payload.linkedUuid);if(undo)undoOnSave.push(undo);}
       container.name = String(payload.name ?? "").trim() || container.name;
       container.type = payload.type || container.type;
       container.capacity = Math.max(0, Number(payload.capacity) || 0);
@@ -777,7 +795,7 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       const quantity = Math.max(1, Number(payload.quantity) || 1);
       const item = storageItemFromItemData(itemData, quantity, { sourceActorId: null, sourceItemId: payload.sourceItemId ?? null });
       container.items ??= [];
-      container.items.push(item);
+      if(container.linkedUuid){await linkedAccess(await resolveInventory(container.linkedUuid),requestUser(userId),null,"add");await addLinkedItem(container,item.itemData,item.quantity);}else container.items.push(item);
       addLog(data, `${userName(userId)} added ${item.quantity} × ${item.name} to ${container.name}.`, userId);
       break;
     }
@@ -785,9 +803,10 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       const container = data.containers.find(c => c.id === payload.containerId);
       if (!container) throw new Error("Storage not found.");
       if (!requestingIsGM && (container.locked || !container.playersAdd)) throw new Error("Players cannot add to this storage.");
+      if(container.linkedUuid&&!requestingIsGM)throw new Error("Only the GM can create manual loot in a linked inventory.");
       const item = storageItemFromManual(payload);
       container.items ??= [];
-      container.items.push(item);
+      if(container.linkedUuid){await linkedAccess(await resolveInventory(container.linkedUuid),requestUser(userId),null,"add");await addLinkedItem(container,item.itemData,item.quantity);}else container.items.push(item);
       addLog(data, `${userName(userId)} added ${item.quantity} × ${item.name} to ${container.name}.`, userId);
       break;
     }
@@ -801,6 +820,18 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       const requestingUser = game.users.get(userId) ?? game.user;
       if (!requestingIsGM && !canUserOwnActor(actor, requestingUser)) throw new Error("You do not control that actor.");
 
+      if(container.linkedUuid){
+        if(!item)throw new Error("Source item no longer exists.");
+        if(!itemIsInventoryItem(item))throw new Error("Only physical inventory items can be stored.");
+        const q=Number(payload.quantity??1);if(!Number.isSafeInteger(q)||q<1||q>getItemQuantity(item))throw new Error("Not enough source items.");
+        if(actor.items.contents.some(child=>child.system?.container===item.id))throw new Error("Empty this container before moving it.");
+        const ref=await resolveInventory(container.linkedUuid);await linkedAccess(ref,requestingUser,actor,"add");
+        if(ref.actor.uuid===actor.uuid)throw new Error("This character already owns the linked inventory. Move items between its containers on the character sheet.");
+        if(!requestingIsGM&&payload.move===false)throw new Error("Players must move items rather than copy them.");
+        const added=await addLinkedItem(container,item.toObject(),q);
+        try{if(payload.move!==false)await decrementOrDeleteItem(actor,item.id,q);}catch(error){await added.ref.actor.deleteEmbeddedDocuments("Item",added.created.map(i=>i.id));throw error;}
+        addLog(data,`${userName(userId)} moved ${q} × ${item.name} into ${container.name}.`,userId);break;
+      }
       const payloadItemData = payload.itemData ? foundry.utils.deepClone(payload.itemData) : null;
       const sourceData = item ? itemDataSnapshot(item) : payloadItemData;
       if (!sourceData?.name) throw new Error("Source item not found or unreadable.");
@@ -829,10 +860,17 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       const requestingUser = game.users.get(userId) ?? game.user;
       if (!requestingIsGM && !canUserOwnActor(actor, requestingUser)) throw new Error("You do not control that actor.");
       if (!requestingIsGM && (container.locked || !container.playersTake)) throw new Error("Players cannot take from this storage.");
+      if(container.linkedUuid)await linkedAccess(await resolveInventory(container.linkedUuid),requestUser(userId),typeof actor!=="undefined"?actor:null,"take");
       const item = container.items.find(i => i.id === payload.itemId);
       if (!item) throw new Error("Storage item not found.");
       const quantity = Math.max(1, Number(payload.quantity) || 1);
       if (quantity > Number(item.quantity)) throw new Error(`Not enough ${item.name}.`);
+      if(container.linkedUuid){
+        const ref=await resolveInventory(container.linkedUuid);if(ref.actor.uuid===actor.uuid)throw new Error("That character already owns this inventory.");
+        const created=await actor.createEmbeddedDocuments("Item",[itemCopy(item.itemData,quantity)]);
+        try{await removeLinkedItem(container,item.id,quantity);}catch(error){await actor.deleteEmbeddedDocuments("Item",created.map(i=>i.id));throw error;}
+        addLog(data,`${userName(userId)} took ${quantity} × ${item.name} from ${container.name}.`,userId);break;
+      }
       await createItemOnActor(actor, item.itemData ?? manualLootData(item), quantity);
       item.quantity = Number(item.quantity) - quantity;
       if (item.quantity <= 0) container.items = container.items.filter(i => i.id !== item.id);
@@ -843,9 +881,11 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       if (!requestingIsGM) throw new Error("Only the GM can remove storage items.");
       const container = data.containers.find(c => c.id === payload.containerId);
       if (!container) throw new Error("Storage not found.");
+      if(container.linkedUuid)await linkedAccess(await resolveInventory(container.linkedUuid),requestUser(userId),typeof actor!=="undefined"?actor:null,"take");
       const item = container.items.find(i => i.id === payload.itemId);
       if (!item) throw new Error("Storage item not found.");
       const quantity = Math.max(1, Number(payload.quantity) || 1);
+      if(container.linkedUuid){await removeLinkedItem(container,item.id,quantity);break;}
       item.quantity = Number(item.quantity) - quantity;
       if (item.quantity <= 0) container.items = container.items.filter(i => i.id !== item.id);
       addLog(data, `${userName(userId)} removed ${quantity} × ${item.name} from ${container.name}.`, userId);
@@ -855,78 +895,17 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
       const container = data.containers.find(c => c.id === payload.containerId);
       if (!container) throw new Error("Storage not found.");
       if (!requestingIsGM && container.locked) throw new Error("Players cannot edit currency in locked storage.");
+      if(container.linkedUuid){
+        if(!requestingIsGM)throw new Error("Only the GM can directly edit linked inventory currency. Use trades to transfer character coins.");
+        const ref=await resolveInventory(container.linkedUuid),next={};for(const c of ["cp","sp","ep","gp","pp"]){const n=Number(payload.currency?.[c]??0);if(!Number.isSafeInteger(n)||n<0)throw new Error("Use whole, nonnegative coins.");next[c]=n;}await ref.setCurrency(next);await refreshLinked(container);break;
+      }
       container.currency ??= { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
       for (const c of ["cp", "sp", "ep", "gp", "pp"]) container.currency[c] = Math.max(0, Number(payload.currency?.[c]) || 0);
       addLog(data, `${userName(userId)} updated currency in ${container.name}.`, userId);
       break;
     }
-    case "create-trade": {
-      const fromActor = game.actors.get(payload.fromActorId);
-      const toActor = game.actors.get(payload.toActorId);
-      const item = fromActor?.items.get(payload.itemId);
-      if (!fromActor || !toActor || !item) throw new Error("Trade actor or item not found.");
-      if (!itemIsTradeable(item)) throw new Error("That item type is not tradeable in Party Viewer.");
-      const requestingUser = game.users.get(userId) ?? game.user;
-      const fromRoster = data.roster.find(r => r.id === fromActor.id);
-      const toRoster = data.roster.find(r => r.id === toActor.id);
-      if (!fromRoster || !toRoster) throw new Error("Trades are limited to actors currently added to Party Viewer.");
-      if (!requestingIsGM && (fromRoster.hidden || toRoster.hidden)) throw new Error("That party member is not available for trade.");
-      if (!requestingIsGM && !canUserOwnActor(fromActor, requestingUser)) throw new Error("You do not control the offering actor.");
-      const quantity = Math.max(1, Number(payload.quantity) || 1);
-      if (quantity > getItemQuantity(item)) throw new Error(`Not enough ${item.name}.`);
-      const trade = {
-        id: randomId(),
-        createdAt: Date.now(),
-        fromUserId: userId,
-        fromActorId: fromActor.id,
-        toActorId: toActor.id,
-        itemId: item.id,
-        itemName: item.name,
-        itemImg: item.img,
-        quantity,
-        requestText: payload.requestText || "",
-        status: "pending"
-      };
-      data.trades.unshift(trade);
-      addLog(data, `${userName(userId)} offered ${quantity} × ${item.name} from ${fromActor.name} to ${toActor.name}.`, userId);
-      break;
-    }
-    case "accept-trade": {
-      const trade = data.trades.find(t => t.id === payload.tradeId);
-      if (!trade) throw new Error("Trade not found.");
-      const fromActor = game.actors.get(trade.fromActorId);
-      const toActor = game.actors.get(trade.toActorId);
-      const item = fromActor?.items.get(trade.itemId);
-      if (!fromActor || !toActor || !item) throw new Error("Trade actor or item no longer exists.");
-      const requestingUser = game.users.get(userId) ?? game.user;
-      if (!requestingIsGM && !canUserOwnActor(toActor, requestingUser)) throw new Error("Only the receiving actor owner or GM can accept this trade.");
-      if (trade.quantity > getItemQuantity(item)) throw new Error(`Not enough ${item.name}.`);
-      await createItemOnActor(toActor, itemDataSnapshot(item, trade.quantity), trade.quantity);
-      await decrementOrDeleteItem(fromActor, item.id, trade.quantity);
-      trade.status = "accepted";
-      trade.resolvedAt = Date.now();
-      trade.resolvedBy = userId;
-      addLog(data, `${userName(userId)} accepted trade: ${trade.quantity} × ${trade.itemName} to ${toActor.name}.`, userId);
-      break;
-    }
-    case "decline-trade": {
-      const trade = data.trades.find(t => t.id === payload.tradeId);
-      if (!trade) throw new Error("Trade not found.");
-      const toActor = game.actors.get(trade.toActorId);
-      const requestingUser = game.users.get(userId) ?? game.user;
-      if (!requestingIsGM && !canUserOwnActor(toActor, requestingUser)) throw new Error("Only the receiving actor owner or GM can decline this trade.");
-      trade.status = "declined";
-      trade.resolvedAt = Date.now();
-      trade.resolvedBy = userId;
-      addLog(data, `${userName(userId)} declined a trade for ${trade.itemName}.`, userId);
-      break;
-    }
-    case "clear-resolved-trades": {
-      if (!requestingIsGM) throw new Error("Only the GM can clear resolved trades.");
-      data.trades = data.trades.filter(t => t.status === "pending");
-      addLog(data, `${userName(userId)} cleared resolved trades.`, userId);
-      break;
-    }
+    case "create-trade": case "accept-trade": case "decline-trade": case "clear-resolved-trades":
+      throw new Error("Use the separate Trades window for two-sided trades.");
     case "update-shared-notes": {
       if (!requestingIsGM && data.settings.playersCanEditNotes === false) throw new Error("Players cannot edit shared party notes.");
       data.sharedNotes = {
@@ -1002,7 +981,7 @@ async function mutatePartyData(action, payload = {}, userId = game.user.id) {
     default:
       throw new Error(`Unknown Party Viewer action: ${action}`);
   }
-  await savePartyData(data);
+  try{await savePartyData(data);}catch(error){for(const undo of undoOnSave.reverse())await undo();throw error;}
   return data;
 }
 
@@ -1028,7 +1007,7 @@ function shouldNotifySubmitted(action) {
 }
 
 async function requestMutation(action, payload = {}) {
-  if (game.user.isGM) {
+  if (isPrimaryGM()) {
     try {
       await mutatePartyData(action, payload, game.user.id);
       PartyViewerApp.refreshOpen();
@@ -1049,9 +1028,9 @@ async function requestMutation(action, payload = {}) {
   // fire-and-pray core socket message. Players still are not approving anything; the GM
   // client is only used to commit the shared world data and update actor inventory.
   registerPartyViewerSocketlib();
-  if (pvSocketlibSocket?.executeAsGM) {
+  if (pvSocketlibSocket?.executeAsUser) {
     try {
-      const result = await pvSocketlibSocket.executeAsGM("mutatePartyViewerData", action, payload, game.user.id);
+      const result = await pvSocketlibSocket.executeAsUser("mutatePartyViewerData", gm.id, action, payload, game.user.id);
       if (result?.ok === false) throw new Error(result.error || "Party Viewer change failed.");
       PartyViewerApp.refreshOpen();
       if (result?.message) ui.notifications.info(result.message);
@@ -1100,7 +1079,13 @@ class PartyViewerApp extends BaseApplication {
   }
 
   static refreshOpen() {
-    if (this.instance?.rendered) this.instance.render(false);
+    const app=this.instance;if(!app?.rendered)return;
+    clearTimeout(app._refreshTimer);app._refreshTimer=setTimeout(()=>{
+      const root=app.element?.[0]??app.element;
+      // Preserve unsaved form text; refresh on leaving the focused editor instead.
+      if(root?.contains?.(document.activeElement)&&document.activeElement?.matches?.("input,textarea,select")){app._refreshPending=true;return;}
+      app.render(false);
+    },120);
   }
 
   constructor(options = {}) {
@@ -1124,8 +1109,6 @@ class PartyViewerApp extends BaseApplication {
     const ownedPartyActors = partyActors.filter(a => canUserOwnActor(a, game.user));
     const storageSourceActors = game.user.isGM ? allActors : ownedPartyActors;
     const storageTargetActors = game.user.isGM ? partyActors : ownedPartyActors;
-    const tradeSourceActors = game.user.isGM ? partyActors : ownedPartyActors;
-    const tradeTargetActors = partyActors;
 
     const makeActorItemGroups = actors => actors.map(a => ({
       id: a.id,
@@ -1137,23 +1120,14 @@ class PartyViewerApp extends BaseApplication {
     })).filter(a => a.items.length);
 
     const actorItems = makeActorItemGroups(storageSourceActors);
-    const tradeActorItems = makeActorItemGroups(tradeSourceActors);
 
+    for(const c of data.containers)if(c.linkedUuid)await refreshLinked(c,{user:game.user});
     const containers = data.containers.map(c => ({
       ...c,
+      allowManual:!c.linkedUuid||game.user.isGM,
       weightTotal: totalContainerWeight(c),
       valueTotal: totalContainerValue(c),
       overCapacity: Number(c.capacity) > 0 && totalContainerWeight(c) > Number(c.capacity)
-    }));
-
-    const trades = data.trades.map(t => ({
-      ...t,
-      fromActorName: actorName(t.fromActorId),
-      toActorName: actorName(t.toActorId),
-      fromUserName: userName(t.fromUserId),
-      resolvedByName: t.resolvedBy ? userName(t.resolvedBy) : "",
-      createdLabel: formatTime(t.createdAt),
-      canResolve: game.user.isGM || canUserOwnActor(game.actors.get(t.toActorId))
     }));
 
     const privateNote = data.privateNotes?.[game.user.id] ?? { text: "", public: false, updatedAt: null, updatedBy: null };
@@ -1192,11 +1166,8 @@ class PartyViewerApp extends BaseApplication {
       allActors,
       ownedActors,
       storageTargetActors,
-      tradeTargetActors,
       actorItems,
-      tradeActorItems,
       containers,
-      trades,
       log: (data.log ?? []).map(l => ({ ...l, userName: userName(l.userId), timeLabel: formatTime(l.time) })),
       sharedNotes: data.sharedNotes,
       sharedNotesUpdated: data.sharedNotes?.updatedAt ? `${formatTime(data.sharedNotes.updatedAt)} by ${userName(data.sharedNotes.updatedBy)}` : "Never",
@@ -1216,6 +1187,7 @@ class PartyViewerApp extends BaseApplication {
     super.activateListeners(html);
     html.find("[data-tab]").on("click", ev => {
       ev.preventDefault();
+      if(ev.currentTarget.dataset.tab==="trades"){openPartyTrades();return;}
       this.activeTab = ev.currentTarget.dataset.tab;
       this.render(false);
     });
@@ -1231,6 +1203,7 @@ class PartyViewerApp extends BaseApplication {
 
     // Native capture handlers make drag/drop reliable across Foundry v13 sheets and heavily modded setups.
     const root = html?.[0] ?? html;
+    root?.addEventListener?.("focusout",()=>{if(this._refreshPending){this._refreshPending=false;PartyViewerApp.refreshOpen();}});
     if (root?.addEventListener) {
       root.addEventListener("dragenter", ev => this._onNativeDragOver(ev), true);
       root.addEventListener("dragover", ev => this._onNativeDragOver(ev), true);
@@ -1345,9 +1318,17 @@ class PartyViewerApp extends BaseApplication {
         if (confirm(`Remove ${actorName(actorId)} from the Party Viewer?`)) requestMutation("remove-roster", { actorId });
         break;
       }
+      case "open-linked-inventory": {
+        try{const c=getPartyData().containers.find(c=>c.id===button.dataset.containerId);const ref=await resolveInventory(c.linkedUuid);
+          if(ref.token?.getFlag?.("saltybananaslug-containers","container")?.isContainer){game.sbsContainers?.open(ref.token);break;}
+          if(!game.user.isGM&&!ref.doc.testUserPermission(game.user,"OBSERVER"))throw new Error("Use the shared storage controls here; you do not have permission to open the original sheet.");
+          ref.doc.sheet?.render(true);
+        }catch(error){ui.notifications.error(error.message);}break;
+      }
       case "create-container": {
         const form = button.closest(".pv-create-container");
         const payload = {
+          linkedUuid: form.querySelector("[name='containerUuid']")?.value,
           name: form.querySelector("[name='containerName']")?.value,
           type: form.querySelector("[name='containerType']")?.value,
           capacity: form.querySelector("[name='containerCapacity']")?.value,
@@ -1363,6 +1344,7 @@ class PartyViewerApp extends BaseApplication {
         if (!panel) return;
         requestMutation("update-container", {
           containerId: panel.dataset.containerId,
+          linkedUuid: panel.querySelector("[name='containerLinkedUuid']")?.value,
           name: panel.querySelector("[name='containerEditName']")?.value,
           type: panel.querySelector("[name='containerEditType']")?.value,
           capacity: panel.querySelector("[name='containerEditCapacity']")?.value,
@@ -1430,23 +1412,7 @@ class PartyViewerApp extends BaseApplication {
         }
         break;
       }
-      case "create-trade": {
-        const form = button.closest(".pv-trade-form");
-        const raw = form.querySelector("[name='tradeItem']")?.value || "";
-        const [fromActorId, itemId] = raw.split("|");
-        const payload = {
-          fromActorId,
-          itemId,
-          toActorId: form.querySelector("[name='tradeTarget']")?.value,
-          quantity: form.querySelector("[name='tradeQuantity']")?.value,
-          requestText: form.querySelector("[name='requestText']")?.value
-        };
-        requestMutation("create-trade", payload);
-        break;
-      }
-      case "accept-trade": requestMutation("accept-trade", { tradeId: button.dataset.tradeId }); break;
-      case "decline-trade": requestMutation("decline-trade", { tradeId: button.dataset.tradeId }); break;
-      case "clear-resolved-trades": requestMutation("clear-resolved-trades"); break;
+
       case "create-gm-note": {
         const form = button.closest(".pv-gm-note-create");
         requestMutation("create-gm-note", {
@@ -1479,7 +1445,8 @@ class PartyViewerApp extends BaseApplication {
     if (!panel) return;
     requestMutation("update-container", {
       containerId: panel.dataset.containerId,
-      name: panel.querySelector("[name='containerEditName']")?.value,
+      linkedUuid: panel.querySelector("[name='containerLinkedUuid']")?.value,
+          name: panel.querySelector("[name='containerEditName']")?.value,
       type: panel.querySelector("[name='containerEditType']")?.value,
       capacity: panel.querySelector("[name='containerEditCapacity']")?.value,
       locked: panel.querySelector("[name='containerEditLocked']")?.checked,
@@ -1581,6 +1548,7 @@ Hooks.once("ready", () => {
   // The guard prevents duplicate handlers. This keeps player-owned deposits from
   // disappearing into the wizard basement when load order gets spicy.
   registerPartyViewerSocketlib();
+  setupPartyTrades({data:getPartyData,primaryGM:activePrimaryGM,run:runPartyOperation,dropData:getFoundryDragData,resolveDrop:resolveDroppedItem});
   window.PartyViewer = {
     open: () => PartyViewerApp.open(),
     app: PartyViewerApp,
@@ -1640,13 +1608,21 @@ Hooks.once("ready", () => {
   injectPartyButton();
 });
 
-Hooks.on("updateActor", () => PartyViewerApp.refreshOpen());
-Hooks.on("createActiveEffect", () => PartyViewerApp.refreshOpen());
-Hooks.on("updateActiveEffect", () => PartyViewerApp.refreshOpen());
-Hooks.on("deleteActiveEffect", () => PartyViewerApp.refreshOpen());
-Hooks.on("createItem", () => PartyViewerApp.refreshOpen());
-Hooks.on("updateItem", () => PartyViewerApp.refreshOpen());
-Hooks.on("deleteItem", () => PartyViewerApp.refreshOpen());
-Hooks.on("updateSetting", setting => {
-  if (setting?.key === `${MODULE_ID}.partyData`) PartyViewerApp.refreshOpen();
-});
+function relevantPartyActor(doc){const actor=doc?.documentName==="Actor"?doc:doc?.parent?.documentName==="Actor"?doc.parent:doc?.actor;if(!actor)return null;const data=getPartyData();return data.roster.some(r=>r.id===actor.id)||data.containers.some(c=>c.linkedActorId===actor.id)?actor:null;}
+let linkedSyncTimer;
+function onPartyDocumentChange(doc){
+  const actor=doc?.documentName==="Actor"?doc:doc?.parent?.documentName==="Actor"?doc.parent:doc?.actor;
+  if(actor)invalidateTradeActor(actor);
+  if(!relevantPartyActor(doc))return;
+  const tab=PartyViewerApp.instance?.activeTab;
+  if(!tab||["dashboard","storage","gm"].includes(tab))PartyViewerApp.refreshOpen();
+  if(isPrimaryGM()&&getPartyData().containers.some(c=>c.linkedActorId===actor?.id)){
+    clearTimeout(linkedSyncTimer);linkedSyncTimer=setTimeout(()=>runPartyOperation(async()=>{const data=getPartyData(),before=JSON.stringify(data.containers);for(const c of data.containers)if(c.linkedUuid)await refreshLinked(c);if(JSON.stringify(data.containers)!==before)await savePartyData(data);}).catch(error=>console.error("Party Viewer linked storage sync failed",error)),180);
+  }
+}
+for(const hook of ["updateActor","createActiveEffect","updateActiveEffect","deleteActiveEffect","createItem","updateItem","deleteItem"])Hooks.on(hook,onPartyDocumentChange);
+Hooks.on("updateSetting",setting=>{if(setting?.key===`${MODULE_ID}.partyData`)PartyViewerApp.refreshOpen();});
+
+export {mutatePartyData,PartyViewerApp,relevantPartyActor};
+
+Hooks.on("updateToken",token=>{if(!getPartyData().containers.some(c=>c.linkedUuid===token.uuid))return;PartyViewerApp.refreshOpen();resolveInventory(token.uuid).then(ref=>onPartyDocumentChange(ref.actor)).catch(()=>{});});
