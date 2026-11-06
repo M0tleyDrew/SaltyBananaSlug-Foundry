@@ -99,13 +99,19 @@ Closing the character sheet while Pocket Mode is enabled causes it to reopen. A 
 - Refresh and reconnect the phone client.
 - Disable Pocket Mode and confirm the standard Foundry interface returns.
 
-## Map tab (v0.4.0)
+## Map tab (v0.4.1)
 
 Open **Map** to see the live scene centered on the assigned character's visible, owned token. Zoom with **+ / −**, or tap **Center on me**. The camera follows when the GM moves the token, including animated movement. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
 
-This is a viewing tab: touching the map and movement hotkeys do not move tokens. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
+Choose **Target** and tap visible tokens to toggle real Foundry targets, including multiple targets. **Clear targets** removes them. Choose **Select owned token** to control a token you own, subject to Foundry permissions. Targets and controlled token selection remain when returning to Attributes, Inventory, Features, Spellbook, or Chat. Scene switches and other modules may still change native targets normally.
 
-If the character is not on the viewed scene, is hidden, or the scene is loading, the tab displays a message instead of showing another character's map. Scene activation by the GM is handled automatically. Leaving Map restores the previous camera position for the current scene; leaving Pocket Mode restores the normal interface.
+Map taps never move tokens; dragging and default movement hotkeys remain blocked. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
+
+If the character is not on the viewed scene, is hidden, or the scene is loading, the tab displays a message instead of showing another character's map. Scene activation by the GM is handled automatically. The map panel is created only when selected. Leaving Map destroys that UI, cancels the follow loop and listeners, and stops the floating-button observer. Targets and token control are retained. Foundry still loads/renders its normal active scene in the background; this does not defer core scene downloads or promise to reduce network usage.
+
+Small floating launcher buttons, including SBS Lore, are hidden while Map is selected and restored on exit. Launchers added later are detected too. Dialogs, notifications, and controls inside applications are excluded. Unusual launchers without standard buttons or links may need explicit compatibility support.
+
+Leaving Map restores the previous camera position for the current scene; leaving Pocket Mode restores the normal interface.
 
 ### Map verification
 
@@ -115,6 +121,9 @@ If the character is not on the viewed scene, is hidden, or the scene is loading,
 - Hide/delete the assigned token, change scene, and restore it; check the waiting message and recovery.
 - Rotate/resize the phone, switch tabs, update the actor, and reopen Map.
 - Confirm map taps, dragging, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
+- Target multiple visible creatures, switch to Spellbook, and confirm the targets remain for the native roll workflow.
+- Select an owned token, leave Map, and confirm it remains controlled; other players' and enemy tokens must reject control.
+- Confirm Lore and other floating launcher buttons hide on Map and return when leaving; verify newly added launchers too.
 - Disable Pocket Mode and confirm normal canvas interaction returns.
 
 Automated checks: `node --test saltybananaslug-pocket-sheets/tests/map.test.mjs`. The browser smoke test requires Playwright on `NODE_PATH` and optionally `POCKET_CHROMIUM` pointing to an installed Chromium executable: `node saltybananaslug-pocket-sheets/tests/browser-map.cjs`. It exercises the real tab event handlers and CSS with a simulated canvas; live Foundry visibility and WebGL behavior require the player-client checklist above.

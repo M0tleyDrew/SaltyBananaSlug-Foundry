@@ -58,12 +58,18 @@ body.sbs-pocket-mode.sbs-pocket-map-visible .sbs-pocket-mobile > .window-content
 
 .sbs-pocket-map-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 8px;
   background: #202d1b;
 }
+
+.sbs-pocket-map-hidden-launcher { display: none !important; }
+.sbs-pocket-map-toolbar label { display: flex; align-items: center; gap: 6px; }
+.sbs-pocket-map-toolbar select { width: auto; min-height: 44px; color: #f6f0d9; background: #11190f; }
+.sbs-pocket-map-target-count { font-size: .8rem; }
 
 .sbs-pocket-map-toolbar button {
   width: auto;

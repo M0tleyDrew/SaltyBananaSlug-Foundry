@@ -1,4 +1,4 @@
-import { PocketMap, renderPocketMap } from "./pocket-map.js";
+import { PocketMap } from "./pocket-map.js";
 
 const MODULE_ID = "saltybananaslug-pocket-sheets";
 const SETTING_ASSIGNMENTS = "assignments";
@@ -223,7 +223,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       { id: "inventory", label: "Inventory", icon: "fa-solid fa-backpack", render: () => renderInventory(this.actor) },
       { id: "features", label: "Features", icon: "fa-solid fa-star", render: () => renderFeatures(this.actor) },
       { id: "spellbook", label: "Spellbook", icon: "fa-solid fa-book-sparkles", render: () => renderSpells(this.actor) },
-      { id: "map", label: "Map", icon: "fa-solid fa-map", render: () => renderPocketMap() },
+      { id: "map", label: "Map", icon: "fa-solid fa-map", render: () => "" },
       { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => renderNativeChatPortal() },
       { id: "effects", label: "Effects", icon: "fa-solid fa-bolt", render: () => renderEffects(this.actor) },
       ...(hasBastion ? [{ id: "bastions", label: "Bastions", icon: "fa-solid fa-castle", render: () => renderBastions(this.actor) }] : []),
@@ -234,7 +234,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.0";
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.1";
     return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
   }
   _replaceHTML(result, content) { this._map.stop(); this._restoreNativeChat(); content.innerHTML = result; }
@@ -266,6 +266,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     try {
       if (action === "map-zoom-in") return this._map.zoom(1.25);
       if (action === "map-zoom-out") return this._map.zoom(0.8);
+      if (action === "map-clear-targets") return this._map.clearTargets();
       if (action === "map-center") return this._map.center();
       if (action === "change-tab") return this.changeTab(button.dataset.tab);
       if (action === "roll-ability") return await this._runAndClosePrompt(() => this.actor.rollAbilityCheck?.({ ability: key, event }));

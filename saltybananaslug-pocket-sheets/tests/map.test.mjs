@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findMapToken, mapCamera } from '../scripts/pocket-map.js';
+import { findMapToken, mapCamera, mapTokenAt } from '../scripts/pocket-map.js';
 
 const token = (id, extra = {}) => ({id, actor: {id: 'bard'}, isOwner: true, document: {hidden: false}, visible: true, ...extra});
 test('only the assigned, owned, visible token is selected', () => {
@@ -32,4 +32,15 @@ test('camera puts the token in the map slot center at different zooms and sizes'
       assert.ok(Math.abs((center.y - camera.y) * scale + screen.height / 2 - (viewport.top + viewport.height / 2)) < 1e-8);
     }
   }
+});
+
+test('map tap hits only visible tokens and chooses the top token at overlaps', () => {
+  const visible = {id:'visible',x:10,y:20,w:50,h:50,zIndex:1,visible:true,document:{hidden:false}};
+  const hidden = {...visible,id:'hidden',zIndex:5,document:{hidden:true}};
+  const unseen = {...visible,id:'unseen',zIndex:6,visible:false};
+  const top = {...visible,id:'top',zIndex:2};
+  const c = {tokens:{placeables:[visible,top,hidden,unseen]}};
+  assert.equal(mapTokenAt(c,{x:25,y:35}).id,'top');
+  assert.equal(mapTokenAt(c,{x:200,y:35}),null);
+  assert.equal(mapTokenAt({tokens:{placeables:[hidden,unseen]}},{x:25,y:35}),null);
 });
