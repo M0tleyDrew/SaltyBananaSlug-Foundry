@@ -59,7 +59,7 @@ await (async () => {
     [14,'Arrow-Catching Shield|Flame Tongue|Ring of Free Action|Ring of Protection|Ring of the Ram']
   ];
   const named = new Map(tables.flatMap(([tier,names]) => names.split('|').map(n => [norm(n),{key:norm(n),tier,label:n}])));
-  const armorType = d => d.type === 'equipment' && ['light','medium','heavy'].includes(d.system?.type?.value);
+  const armorType = d => d.type === 'equipment' && ['light','medium','heavy','shield'].includes(d.system?.type?.value);
   function family(d) {
     const n = norm(d.name), exact = named.get(n); if(exact)return exact;
     for (const [pattern,key,tier,label] of [

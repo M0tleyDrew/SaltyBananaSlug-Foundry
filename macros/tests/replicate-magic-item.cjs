@@ -62,7 +62,7 @@ function fixture(level=6,armorer=false){
  const oldest=t.s.ledger[0],bagDoc=await t.locate(oldest);const [child]=await t.a.createEmbeddedDocuments('Item',[{name:'Stored gem',type:'loot',system:{container:bagDoc.id}}]);
  await t.counters.create.update({'system.uses.spent':0});f.dialog('ok',{key:plans[2].key});f.dialog('ok',{legal:'on'});f.dialog();await t.create();assert(!f.docs.has(oldest.uuid));assert.equal(child.system.container,null);assert.equal(t.s.ledger.length,2);
  // Armorer gains an armor-only plan and one armor-only active allowance at 9.
- f=fixture(9,true);t=await f.init();for(let i=0;i<5;i++)f.dialog('ok',{uuid:f.items[i].uuid});f.dialog('ok',{uuid:f.items[7].uuid});await t.setup();assert.equal(t.s.plans.length,6);assert(t.s.plans.some(p=>p.slot==='armor'&&p.armor));
+ f=fixture(9,true);await f.items[7].update({name:'Shield +1','system.type.value':'shield'});t=await f.init();for(let i=0;i<5;i++)f.dialog('ok',{uuid:f.items[i].uuid});f.dialog('ok',{uuid:f.items[7].uuid});await t.setup();assert.equal(t.s.plans.length,6);assert(t.s.plans.some(p=>p.slot==='armor'&&p.armor));
  assert.throws(()=>t.capacity([{armor:false},{armor:false},{armor:false},{armor:false}]),/extra Armorer/);
  t.capacity([{armor:false},{armor:false},{armor:false},{armor:true}]);
  // Level-up replacement is processed once and destroys the replaced-plan item.

@@ -8,7 +8,7 @@ Copy [the complete script](replicate-magic-item.js) into a Script macro. An owne
 
 - Known plans by Artificer class level: 4 at 2, then 5/6/7/8 at levels 6/10/14/18. Character total level does not grant extra plans.
 - Creation/active limits: 2 at 2, then 3/4/5/6 at 6/10/14/18.
-- Level 9 Armorer: an additional armor-only plan and an additional active/creation allowance that cannot be filled by a non-Armor item.
+- Level 9 Armorer: an additional Armor-category plan (including magic shields) and an additional active/creation allowance that cannot be filled by a non-Armor item.
 - One optional plan replacement per newly observed Artificer level. Replaced-plan items vanish; declined opportunities cannot be reopened by rerunning the macro. Initial setup at a higher level chooses the current allowance; it does not reconstruct past level-up decisions.
 - Real item copies, normal attunement capacity (3, then 4/5/6 at Artificer 10/14/18), creation allowance recovery through normal Foundry Long Rests, and one creation per plan per rest.
 - The oldest tracked item vanishes when a new creation exceeds the active limit. Container contents are detached first rather than destroyed.
