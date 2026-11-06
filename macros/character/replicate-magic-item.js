@@ -1,4 +1,4 @@
-// SBS Replicate Magic Item v1.0 — Foundry v13 / dnd5e 5.2.x
+// SBS Replicate Magic Item v1.1 — Foundry v13 / dnd5e 5.2.x
 // Published Eberron: Forge of the Artificer (2025), not legacy infusions or UA.
 // Run once per session for recorded-death expiration; normal Long Rest counters persist.
 await (async () => {
@@ -20,10 +20,55 @@ await (async () => {
   if (globalThis[lockKey]) return ui.notifications.warn('This Artificer’s replication window is already open.');
   globalThis[lockKey] = true;
   let s = clone(a.getFlag(NS,KEY) ?? {version:1,level,plans:[],ledger:[],made:[],approved:[]});
-  const save = async () => a.setFlag(NS,KEY,s);
+  async function syncSheet() {
+    const description=`<h2>Known Replication Plans</h2><p>${s.plans.length} plan(s) recorded for Artificer level ${level}. Normal allowance: ${planLimit}${bonus?' plus one Armor-category plan':''}. Active item limit: ${limit}.</p>
+      <ul>${s.plans.map(p=>`<li><strong>${esc(p.name)}</strong>${p.slot==='armor'?' — Armor-only bonus plan':''}<br>Template: @UUID[${esc(p.uuid)}]</li>`).join('')||'<li>No plans chosen yet.</li>'}</ul>
+      <p>Run <strong>Replicate Magic Item</strong> to review or manage these choices. Players replace one plan when gaining an Artificer level. The GM can correct setup mistakes without resetting resources.</p>
+      <p>This entry mirrors the macro’s saved plans. Editing this description does not change the actual choices.</p>`;
+    const item=a.items.find(i=>i.getFlag(NS,KEY)?.summary===true);
+    const data={name:'Replication — Known Plans', 'system.description.value':description};
+    if(item){if(item.system.description?.value!==description)await item.update(data);}
+    else await a.createEmbeddedDocuments('Item',[{name:data.name,type:'feat',img:'icons/sundries/books/book-embossed-blue.webp',system:{description:{value:description},source:{rules:'2024'}},flags:{[NS]:{[KEY]:{summary:true}}}}]);
+  }
+  const save = async () => {
+    await a.setFlag(NS,KEY,s);
+    try{await syncSheet();}catch(e){console.error('SBS plan sheet summary:',e);ui.notifications.warn('Plans were saved, but their sheet summary could not be updated. Rerun the macro to retry.');}
+  };
+  // Replace native selects with full-size searchable radio lists, independent of theme select-height rules.
+  function enhancePickers(_event,dialog) {
+    const root=dialog.element;
+    for(const select of root.querySelectorAll('select')) {
+      if(select.dataset.sbsEnhanced)continue;select.dataset.sbsEnhanced='true';
+      const box=document.createElement('div'),search=document.createElement('input'),list=document.createElement('div'),empty=document.createElement('p');
+      box.className='sbs-replication-picker';
+      Object.assign(box.style,{display:'flex',flexDirection:'column',gap:'8px',width:'100%',minWidth:'0',flex:'0 0 auto'});
+      search.type='search';search.placeholder='Search these choices…';search.setAttribute('aria-label','Search choices');
+      Object.assign(search.style,{width:'100%',height:'42px',minHeight:'42px',fontSize:'16px',padding:'8px',flex:'0 0 auto'});
+      Object.assign(list.style,{display:'flex',flexDirection:'column',gap:'6px',overflowY:'auto',border:'1px solid var(--color-border-light-2, #888)',borderRadius:'6px',padding:'6px',height:`${Math.min(340,select.options.length*58+12)}px`,minHeight:'100px',flex:'0 0 auto'});
+      empty.textContent='No matching choices.';empty.hidden=true;
+      const rows=[...select.options].map(option=>{
+        const row=document.createElement('label'),radio=document.createElement('input'),text=document.createElement('span');
+        Object.assign(row.style,{display:'flex',alignItems:'center',gap:'12px',padding:'10px',minHeight:'48px',flex:'0 0 auto',cursor:'pointer',border:'1px solid var(--color-border-light-2, #888)',borderRadius:'5px',fontSize:'16px',lineHeight:'1.4',textAlign:'left'});
+        radio.type='radio';radio.name=select.name;radio.value=option.value;radio.checked=option.selected;radio.disabled=option.disabled;
+        Object.assign(radio.style,{flex:'0 0 20px',width:'20px',height:'20px',margin:'0'});
+        text.textContent=option.textContent;Object.assign(text.style,{whiteSpace:'normal',overflowWrap:'anywhere',flex:'1',minWidth:'0'});
+        row.append(radio,text);list.append(row);return {row,radio,text:option.textContent.toLowerCase()};
+      });
+      select.disabled=true;select.hidden=true;select.style.display='none';
+      search.addEventListener('input',()=>{
+        const query=search.value.trim().toLowerCase();
+        for(const row of rows){row.row.hidden=!row.text.includes(query);row.row.style.display=row.row.hidden?'none':'flex';if(row.row.hidden)row.radio.checked=false;}
+        const visible=rows.filter(r=>!r.row.hidden&&!r.radio.disabled);
+        if(!visible.some(r=>r.radio.checked)&&visible[0])visible[0].radio.checked=true;
+        empty.hidden=visible.length>0;
+      });
+      box.append(search,list,empty);select.after(box);
+    }
+    for(const input of root.querySelectorAll('input:not([type=radio]):not([type=checkbox])'))Object.assign(input.style,{minHeight:'40px',fontSize:'16px'});
+  }
   const pick = async (title, content, buttons = [['ok','Continue'],['cancel','Cancel']]) => {
-    const result = await foundry.applications.api.DialogV2.wait({window:{title},position:{width:640},
-      content:`<div style="max-height:65vh;overflow:auto">${content}</div>`,rejectClose:false,
+    const result = await foundry.applications.api.DialogV2.wait({window:{title,resizable:true},position:{width:Math.min(820,(globalThis.innerWidth||1100)-48)},render:enhancePickers,
+      content:`<div style="max-height:70vh;overflow:auto;min-width:0;font-size:16px;line-height:1.5">${content}</div>`,rejectClose:false,
       buttons:buttons.map(([action,label]) => ({action,label,callback:(_e,b,d) => ({action,form:new FormData(b.form)})}))});
     return result && result.action !== 'cancel' ? result : null;
   };
@@ -204,6 +249,37 @@ await (async () => {
     if(bonus && !s.plans.some(p=>p.slot==='armor')){const p=await choosePlan(true);if(!p)return false;s.plans.push(p);await save();}
     return true;
   }
+  async function editPlans() {
+    const buttons=[...(level>s.level?[['level','Use level-up replacement']]:[]),
+      ...(game.user.isGM?[['correct','Correct selected plan (GM)'],['remove','Remove incorrect plan (GM)']]:[]),['cancel','Close']];
+    const r=await pick('Review / Edit Known Plans',`<p>These choices are also recorded under <strong>Replication — Known Plans</strong> on the Features tab.</p>
+      <select name="old">${options(s.plans,p=>p.key,p=>`${p.name}${p.slot==='armor'?' — Armor-only bonus':''}`)}</select>
+      <p>${level>s.level?'A level-up replacement is available.':'No level-up replacement is currently available.'} Setup mistakes can be corrected by the GM. Corrections do not refund uses or refill items.</p>`,buttons);
+    if(!r)return;
+    if(r.action==='level'){await replacements();return;}
+    if(!game.user.isGM)fail('The GM must make setup corrections.');
+    const old=s.plans.find(p=>p.key===r.form.get('old'));if(!old)fail('Select a known plan first.');
+    const replacement=r.action==='correct'?await choosePlan(old.slot==='armor'):null;
+    if(r.action==='correct'&&!replacement)return;
+    const entries=s.ledger.filter(e=>e.key===old.key);
+    if(!await yes('Confirm GM correction',`${esc(old.name)} ${replacement?'will be replaced with '+esc(replacement.name):'will be removed'}. ${entries.length} tracked item(s) made with that plan will vanish. Resource uses stay spent.`))return;
+    for(const e of entries)await locate(e);
+    await transaction(async tx=>{
+      for(const e of entries)await vanish(tx,e);
+      s.plans=s.plans.filter(p=>p.key!==old.key);
+      if(replacement)s.plans.push({...replacement,slot:old.slot});
+    });
+  }
+  async function restartSetup() {
+    if(!game.user.isGM)fail('The GM must restart replication setup.');
+    const r=await pick('Restart Replication Setup',`<p>This removes <strong>${s.plans.length} known plan(s)</strong> and makes <strong>${s.ledger.length} tracked replicated item(s)</strong> vanish. Contents of disappearing containers are released first.</p>
+      <p>Other equipment, class features, and approved item templates stay in place. Creation, Drain, and Transmute uses remain spent. This does not grant additional level-up replacements.</p>
+      <label>Type RESTART to confirm <input name="confirm" autocomplete="off"></label>`,[['restart','Remove plans and created items'],['cancel','Cancel']]);
+    if(!r)return;if(r.form.get('confirm')!=='RESTART')fail('Type RESTART exactly to confirm.');
+    for(const e of s.ledger)await locate(e);
+    await transaction(async tx=>{for(const e of [...s.ledger])await vanish(tx,e);s.plans=[];});
+    await setup();
+  }
   async function replacements() {
     while(s.level<level) {
       const next=s.level+1;
@@ -294,7 +370,9 @@ await (async () => {
     await expire();
     // One monitor per actor per client. It runs only while this Foundry session remains open.
     globalThis.SBSReplicationMonitors ??= new Map();
-    if(!globalThis.SBSReplicationMonitors.has(a.uuid)) {
+    const previousMonitor=globalThis.SBSReplicationMonitors.get(a.uuid);
+    if(previousMonitor!=null)Hooks.off('updateWorldTime',previousMonitor);
+    {
       const id=Hooks.on('updateWorldTime',async()=>{if(globalThis[lockKey])return;globalThis[lockKey]=true;
         try{s=clone(a.getFlag(NS,KEY)??s);await expire();}catch(e){console.warn('SBS replication expiration:',e.message);}finally{globalThis[lockKey]=false;}});
       globalThis.SBSReplicationMonitors.set(a.uuid,id);
@@ -304,9 +382,9 @@ await (async () => {
     let running=true;
     while(running) {
       const normal=s.plans.filter(p=>p.slot!=='armor').length;
-      const menu=[['plans','Choose missing plans'],...(level>s.level?[['level','Resolve level-up replacement(s)']]:[]),['create','Create item'],
+      const menu=[['edit','Review / Edit Known Plans'],['plans','Choose missing plans'],...(level>s.level?[['level','Resolve level-up replacement(s)']]:[]),['create','Create item'],
         ...(level>=6?[['charge','Charge'],['drain','Drain'],['transmute','Transmute']]:[]),...(level>=20?[['deathsave','Cheat Death']]:[]),['list','Plan list'],
-        ...(game.user.isGM?[['approve','Approve template'],['reconcile','Reconcile ledger'],['death','Record death']]:[])];
+        ...(game.user.isGM?[['approve','Approve template'],['reconcile','Reconcile ledger'],['reset','Restart Setup (GM)'],['death','Record death']]:[])];
       const action=await pick(`${a.name}: Replicate Magic Item`,
         `<p><b>Artificer ${level}</b> · Plans ${normal}/${planLimit}${bonus?' + 1 armor-only':''} · Active items ${s.ledger.length}/${limit}</p>
          <p>Creation uses remaining: ${Math.max(0,limit-spent(counters.create))}. ${bonus?'At most '+base+' non-Armor items.':''}</p>
@@ -319,10 +397,12 @@ await (async () => {
       try {
         if(action.action==='list')await pick('Published plan options',tables.map(([n,names])=>`<p><b>Level ${n}+</b>: ${esc(names.replaceAll('|',', '))}</p>`).join('')+
           '<p><b>Also level 2+:</b> Shield +1, Weapon +1, Wand of the War Mage +1, Wraps of Unarmed Power +1; any noncursed Common item except Potions and Scrolls.</p><p><b>Also level 6+:</b> Armor +1.</p><p><b>Also level 10+:</b> Shield +2, Weapon +2, Wand of the War Mage +2, Wraps of Unarmed Power +2; noncursed Uncommon Wondrous Items.</p><p><b>Also level 14+:</b> Armor +2; noncursed Rare Wondrous Items.</p><p>Each wildcard item is a separate plan. Concrete variants of a named plan share that named plan. Choose a template for the variant you intend to create; GM approval can bind additional variants. Only accessible, imported 2024 item documents can be created.</p>',[['ok','Close']]);
+        else if(action.action==='edit')await editPlans();
         else if(action.action==='plans')await setup();
         else if(action.action==='level')await replacements();
         else if(action.action==='approve')await approve();
         else if(action.action==='reconcile')await reconcile();
+        else if(action.action==='reset')await restartSetup();
         else if(action.action==='death') {
           if(s.expires!=null)fail('A death-expiration timer is already recorded.');
           if(await yes('Record actual death','This is for death, not unconsciousness. Start the 1d4-day item-expiration timer?')) {

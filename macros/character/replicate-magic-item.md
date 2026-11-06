@@ -1,8 +1,15 @@
-# Replicate Magic Item v1.0 — testing version
+# Replicate Magic Item v1.1 — testing version
 
 For Foundry v13 and dnd5e 5.2.x, using the published 2025 Eberron: Forge of the Artificer class. This is a standalone Script macro, not the older Infuse Item feature and not a playtest implementation.
 
 Copy [the complete script](replicate-magic-item.js) into a Script macro. An owner selects their Artificer token, or uses their assigned character, and runs it. The GM can also run it on that character. Initial use asks for known plans; subsequent use opens the manager. Use one client at a time for the same character.
+
+## Changes in v1.1
+
+- Every plan/item/menu picker uses large, wrapping radio rows and a search box rather than native select fields. The window is wider and resizable.
+- A **Replication — Known Plans** feature on the sheet mirrors the saved choices, including the armor-only bonus and template links. Re-running the macro upgrades an existing character without clearing its state. Editing the summary text does not change the saved plans.
+- **Review / Edit Known Plans** exposes legal level-up replacement and GM correction/removal. GM corrections remove tracked items made from the changed plan while keeping uses spent.
+- **Restart Setup (GM)** requires typing RESTART. It removes known plans and all tracked created items, releases container contents, and starts plan selection again. Unrelated equipment, approved templates, pending level-up state, and resource usage are preserved. Missing/inaccessible items must be reconciled before reset can proceed.
 
 ## What it manages
 
@@ -37,6 +44,6 @@ Resources are native recoverable feat counters; don't reset or delete them manua
 
 `node macros/tests/replicate-magic-item.cjs`
 
-The fixture exercises setup, level limits, creation and duplicate-per-rest prevention, charge/spell-slot spending, Drain/Transmute limits, native-counter rest recovery, attunement restrictions, ownership failures, failed-write rollback, oldest-item replacement, container-content release, Armorer bonuses, level-up replacement, Cheat Death, and delayed expiry. These are simulated documents, not a live Foundry integration test. Test on a duplicate character before using it in the campaign.
+The fixture exercises setup, level limits, creation and duplicate-per-rest prevention, charge/spell-slot spending, Drain/Transmute limits, native-counter rest recovery, attunement restrictions, ownership failures, failed-write rollback, oldest-item replacement, container-content release, Armorer bonuses, level-up replacement, Cheat Death, and delayed expiry. The additional `replicate-picker.cjs` test uses jsdom to check search, radio selection, sizing styles, and form values. Install jsdom to run it. These are simulated documents and DOM tests, not a live Foundry integration test. A rendered browser check could not run because the browser download was unavailable in the build environment. Test on a duplicate character before using it in the campaign.
 
 Rules reference: [Wizards' published Artificer overview](https://www.dndbeyond.com/posts/2106-whats-new-with-the-artificer-in-eberron-forge-of). Exact plan tables and feature timing target the published Eberron class, not the earlier UA. Native resource, rest, attunement, and spell-pool handling were checked against the dnd5e release-5.2.4 source.

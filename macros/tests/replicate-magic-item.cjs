@@ -19,12 +19,12 @@ function fixture(level=6,armorer=false){
  const names=['Alchemy Jug','Bag of Holding','Cap of Water Breathing','Goggles of Night','Wand of Secrets','Boots of Elvenkind','Cloak of Elvenkind','Armor +1'];
  const items=names.map(name=>new Doc({name,type:name==='Bag of Holding'?'container':'equipment',system:{source:{rules:'2024'},rarity:'uncommon',type:{value:name==='Armor +1'?'heavy':'trinket'},description:{value:'Complete imported item.'},uses:{max:7,spent:2},quantity:1,attunement:name==='Cloak of Elvenkind'?'required':''}}));
  const context={console,FormData,Date,Map,Set,Error,Number,String,Math,globalThis:null,
-  foundry:{utils:{deepClone:cp,randomID:()=>`r${++id}`,getProperty:get},applications:{api:{DialogV2:{wait:async cfg=>{let q=queue.shift();assert(q,`Unexpected dialog ${cfg.window.title}`);return q;}}}}},
+  foundry:{utils:{deepClone:cp,randomID:()=>`r${++id}`,getProperty:get},applications:{api:{DialogV2:{wait:async cfg=>{assert(queue.length,`Unexpected dialog ${cfg.window.title}`);return queue.shift();}}}}},
   canvas:{tokens:{controlled:[{actor:a}]},scene:{tokens:[]}},game:{user:{id:'u',isGM:true,character:a},actors:[a],items,packs:[],time:{worldTime:100}},
   ui:{notifications:{warn:m=>notes.push(m),info:m=>notes.push(m),error:m=>notes.push(m)}},fromUuid:async u=>docs.get(u),Hooks:{on:()=>1},ChatMessage:{getSpeaker:()=>({})}};
  context.globalThis=context;vm.createContext(context);
  const marker='  try {\n    if(s.version!==1)';
- const source=raw.replace(marker,`  globalThis.test={a,get s(){return s},create,tinker,setup,replacements,capacity,family,wildcard,approve,cheatDeath,vanish,locate,counters,counter,save,expire};return;\n${marker}`);
+ const source=raw.replace(marker,`  globalThis.test={a,get s(){return s},create,tinker,setup,replacements,capacity,family,wildcard,approve,cheatDeath,vanish,locate,counters,counter,save,expire,editPlans,syncSheet,restartSetup};return;\n${marker}`);
  const dialog=(action='ok',fields={})=>{let form=new FormData();for(let[k,v]of Object.entries(fields))for(let x of Array.isArray(v)?v:[v])form.append(k,x);queue.push({action,form});};
  return {a,items,context,docs,queue,dialog,notes,async init(){await vm.runInContext(`(async()=>{${source}})()`,context);const t=context.test;await t.counter('create','create',2+[6,10,14,18].filter(n=>level>=n).length+(armorer&&level>=9?1:0));await t.counter('drain','drain',1);await t.counter('transmute','transmute',1);return t;}};
 }
@@ -79,5 +79,23 @@ function fixture(level=6,armorer=false){
  const cl=f.items.find(i=>i.name==='Cloak of Elvenkind');t.s.plans.push({key:'cloakofelvenkind',name:cl.name,uuid:cl.uuid,armor:false,rarity:'uncommon',tier:6,slot:'normal'});
  await t.a.createEmbeddedDocuments('Item',Array.from({length:3},(_,i)=>({name:`Attuned ${i}`,type:'equipment',system:{attuned:true}})));
  f.dialog('ok',{key:'cloakofelvenkind'});f.dialog('ok',{legal:'on',attune:'on'});await assert.rejects(t.create(),/attunement slots/);assert.equal(t.s.ledger.length,0);assert.equal(t.counters.create.system.uses.spent,0);
- console.log('PASS: setup; plan limits; creation; no duplicate plan per rest; charge and slot spending; drain and once/rest; long-rest recovery; transmute and attunement; permission guard; rollback; oldest item replacement; container release; Armorer bonus; one level-up replacement; Cheat Death; death expiry; attunement cap.');
+ // The native Features entry mirrors saved choices and stays unique across updates.
+ let summaries=t.a.items.filter(i=>i.getFlag('world','sbsReplicate')?.summary);
+ assert.equal(summaries.length,1);assert(summaries[0].system.description.value.includes('Alchemy Jug'));
+ const priorSpent=t.counters.create.system.uses.spent;
+ f.dialog('correct',{old:t.s.plans[0].key});f.dialog('ok',{uuid:f.items[5].uuid});f.dialog();await t.editPlans();
+ assert(t.s.plans.some(p=>p.name==='Boots of Elvenkind'));assert.equal(t.counters.create.system.uses.spent,priorSpent);
+ summaries=t.a.items.filter(i=>i.getFlag('world','sbsReplicate')?.summary);assert.equal(summaries.length,1);assert(summaries[0].system.description.value.includes('Boots of Elvenkind'));assert(!summaries[0].system.description.value.includes('Alchemy Jug'));
+ // GM removal releases a plan slot but does not refund creation resources.
+ const remove=t.s.plans[0];f.dialog('remove',{old:remove.key});f.dialog();await t.editPlans();assert(!t.s.plans.some(p=>p.key===remove.key));assert.equal(t.counters.create.system.uses.spent,priorSpent);
+ // Players can review but cannot invoke the GM-only correction path.
+ f.context.game.user.isGM=false;f.dialog('correct',{old:t.s.plans[0].key});await assert.rejects(t.editPlans(),/GM must/);
+ // A confirmed GM restart removes tracked items and plans, never daily-resource use.
+ f.context.game.user.isGM=true;const newPlan=t.s.plans[0];f.dialog('ok',{key:newPlan.key});f.dialog('ok',{legal:'on'});await t.create();const resetItemUuid=t.s.ledger[0].uuid;
+ const restartSpent=t.counters.create.system.uses.spent;await t.counters.drain.update({'system.uses.spent':1});
+ f.dialog('restart',{confirm:'RESTART'});f.queue.push(null);await t.restartSetup();
+ assert.equal(t.s.plans.length,0);assert.equal(t.s.ledger.length,0);assert(!f.docs.has(resetItemUuid));assert.equal(t.counters.create.system.uses.spent,restartSpent);assert.equal(t.counters.drain.system.uses.spent,1);
+ assert(t.a.items.some(i=>i.type==='class'));assert.equal(t.a.items.filter(i=>i.getFlag('world','sbsReplicate')?.summary).length,1);
+ f.context.game.user.isGM=false;await assert.rejects(t.restartSetup(),/GM must/);
+ console.log('PASS: setup; plan limits; creation; no duplicate plan per rest; charge and slot spending; drain and once/rest; long-rest recovery; transmute and attunement; permission guard; rollback; oldest item replacement; container release; Armorer bonus; one level-up replacement; Cheat Death; death expiry; attunement cap; sheet summary; GM correction/removal; player edit guard; GM restart; spent-resource preservation.');
 })().catch(e=>{console.error(e);process.exitCode=1});
