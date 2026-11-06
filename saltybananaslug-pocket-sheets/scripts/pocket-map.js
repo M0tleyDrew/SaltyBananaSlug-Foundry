@@ -2,7 +2,7 @@ const setText = (element, text) => { if (element.textContent !== text) element.t
 
 /** A transparent viewport onto this client's native, permission-filtered canvas. */
 export function renderPocketMap() {
-  return `<div class="sbs-pocket-map-toolbar"><button type="button" data-action="map-zoom-out" aria-label="Zoom out">−</button><output class="sbs-pocket-map-scale">100%</output><button type="button" data-action="map-zoom-in" aria-label="Zoom in">+</button><button type="button" data-action="map-center">Center on me</button><label>Tap to <select class="sbs-pocket-map-mode" aria-label="Map tap action"><option value="target">Target</option><option value="select">Select owned token</option></select></label><button type="button" data-action="map-clear-targets">Clear targets</button><output class="sbs-pocket-map-target-count" aria-live="polite">0 targeted</output></div><div class="sbs-pocket-map-viewport" role="group" aria-label="Live map; tap a visible token to target or select it"><p class="sbs-pocket-map-message" role="status">Waiting for the map…</p></div><p class="sbs-pocket-map-note">Tap to toggle targets • The GM moves your token</p>`;
+  return `<div class="sbs-pocket-map-toolbar"><button type="button" data-action="map-center" aria-label="Center on me" title="Center on me and follow my token" aria-pressed="true"><i class="fa-solid fa-crosshairs" aria-hidden="true"></i><span>Center</span></button><select class="sbs-pocket-map-mode" aria-label="Map tap action" title="What tapping a token does"><option value="target">Target</option><option value="select">Select mine</option></select><button type="button" data-action="map-clear-targets" aria-label="Clear targets" title="Clear all targets">× <output class="sbs-pocket-map-target-count" aria-label="Target count" aria-live="polite">0</output></button></div><div class="sbs-pocket-map-viewport" role="group" aria-label="Live map; drag to pan, pinch to zoom, tap a token to target or select"><p class="sbs-pocket-map-message" role="status">Waiting for the map…</p></div><p class="sbs-pocket-map-note">Drag to look • Pinch to zoom • Tap to target</p>`;
 }
 
 export function mapTokenAt(canvas, point) {
@@ -69,6 +69,9 @@ export class PocketMap {
     this.actorId = actorId;
     this.scale = null;
     this.frame = null;
+    this.following = true;
+    this.viewCenter = null;
+    this.viewSceneId = null;
   }
 
   start(root) {
@@ -81,14 +84,76 @@ export class PocketMap {
     this.overlays = new MapOverlayGuard();
     this.overlays.start(root);
     const viewport = root.querySelector(".sbs-pocket-map-viewport");
-    let down = null;
-    viewport.addEventListener("pointerdown", (e) => { down = e.isPrimary && e.button === 0 ? {id: e.pointerId, x: e.clientX, y: e.clientY} : null; }, {signal: this.abort.signal});
-    viewport.addEventListener("pointermove", (e) => { if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 9) down = null; }, {signal: this.abort.signal});
-    viewport.addEventListener("pointercancel", () => { down = null; }, {signal: this.abort.signal});
-    viewport.addEventListener("pointerup", (e) => {
-      if (down?.id === e.pointerId) this.tap(e.clientX, e.clientY);
-      down = null;
+    const pointers = new Map();
+    let pan = null, pinch = null, suppressTap = false, gestureSceneId = null;
+    const midpoint = (a, b) => ({x: (a.x + b.x) / 2, y: (a.y + b.y) / 2});
+    const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const rebase = () => {
+      const c = globalThis.canvas;
+      const points = [...pointers.entries()];
+      pan = null; pinch = null;
+      if (!c?.ready || !points.length) return;
+      if (points.length === 1) {
+        const rect = viewport.getBoundingClientRect();
+        pan = {id: points[0][0], start: points[0][1], center: c.canvasCoordinatesFromClient({x: rect.left + rect.width / 2, y: rect.top + rect.height / 2}), scale: c.stage.scale.x, dragged: false};
+      } else {
+        suppressTap = true;
+        const a = points[0][1], b = points[1][1];
+        pinch = {distance: Math.max(1, distance(a, b)), scale: c.stage.scale.x, anchor: c.canvasCoordinatesFromClient(midpoint(a, b))};
+      }
+    };
+    const release = (id) => { if (viewport.hasPointerCapture(id)) viewport.releasePointerCapture(id); };
+    viewport.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 || !globalThis.canvas?.ready || !document.body.classList.contains("sbs-pocket-map-visible")) return;
+      e.preventDefault();
+      if (!pointers.size) { suppressTap = false; gestureSceneId = canvas.scene.id; }
+      pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+      viewport.setPointerCapture(e.pointerId);
+      rebase();
     }, {signal: this.abort.signal});
+    viewport.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      e.preventDefault();
+      const c = globalThis.canvas;
+      if (!c?.ready || c.scene.id !== gestureSceneId || !document.body.classList.contains("sbs-pocket-map-visible")) {
+        const ids = [...pointers.keys()]; pointers.clear(); pan = null; pinch = null; suppressTap = true;
+        ids.forEach(release);
+        viewport.classList.remove("is-panning");
+        return;
+      }
+      pointers.set(e.pointerId, {x: e.clientX, y: e.clientY});
+      if (pinch) {
+        const [a, b] = [...pointers.values()];
+        this.zoomAt(pinch.scale * distance(a, b) / pinch.distance, midpoint(a, b), pinch.anchor);
+      } else if (pan?.id === e.pointerId) {
+        const point = pointers.get(e.pointerId);
+        if (!pan.dragged && distance(point, pan.start) <= 9) return;
+        pan.dragged = true; suppressTap = true;
+        this.following = false;
+        this.viewCenter = {x: pan.center.x - (point.x - pan.start.x) / pan.scale, y: pan.center.y - (point.y - pan.start.y) / pan.scale};
+        this.signature = null;
+        this.update();
+      }
+      viewport.classList.add("is-panning");
+    }, {signal: this.abort.signal});
+    const finish = (e, cancelled = false) => {
+      if (!pointers.has(e.pointerId)) return;
+      const tap = !cancelled && !suppressTap && pointers.size === 1 && pan?.id === e.pointerId && distance({x: e.clientX, y: e.clientY}, pan.start) <= 9;
+      pointers.delete(e.pointerId);
+      if (cancelled) suppressTap = true;
+      release(e.pointerId);
+      rebase();
+      if (!pointers.size) viewport.classList.remove("is-panning");
+      if (tap) this.tap(e.clientX, e.clientY);
+    };
+    viewport.addEventListener("pointerup", (e) => finish(e), {signal: this.abort.signal});
+    viewport.addEventListener("pointercancel", (e) => finish(e, true), {signal: this.abort.signal});
+    viewport.addEventListener("lostpointercapture", (e) => finish(e, true), {signal: this.abort.signal});
+    viewport.addEventListener("wheel", (e) => {
+      if (!globalThis.canvas?.ready || !document.body.classList.contains("sbs-pocket-map-visible")) return;
+      e.preventDefault();
+      this.zoomAt(canvas.stage.scale.x * Math.exp(-e.deltaY * 0.002), {x: e.clientX, y: e.clientY});
+    }, {passive: false, signal: this.abort.signal});
     // Canvas pointer events are blocked by CSS; block native movement hotkeys too.
     const blockMovement = (event) => {
       if (event.target?.closest?.("input, textarea, select, [contenteditable='true'], .dialog, .dialog-v2")) return;
@@ -135,16 +200,22 @@ export class PocketMap {
       this.saved = { x: c.stage.pivot.x, y: c.stage.pivot.y, scale: c.stage.scale.x };
       this.signature = null;
     }
+    if (this.viewSceneId !== c.scene.id) {
+      this.viewSceneId = c.scene.id;
+      this.following = true;
+      this.viewCenter = null;
+    }
     this.scale ??= c.stage.scale.x;
     this.tokenId = token.id;
-    setText(this.root.querySelector(".sbs-pocket-map-note"), this.root.querySelector(".sbs-pocket-map-mode").value === "select" ? "Tap your token to select it • The GM handles movement" : "Tap to toggle targets • The GM moves your token");
-    setText(this.root.querySelector(".sbs-pocket-map-scale"), `${Math.round(this.scale * 100)}%`);
-    setText(this.root.querySelector(".sbs-pocket-map-target-count"), `${game.user.targets?.size ?? 0} targeted`);
+    const selecting = this.root.querySelector(".sbs-pocket-map-mode").value === "select";
+    setText(this.root.querySelector(".sbs-pocket-map-note"), `${this.following ? "Following" : "Exploring"} • Pinch to zoom • Tap to ${selecting ? "select" : "target"}`);
+    this.root.querySelector("[data-action='map-center']").setAttribute("aria-pressed", String(this.following));
+    setText(this.root.querySelector(".sbs-pocket-map-target-count"), String(game.user.targets?.size ?? 0));
     const rect = viewport.getBoundingClientRect();
     const screen = { width: window.innerWidth, height: window.innerHeight };
     // Clip the original full-screen board rather than reparenting/resizing WebGL.
     board.style.setProperty("--sbs-pocket-map-clip", `inset(${rect.top}px ${Math.max(0, screen.width - rect.right)}px ${Math.max(0, screen.height - rect.bottom)}px ${rect.left}px)`);
-    const camera = mapCamera(token.center, rect, screen, this.scale);
+    const camera = mapCamera(this.following ? token.center : (this.viewCenter ?? token.center), rect, screen, this.scale);
     const signature = [this.sceneId, token.id, camera.x, camera.y, camera.scale, rect.width, rect.height].join(":");
     if (signature !== this.signature) {
       c.pan(camera);
@@ -166,7 +237,7 @@ export class PocketMap {
         return;
       }
       token.control({releaseOthers: true});
-      this.center();
+      this.signature = null;
     } else token.setTarget(!game.user.targets.has(token), {releaseOthers: false});
     this.update();
   }
@@ -176,13 +247,19 @@ export class PocketMap {
     this.update();
   }
 
-  zoom(factor) {
-    this.scale = Math.min(CONFIG.Canvas?.maxZoom ?? 3, Math.max(0.1, (this.scale ?? 1) * factor));
+  zoomAt(scale, point, anchor) {
+    const c = globalThis.canvas;
+    if (!c?.ready || !this.root) return;
+    anchor ??= c.canvasCoordinatesFromClient(point);
+    this.scale = Math.min(CONFIG.Canvas?.maxZoom ?? 3, Math.max(0.1, scale));
+    const rect = this.root.querySelector(".sbs-pocket-map-viewport").getBoundingClientRect();
+    this.following = false;
+    this.viewCenter = {x: anchor.x - (point.x - rect.left - rect.width / 2) / this.scale, y: anchor.y - (point.y - rect.top - rect.height / 2) / this.scale};
     this.signature = null;
     this.update();
   }
 
-  center() { this.signature = null; this.update(); }
+  center() { this.following = true; this.viewCenter = null; this.signature = null; this.update(); }
 
   stop() {
     if (this.frame !== null) cancelAnimationFrame(this.frame);

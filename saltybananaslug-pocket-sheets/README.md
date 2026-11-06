@@ -99,13 +99,13 @@ Closing the character sheet while Pocket Mode is enabled causes it to reopen. A 
 - Refresh and reconnect the phone client.
 - Disable Pocket Mode and confirm the standard Foundry interface returns.
 
-## Map tab (v0.4.1)
+## Map tab (v0.4.2)
 
-Open **Map** to see the live scene centered on the assigned character's visible, owned token. Zoom with **+ / −**, or tap **Center on me**. The camera follows when the GM moves the token, including animated movement. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
+Open **Map** to see the live scene centered on the assigned character's visible, owned token. Pinch two fingers together to zoom out or spread them apart to zoom in. Drag with one finger to pan. Desktop users can drag and use the mouse wheel or trackpad to zoom. The toolbar has compact **Center**, **Target / Select mine**, and **Clear targets** controls; there are no zoom buttons. The camera initially follows when the GM moves the token, including animated movement. Dragging or pinching switches to **Exploring**, keeping the view where you put it. Tap **Center** (Center on me) to return to the token and resume following. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
 
 Choose **Target** and tap visible tokens to toggle real Foundry targets, including multiple targets. **Clear targets** removes them. Choose **Select owned token** to control a token you own, subject to Foundry permissions. Targets and controlled token selection remain when returning to Attributes, Inventory, Features, Spellbook, or Chat. Scene switches and other modules may still change native targets normally.
 
-Map taps never move tokens; dragging and default movement hotkeys remain blocked. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
+Map gestures never move tokens. Dragging pans only the camera, pinching zooms only the camera, and default token movement hotkeys remain blocked. A drag or pinch does not toggle targets; a short tap still does. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
 
 If the character is not on the viewed scene, is hidden, or the scene is loading, the tab displays a message instead of showing another character's map. Scene activation by the GM is handled automatically. The map panel is created only when selected. Leaving Map destroys that UI, cancels the follow loop and listeners, and stops the floating-button observer. Targets and token control are retained. Foundry still loads/renders its normal active scene in the background; this does not defer core scene downloads or promise to reduce network usage.
 
@@ -116,11 +116,12 @@ Leaving Map restores the previous camera position for the current scene; leaving
 ### Map verification
 
 - On a player client in Pocket Mode, open Map with the assigned actor on the active scene.
-- Zoom in and out; move the token from the GM client and confirm it stays centered.
+- Pinch in/out; drag to explore without moving tokens or toggling targets. Confirm the toolbar stays compact and has no zoom buttons.
+- Move the token from the GM client: the camera follows initially, stays put while exploring, and follows again after Center.
 - Confirm walls, darkness, unexplored areas, hidden tokens, and permissions match that player's normal Foundry view.
 - Hide/delete the assigned token, change scene, and restore it; check the waiting message and recovery.
 - Rotate/resize the phone, switch tabs, update the actor, and reopen Map.
-- Confirm map taps, dragging, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
+- Confirm map taps, drags, pinches, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
 - Target multiple visible creatures, switch to Spellbook, and confirm the targets remain for the native roll workflow.
 - Select an owned token, leave Map, and confirm it remains controlled; other players' and enemy tokens must reject control.
 - Confirm Lore and other floating launcher buttons hide on Map and return when leaving; verify newly added launchers too.

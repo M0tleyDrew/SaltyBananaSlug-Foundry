@@ -58,31 +58,49 @@ body.sbs-pocket-mode.sbs-pocket-map-visible .sbs-pocket-mobile > .window-content
 
 .sbs-pocket-map-toolbar {
   display: flex;
-  flex-wrap: wrap;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 5px;
+  padding: 4px 6px;
   background: #202d1b;
+  font-size: 12px;
 }
 
 .sbs-pocket-map-hidden-launcher { display: none !important; }
-.sbs-pocket-map-toolbar label { display: flex; align-items: center; gap: 6px; }
-.sbs-pocket-map-toolbar select { width: auto; min-height: 44px; color: #f6f0d9; background: #11190f; }
-.sbs-pocket-map-target-count { font-size: .8rem; }
+.sbs-pocket-map-toolbar select {
+  width: 94px;
+  min-width: 0;
+  height: 30px;
+  min-height: 30px;
+  margin: 0;
+  padding: 2px 4px;
+  font-size: 12px;
+  color: #f6f0d9;
+  background: #11190f;
+}
+.sbs-pocket-map-target-count { font-size: 11px; }
 
 .sbs-pocket-map-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: auto;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 36px;
+  height: 30px;
+  min-height: 30px;
   margin: 0;
+  padding: 2px 7px;
+  font-size: 12px;
+  line-height: 1;
   color: #1a210f;
   background: var(--sbs-pocket-gold);
   border: 0;
   touch-action: manipulation;
 }
 
-.sbs-pocket-map-scale { min-width: 48px; text-align: center; }
+.sbs-pocket-map-toolbar [aria-pressed="false"] { background: #a8b699; }
 .sbs-pocket-map-viewport {
   flex: 1;
   min-height: 0;
@@ -90,17 +108,21 @@ body.sbs-pocket-mode.sbs-pocket-map-visible .sbs-pocket-mobile > .window-content
   place-items: center;
   background: #11190f;
   overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
 }
 
+.sbs-pocket-map-viewport.is-panning { cursor: grabbing; }
 body.sbs-pocket-map-visible .sbs-pocket-map-viewport { background: transparent; }
 .sbs-pocket-map-message { padding: 20px; text-align: center; }
 body.sbs-pocket-map-visible .sbs-pocket-map-message { visibility: hidden; }
 .sbs-pocket-map-note {
   margin: 0;
-  padding: 8px;
+  padding: 4px;
   background: #202d1b;
   text-align: center;
-  font-size: .75rem;
+  font-size: 11px;
 }
 
 body.sbs-pocket-mode .notifications {

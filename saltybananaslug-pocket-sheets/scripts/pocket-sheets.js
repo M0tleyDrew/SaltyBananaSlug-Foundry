@@ -234,7 +234,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.1";
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.2";
     return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
   }
   _replaceHTML(result, content) { this._map.stop(); this._restoreNativeChat(); content.innerHTML = result; }
@@ -248,10 +248,10 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     root.querySelectorAll("[draggable]").forEach((n) => n.removeAttribute("draggable"));
     for (const type of ["dragstart", "dragenter", "dragover", "drop"]) root.addEventListener(type, (e) => { e.preventDefault(); e.stopImmediatePropagation(); }, capture);
     let pointer = null, suppressUntil = 0;
-    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, capture);
+    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail, .sbs-pocket-map-viewport")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, capture);
     root.addEventListener("pointermove", (e) => { if (pointer?.id === e.pointerId && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > 9) pointer.moved = true; }, capture);
     root.addEventListener("pointerup", (e) => { if (pointer?.id === e.pointerId) { if (pointer.moved) suppressUntil = performance.now() + 650; pointer = null; } }, capture);
-    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
+    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail, .sbs-pocket-map-viewport")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
     root.addEventListener("click", (e) => this._onClick(e), { signal: eventAbort.signal });
     root.addEventListener("change", (e) => this._onChange(e), { signal: eventAbort.signal });
     this._installRail(root);
@@ -264,8 +264,6 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const button = event.target.closest("[data-action]"); if (!button) return;
     const action = button.dataset.action; const key = button.dataset.key; const item = this.actor.items.get(button.dataset.itemId);
     try {
-      if (action === "map-zoom-in") return this._map.zoom(1.25);
-      if (action === "map-zoom-out") return this._map.zoom(0.8);
       if (action === "map-clear-targets") return this._map.clearTargets();
       if (action === "map-center") return this._map.center();
       if (action === "change-tab") return this.changeTab(button.dataset.tab);
