@@ -1,3 +1,4 @@
+import {registerPlayerListSetting,applyPlayerListVisibility} from "./player-list.js";
 import {itemCopy} from "./trade-engine.js";
 import {setupPartyTrades,openPartyTrades,invalidateTradeActor} from "./trade-ui.js";
 import {resolveInventory,refreshLinked,configureLink,addLinkedItem,removeLinkedItem,linkedAccess} from "./linked-storage.js";
@@ -6,7 +7,7 @@ import {resolveInventory,refreshLinked,configureLink,addLinkedItem,removeLinkedI
 let partyOperationTail=Promise.resolve();
 function runPartyOperation(fn){const next=partyOperationTail.catch(()=>{}).then(fn);partyOperationTail=next.catch(()=>{});return next;}
 const MODULE_ID = "party-viewer";
-const MODULE_VERSION = "0.4.1";
+const MODULE_VERSION = "0.4.2";
 const SOCKET = `module.${MODULE_ID}`;
 const TEMPLATE = `modules/${MODULE_ID}/templates/party-viewer.hbs`;
 const ICON = `modules/${MODULE_ID}/assets/party-viewer.svg`;
@@ -1497,6 +1498,7 @@ function injectPartyButton() {
 }
 
 Hooks.once("init", () => {
+  registerPlayerListSetting();
   game.settings.register(MODULE_ID, "partyData", {
     name: "SaltyBananaSlugs's Party Viewer Data",
     scope: "world",
@@ -1531,6 +1533,7 @@ Hooks.once("socketlib.ready", () => {
 });
 
 Hooks.once("ready", () => {
+  applyPlayerListVisibility();
   // If socketlib was already ready before this module reached the hook, register here too.
   // The guard prevents duplicate handlers. This keeps player-owned deposits from
   // disappearing into the wizard basement when load order gets spicy.

@@ -1,5 +1,9 @@
 # SaltyBananaSlugs's Party Viewer
 
+## v0.4.2 — Automatically hide Foundry's online-player list
+
+**Hide Foundry Online Player List** is a world setting under Configure Settings → Party Viewer. It defaults to enabled for all players and GMs. The standard list is closed each session and remains hidden if Foundry renders it again after a connection/status change. Turn the setting off to immediately restore it for everyone. No per-player macro is needed.
+
 ## v0.4.1 — Storage save and drag-only deposits
 
 - Fixed **Save Storage** in both the Storage panel and GM editor: it now reads the containing panel instead of looking for settings inside the button. UUID, name, type, capacity and access settings persist, with a success message.
