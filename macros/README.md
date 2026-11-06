@@ -15,6 +15,7 @@ The target environment is Foundry VTT v13 with dnd5e 5.2.x. Module launchers req
 
 | Macro | Purpose | Requirements and status |
 | --- | --- | --- |
+| [Replicate Magic Item](character/replicate-magic-item.js) | Manage known plans, replicated items, Charge/Drain/Transmute, Armorer bonuses, and a sheet record of choices. | v1.1 with searchable pickers, GM plan corrections, and Restart Setup. Requires accessible updated item templates. [Setup, rules coverage, and limits](character/replicate-magic-item.md). Simulated and DOM checks passed; live Foundry validation remains pending. |
 | [Armor Models](character/armor-models.js) | Switch Guardian, Infiltrator, or Dreadnaught armor models; add model weapons, features, passive effects, and counters. | Latest standalone v3 replacement; no older repair macro needed. Select an owned token or use your assigned character; requires equipped armor and an Artificer/Armorer. Native dnd5e handling with optional Midi-QOL attacks. Simulated checks passed during development; live validation remains pending. |
 | [Moon's Inspiration](character/moons-inspiration.js) | Minimize sheets, pick a teleport destination within 30 feet, apply Invisible, and choose an inspiration recipient within 60 feet. | Requires Midi-QOL, an active GM, the existing Moon's Inspiration feature, and an owned bard token. Consumes one Bardic Inspiration use; cancellation/failure attempts to refund it. Recipient spends the inspiration die manually. |
 | [Set Up Moon's Inspiration](character/setup-moons-inspiration.js) | Connect the sheet feature to the main macro. | GM runs once after creating the main world Script macro named **Moon's Inspiration**. Wires the feature's Midi-QOL pre-item-roll macro, grants the owning player access, and suppresses the native roll to avoid double consumption. |
@@ -48,7 +49,7 @@ The [archive](archive/README.md) preserves five superseded scripts and explains 
 
 ## Recovery inventory
 
-This folder contains **12 current scripts and 5 archived scripts**. Source was recovered from saved macro files, original module macro folders, and the exact vision/player-list code from the conversation. Recovered JavaScript files were copied without rewriting their mechanics; descriptions and organization are new.
+This folder contains **13 current scripts and 5 archived scripts**. The original collection source was recovered from saved macro files, original module macro folders, and the exact vision/player-list code from the conversation. Recovered JavaScript files were copied without rewriting their mechanics; descriptions and organization are new.
 
 These previously discussed macros still need their complete original source recovered before they can be added:
 
@@ -60,4 +61,4 @@ These previously discussed macros still need their complete original source reco
 | Actor / Module Manifest Export | Complete original script unavailable. |
 | Random Events / To Oka-Ola table launchers | Table data is separate from launcher code; original macro scripts unavailable. |
 
-Infusions automation was discussed as future work and is not included as a completed macro. To fill the remaining gaps later, export the corresponding world macros from Foundry and add their original code here.
+The planned infusions workflow is now implemented for the revised class as **Replicate Magic Item**, listed above. To fill the remaining gaps later, export the corresponding world macros from Foundry and add their original code here.
