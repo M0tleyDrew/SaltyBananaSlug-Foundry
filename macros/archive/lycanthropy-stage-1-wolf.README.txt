@@ -1,0 +1,40 @@
+SBS LYCANTHROPY — STAGE 1 WOLF
+
+INSTALL
+1. Create a macro in Foundry and set its Type to Script.
+2. Open SBS_Lycanthropy.js in Notepad; copy the ENTIRE contents into the macro command and save.
+   Alternatively, use the macro directory context menu Import Data on a blank macro and select SBS_Lycanthropy.json.
+3. Select ONE token, run the macro, and execute Apply Stage 1 Wolf Lycanthropy.
+4. Run again to transform, revert, check Hunt, record a rest, or manage the full-moon setting.
+
+AFTER EVERY RELOAD
+The GM must run this macro once to start automatic Bloodied checks, rest resets, feral-turn reminders/recovery saves, and world-time expiration checks. Running without a token starts checks without applying a curse. Each affected player should also run it once to install their local spell/equipment guards. Re-running replaces hooks instead of stacking them. Use one active GM running the macro (the active primary GM processes automatic checks).
+
+APPLIED
+Permanent Lycanthropy effect and a rules feature. Transformation adds a separate Strength-floor/walking-speed effect, Claw and Bite weapon entries with normal and bonus attack activities, and Bonus Action Dash. Reverting removes only this macro's form effects/items. Original actor Strength and speed are never directly overwritten. No extra resistances or later-stage features are added.
+
+FERAL / HUNT
+The first transition from above half HP to half HP or less since the last completed rest prompts the DC 10 native Wisdom save. Set full-moon light in the macro BEFORE damage; it auto-fails this initial save. Canceled saves remain unresolved; use Check Bloodied / Hunt. Failed saves force feral form. Feral actors cannot voluntarily revert. At full HP at the start of their combat turn, the GM is prompted for recovery; outside combat, use the recovery control only at a valid turn start. Full moon does not auto-fail recovery. Temp HP do not count toward the Bloodied threshold or full-HP recovery.
+
+REMOVE CURSE
+Use Remove Curse cast — end form only AFTER the spell is actually cast. This does not expend a spell slot or cure Stage 1 Lycanthropy. The GM undo control is an exceptional cure/cleanup, not the spell.
+
+MANUAL ADJUDICATION / LIMITS
+* You retain original types and also count as a Monstrosity. This is recorded on the curse/feature; the system's single creature-type field is not replaced. Adjudicate creature-type targeting manually.
+* DM controls which creatures can be sensed, closest target and Bloodied priorities, compelled movement, Dash, and further attacks. Reminders do not move tokens or roll compulsory attacks.
+* Native activities use normal system attack/damage/critical workflows. The chosen STR/DEX ability is selected on transformation; edit the attack activity if you want the other ability or stats change. These are natural weapon attacks, not Unarmed Strikes.
+* Spend Magic/Bonus Actions normally. Bonus attack entries do not verify that the Attack action happened. Dash posts its activity; track movement normally. The +10 applies to walking speed.
+* Spell/equipment guards apply to normal system activity use on clients that ran the macro. External automation, other macros, passive class benefits, and manually rolled features can bypass them. While feral, honor the ban on all class features, including passive bonuses, manually; the macro does not strip class items or attempt to suppress every passive effect.
+* Existing concentration is ended on transformation. Verify dependent effects with your installed modules. Speech limits are descriptive.
+* One hour means Foundry WORLD time, not elapsed real time. Advance world time outside combat or end the form manually when the in-game hour passes. A newly forced feral episode gets its own one-hour timer.
+* Use the macro's revert and cleanup controls instead of deleting its effects by hand. Do not add later-stage boons to this Stage 1 implementation.
+* Automatic checks only operate while the required clients are open and initialized. The macro cannot recover missed HP transitions while offline. Manual Hunt/rest/recovery controls cover those cases.
+* Linked tokens share their actor's curse. Unlinked tokens use their own synthetic actor.
+
+VALIDATION
+Syntax and mocked state-transition tests passed: apply, repeated execution/no hook stacking, transform/revert, attacks, spell guard, Bloodied/full-moon failure, feral reversion restriction, Remove Curse preserves curse, rest reset, canceled/failed saves, full-HP recovery, world-time expiration, GM cleanup. No live Foundry instance was available; validate with a spare token first. Intended for Foundry v13 / dnd5e 5.x, including your recorded 5.2.4 setup.
+
+RULES
+User-provided Grim Hollow: Player's Guide (2024), pp.154–156.
+API references: https://foundryvtt.com/api/v13/classes/foundry.documents.ActiveEffect.html
+https://github.com/foundryvtt/dnd5e/wiki/Hooks

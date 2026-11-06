@@ -10,6 +10,10 @@
 
 ---
 
+## Campaign macros
+
+Browse the [macro collection](macros/README.md) for character automation, utilities, module launchers, and archived scripts. Each entry includes setup and dependency notes.
+
 ## Installing in Foundry VTT
 
 ### Recommended: install SaltyBananaSlug's Environment
