@@ -1,0 +1,14 @@
+<div class="pv-app pv-trade-session">
+  <header><h2>Party Trade</h2><strong>Status: {{status}}</strong><p>Drag items from your character sheet onto your side. Nothing moves until both players are ready and someone completes the trade. Changing an offer clears both ready checks.</p></header>
+  {{#if error}}<p class="pv-trade-error" role="alert">{{error}}</p>{{/if}}
+  <div class="pv-trade-sides">
+  {{#each sides}}<section class="pv-trade-side {{#if mine}}mine{{/if}}" data-side="{{actorId}}">
+    <h3>{{name}}{{#if mine}} (You){{/if}}</h3><p>{{userName}} · <strong>{{#if ready}}Ready{{else}}Not ready{{/if}}</strong></p>
+    <div class="pv-offer-drop">{{#if editable}}Drop your offered items here{{else}}Offered items{{/if}}</div>
+    {{#each items}}<div class="pv-offered-item"><img src="{{img}}"><span>{{name}}</span>{{#if ../editable}}<input aria-label="Quantity of {{name}}" type="number" min="1" step="1" data-quantity="{{itemId}}" value="{{quantity}}"><button type="button" data-remove="{{itemId}}" title="Remove offered item">Remove</button>{{else}}<strong>×{{quantity}}</strong>{{/if}}</div>{{else}}<p>No items offered.</p>{{/each}}
+    <h4>Currency offered</h4><div class="pv-trade-coins">{{#each coins}}<label>{{coin}}<input name="{{coin}}" data-coin type="number" min="0" step="1" value="{{amount}}" {{#unless ../editable}}disabled{{/unless}}></label>{{/each}}</div>
+    {{#if editable}}<button type="button" data-save-coins>Save Currency Offer</button><button type="button" data-ready {{#if dirty}}disabled{{/if}}>{{#if ready}}Not Ready{{else}}Ready{{/if}}</button>{{/if}}
+  </section>{{/each}}
+  </div>
+  <footer><button type="button" data-complete {{#unless complete}}disabled{{/unless}}>Complete Trade</button>{{#if open}}<button type="button" data-cancel>Cancel Trade</button>{{/if}}</footer>
+</div>

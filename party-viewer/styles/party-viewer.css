@@ -293,3 +293,33 @@
 .pv-gm-storage-row { margin-bottom: 8px; }
 
 .pv-version { color: var(--pv-muted); font-size: 0.78rem; font-weight: 400; }
+
+/* Trades live in their own window; no actor inventory lists are rendered. */
+.pv-trade-window .window-content{overflow:auto;background:#181d24;color:#eee}
+.pv-trade-window .pv-app{padding:16px;overflow:auto;height:100%;box-sizing:border-box}
+.pv-trade-picker label{display:flex;flex-direction:column;gap:6px;margin:14px 0}
+.pv-trade-picker button{margin:5px 4px 5px 0}
+.pv-trade-sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.pv-trade-side{min-width:0;border:1px solid #596575;border-radius:8px;background:#242c36;padding:12px}
+.pv-trade-side.mine{border-color:#d8b85d}
+.pv-offer-drop{border:2px dashed #8996a6;border-radius:6px;padding:20px 8px;text-align:center;color:#d5dee8;margin:12px 0}
+.pv-offered-item{display:flex;gap:7px;align-items:center;margin:8px 0;min-width:0}
+.pv-offered-item img{width:32px;height:32px;object-fit:contain;border:0}
+.pv-offered-item span{flex:1;overflow-wrap:anywhere}.pv-offered-item input{width:54px}
+.pv-trade-coins{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.pv-trade-coins label{display:flex;flex-direction:column;gap:4px;text-transform:uppercase}
+.pv-trade-coins input{width:100%;min-width:0}
+.pv-trade-side>button{margin:10px 5px 0 0}
+.pv-trade-session footer{display:flex;gap:12px;margin-top:16px;position:sticky;bottom:0;background:#181d24;padding:10px 0}
+.pv-trade-session [data-complete]{flex:1;background:#456b38;color:#fff;font-weight:bold;min-height:38px}
+.pv-trade-window button:disabled{opacity:.45;cursor:not-allowed}
+.pv-trade-error{padding:12px;color:#ffdbd8;background:#552c31;border:1px solid #b56d75;border-radius:5px}
+.pv-linked-inventory{padding:10px;background:#27332b;border-left:3px solid #a6bd70;margin:8px 0}
+@media(max-width:650px){.pv-trade-sides{grid-template-columns:1fr}.pv-trade-session footer{flex-wrap:wrap}}
+.pv-trade-window .pv-app{font:14px/1.4 var(--font-primary,sans-serif)}
+.pv-trade-window h2,.pv-trade-window h3,.pv-trade-window h4{color:#eee;border:0}
+.pv-trade-window input,.pv-trade-window select{background:#111820;color:#f2f3f5;border:1px solid #748293;border-radius:4px;min-height:30px;padding:4px}
+.pv-trade-window button{background:#394653;color:#fff;border:1px solid #8999a9;border-radius:5px;min-height:32px;padding:5px 10px;cursor:pointer}
+.pv-trade-window button:hover:not(:disabled){background:#526474}
+.pv-trade-window .pv-trade-session [data-complete]{background:#456b38}
+.pv-trade-sides{grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr))}
