@@ -99,19 +99,13 @@ Closing the character sheet while Pocket Mode is enabled causes it to reopen. A 
 - Refresh and reconnect the phone client.
 - Disable Pocket Mode and confirm the standard Foundry interface returns.
 
-## Map tab (v0.4.3)
+## Map tab (v0.4.2)
 
-Open **Map** to see the live scene centered on the assigned character's visible, owned token. Pinch two fingers together to zoom out or spread them apart to zoom in. Drag with one finger to pan. Desktop users can drag and use the mouse wheel or trackpad to zoom. The toolbar has compact **Center**, **Target / Select mine / Move**, and **Clear targets** controls; there are no zoom buttons. The camera initially follows when the GM moves the token, including animated movement. Dragging or pinching switches to **Exploring**, keeping the view where you put it. Tap **Center** (Center on me) to return to the token and resume following. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
+Open **Map** to see the live scene centered on the assigned character's visible, owned token. Pinch two fingers together to zoom out or spread them apart to zoom in. Drag with one finger to pan. Desktop users can drag and use the mouse wheel or trackpad to zoom. The toolbar has compact **Center**, **Target / Select mine**, and **Clear targets** controls; there are no zoom buttons. The camera initially follows when the GM moves the token, including animated movement. Dragging or pinching switches to **Exploring**, keeping the view where you put it. Tap **Center** (Center on me) to return to the token and resume following. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
 
 Choose **Target** and tap visible tokens to toggle real Foundry targets, including multiple targets. **Clear targets** removes them. Choose **Select owned token** to control a token you own, subject to Foundry permissions. Targets and controlled token selection remain when returning to Attributes, Inventory, Features, Spellbook, or Chat. Scene switches and other modules may still change native targets normally.
 
-In **Target** or **Select mine**, dragging pans only the camera and pinching zooms it. A drag or pinch does not toggle targets; a short tap still does. Default token movement hotkeys remain blocked.
-
-Select **Move** to recenter and lock the view on the assigned token. Drag that token to start its native Foundry drag preview and release inside the map to drop it. Empty-space drags do nothing. Other tokens cannot be moved, including other owned actors. Pinch zoom remains available and keeps the camera centered. Adding a second finger cancels any uncommitted move before zooming; movement stays cancelled until all fingers lift. Leaving the tab, switching mode, loss of pointer capture/focus, Escape, game pause, permission loss, or a source-token/scene change cancels the pending preview.
-
-Move uses the v13 Token's native drag callbacks, preview clone, ruler, collision/snapping/path handling, and native drop. It does not directly write token coordinates, invent a separate movement budget, or fall back to teleporting if native dragging fails. The native dnd5e 5.2.4 TokenRuler supplies configured speed-based green/yellow/red colors when enabled; native/module ruler settings still apply. These colors do not grant or spend a Dash action, bonus action, or other resource. Action economy and any limits are whatever the normal world workflow enforces.
-
-**Live-test boundary:** the movement bridge is a test build. Automated tests use native-shaped callbacks, not an installed Foundry engine; the actual preview/ruler/drop, colored ranges, walls, terrain, and combat history must be checked in a v13 player session before relying on it. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
+Map gestures never move tokens. Dragging pans only the camera, pinching zooms only the camera, and default token movement hotkeys remain blocked. A drag or pinch does not toggle targets; a short tap still does. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
 
 If the character is not on the viewed scene, is hidden, or the scene is loading, the tab displays a message instead of showing another character's map. Scene activation by the GM is handled automatically. The map panel is created only when selected. Leaving Map destroys that UI, cancels the follow loop and listeners, and stops the floating-button observer. Targets and token control are retained. Foundry still loads/renders its normal active scene in the background; this does not defer core scene downloads or promise to reduce network usage.
 
@@ -127,13 +121,10 @@ Leaving Map restores the previous camera position for the current scene; leaving
 - Confirm walls, darkness, unexplored areas, hidden tokens, and permissions match that player's normal Foundry view.
 - Hide/delete the assigned token, change scene, and restore it; check the waiting message and recovery.
 - Rotate/resize the phone, switch tabs, update the actor, and reopen Map.
-- In Target/Select, confirm map taps, drags, pinches, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
-- In Move, drag only the assigned token: verify preview, colored native ruler, snapping, walls, difficult terrain, and movement history in and out of combat.
-- During a pending move, begin a two-finger pinch: verify no movement is committed, zoom works, and the view remains centered.
-- Cancel a pending move by switching modes/tabs, pausing, pressing Escape, dragging outside the map, or moving the source token as GM; confirm no unwanted drop.
+- Confirm map taps, drags, pinches, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
 - Target multiple visible creatures, switch to Spellbook, and confirm the targets remain for the native roll workflow.
 - Select an owned token, leave Map, and confirm it remains controlled; other players' and enemy tokens must reject control.
 - Confirm Lore and other floating launcher buttons hide on Map and return when leaving; verify newly added launchers too.
 - Disable Pocket Mode and confirm normal canvas interaction returns.
 
-Automated checks: `node --test saltybananaslug-pocket-sheets/tests/*.test.mjs`. The browser smoke test requires Playwright on `NODE_PATH` and optionally `POCKET_CHROMIUM` pointing to an installed Chromium executable: `node saltybananaslug-pocket-sheets/tests/browser-map.cjs`. It exercises the real tab event handlers and CSS with a simulated canvas; live Foundry visibility and WebGL behavior require the player-client checklist above.
+Automated checks: `node --test saltybananaslug-pocket-sheets/tests/map.test.mjs`. The browser smoke test requires Playwright on `NODE_PATH` and optionally `POCKET_CHROMIUM` pointing to an installed Chromium executable: `node saltybananaslug-pocket-sheets/tests/browser-map.cjs`. It exercises the real tab event handlers and CSS with a simulated canvas; live Foundry visibility and WebGL behavior require the player-client checklist above.

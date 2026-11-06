@@ -5,8 +5,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 (async () => {
   const dir = path.join(__dirname, '..');
-  const movementSource = fs.readFileSync(path.join(dir, 'scripts/pocket-movement.js'), 'utf8');
-  const mapSource = fs.readFileSync(path.join(dir, 'scripts/pocket-map.js'), 'utf8').replace('./pocket-movement.js', `data:text/javascript;base64,${Buffer.from(movementSource).toString('base64')}`);
+  const mapSource = fs.readFileSync(path.join(dir, 'scripts/pocket-map.js'), 'utf8');
   const source = fs.readFileSync(path.join(dir, 'scripts/pocket-sheets.js'), 'utf8')
     .replace('./pocket-map.js', `data:text/javascript;base64,${Buffer.from(mapSource).toString('base64')}`)
     + '\nglobalThis.TestPocketSheet = PocketSheet;';
@@ -139,83 +138,6 @@ const assert = require('node:assert/strict');
     await page.waitForFunction(before => canvas.stage.scale.x>before,wheelBefore);
     await page.getByRole('button',{name:'Center on me',exact:true}).click();
     await checkCenter();
-    // Native Foundry is not installed in this harness. Exercise the bridge with
-    // native-shaped drag callbacks, retaining the live-client validation boundary.
-    await page.evaluate(() => {
-      globalThis.nativeDragCalls=[];
-      globalThis.PIXI={FederatedPointerEvent:class {constructor(){this.client={set(){}};this.global={copyFrom(){}};}}};
-      canvas.app={renderer:{events:{rootBoundary:{}}}};
-      canvas.stage.toGlobal=p=>p;
-      canvas.tokens.activate=()=>{};
-      const t=canvas.tokens.placeables[0];
-      const enemy=canvas.tokens.placeables[1];
-      enemy.x+=300;enemy.center.x+=300;
-      t.x=t.center.x-t.w/2;t.y=t.center.y-t.h/2;
-      Object.assign(t.document,{x:t.x,y:t.y,elevation:0,canUserModify:()=>true});
-      t.control=function(){canvas.tokens.controlled=[this];this.controlled=true;return true;};
-      canvas.tokens.controlled=[t];
-      t.mouseInteractionManager={state:0,states:{NONE:0,GRABBED:3,DRAG:4,DROP:5},interactionData:{},
-        get isDragging(){return this.state===3||this.state===4;},can:()=>true,
-        reset(){this.interactionData={};this.state=0;},
-        callback(action,event){
-          nativeDragCalls.push(action);
-          if(action==='dragLeftStart') {globalThis.nativePreview=true;globalThis.draggedIds=canvas.tokens.controlled.map(t=>t.id);}
-          if(action==='dragLeftDrop') {
-            const {origin,destination}=event.interactionData;
-            t.document.x+=destination.x-origin.x;t.document.y+=destination.y-origin.y;
-            t.x=t.document.x;t.y=t.document.y;t.center={x:t.x+t.w/2,y:t.y+t.h/2};nativePreview=false;
-          }
-          if(action==='dragLeftCancel') nativePreview=false;
-          return true;
-        }};
-      globalThis.ui.notifications.error=m=>warnings.push(m);
-    });
-    await page.locator('.sbs-pocket-map-mode').selectOption('move');
-    assert.equal(await page.evaluate(() => sheet._map.following),true);
-    await checkCenter();
-    async function tokenScreen() {return page.evaluate(()=>{const p=canvas.stage.pivot,s=canvas.stage.scale.x,t=canvas.tokens.placeables[0];return {x:(t.center.x-p.x)*s+innerWidth/2,y:(t.center.y-p.y)*s+innerHeight/2};});}
-    let movePoint=await tokenScreen();
-    const docBefore=await page.evaluate(()=>({x:canvas.tokens.placeables[0].document.x,y:canvas.tokens.placeables[0].document.y}));
-    await page.mouse.move(movePoint.x,movePoint.y);await page.mouse.down();
-    await page.mouse.move(movePoint.x+55,movePoint.y+20,{steps:4});
-    assert.equal(await page.evaluate(()=>nativePreview),true,'Drag must show native preview before committing');
-    assert.deepEqual(await page.evaluate(()=>({x:canvas.tokens.placeables[0].document.x,y:canvas.tokens.placeables[0].document.y})),docBefore);
-    await page.mouse.up();
-    assert.equal(await page.evaluate(()=>nativeDragCalls.filter(c=>c==='dragLeftDrop').length),1);
-    assert.deepEqual(await page.evaluate(()=>draggedIds),['t1']);
-    assert.ok((await page.evaluate(()=>canvas.tokens.placeables[0].document.x))>docBefore.x);
-    await page.waitForTimeout(90);await checkCenter();
-    // Empty-space drags must neither pan nor move a token in Move mode.
-    movePoint=await tokenScreen();
-    const lockedView=await page.evaluate(()=>({...canvas.stage.pivot}));
-    await page.mouse.move(movePoint.x-110,movePoint.y+90);await page.mouse.down();
-    await page.mouse.move(movePoint.x-70,movePoint.y+110,{steps:3});await page.mouse.up();
-    assert.deepEqual(await page.evaluate(()=>({...canvas.stage.pivot})),lockedView);
-    assert.equal(await page.evaluate(()=>nativeDragCalls.filter(c=>c==='dragLeftDrop').length),1);
-    // Starting a second finger cancels the uncommitted native drag, then zooms.
-    const touchDoc=await page.evaluate(()=>({x:canvas.tokens.placeables[0].document.x,y:canvas.tokens.placeables[0].document.y}));
-    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:3,...movePoint}]});
-    await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:3,x:movePoint.x+40,y:movePoint.y}]});
-    assert.equal(await page.evaluate(()=>nativePreview),true);
-    const pinchBefore=await page.evaluate(()=>canvas.stage.scale.x);
-    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:3,x:movePoint.x+40,y:movePoint.y},{id:4,x:movePoint.x-40,y:movePoint.y}]});
-    assert.equal(await page.evaluate(()=>nativePreview),false);
-    await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:3,x:movePoint.x+60,y:movePoint.y},{id:4,x:movePoint.x-60,y:movePoint.y}]});
-    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-    assert.ok((await page.evaluate(()=>canvas.stage.scale.x))>pinchBefore);
-    assert.equal(await page.evaluate(()=>sheet._map.following),true);
-    assert.deepEqual(await page.evaluate(()=>({x:canvas.tokens.placeables[0].document.x,y:canvas.tokens.placeables[0].document.y})),touchDoc);
-    assert.equal(await page.evaluate(()=>nativeDragCalls.filter(c=>c==='dragLeftDrop').length),1);
-    await checkCenter();
-    // Pausing during a native preview cancels instead of dropping it.
-    movePoint=await tokenScreen();
-    await page.mouse.move(movePoint.x,movePoint.y);await page.mouse.down();
-    await page.mouse.move(movePoint.x+30,movePoint.y,{steps:3});
-    await page.evaluate(()=>{game.paused=true;});
-    await page.mouse.up();
-    assert.equal(await page.evaluate(()=>nativeDragCalls.filter(c=>c==='dragLeftDrop').length),1);
-    await page.evaluate(()=>{game.paused=false;});
-    await page.locator('.sbs-pocket-map-mode').selectOption('target');
     await page.evaluate(() => {canvas.tokens.placeables[0].center = {x:1800,y:1900};});
     await page.waitForTimeout(90);
     await checkCenter();
@@ -255,6 +177,6 @@ const assert = require('node:assert/strict');
     assert.equal(await page.evaluate(() => document.body.classList.contains('sbs-pocket-map-visible')),false);
     assert.equal(await page.evaluate(() => sheet._map.frame),null);
     assert.notEqual(await page.locator('#late-launcher').evaluate(e => getComputedStyle(e).display),'none');
-    console.log('PASS: Move mode native-shaped preview/drop, assigned token restriction, locked view, drag-to-pinch cancellation and pause cancellation; compact toolbar, real two-finger pinch in/out, drag panning without movement/targeting, free camera, center/follow, wheel zoom; targeting, owned selection, native target/selection persistence, lazy UI cleanup, floating launcher hide/restore, late launchers; tab buttons, camera follow, zoom, rotation, hidden token, scene reload, actor rerender, keyboard guard, tab/close cleanup. Native Foundry/WebGL still needs live testing.');
+    console.log('PASS: compact toolbar, real two-finger pinch in/out, drag panning without movement/targeting, free camera, center/follow, wheel zoom; targeting, owned selection, native target/selection persistence, lazy UI cleanup, floating launcher hide/restore, late launchers; tab buttons, camera follow, zoom, rotation, hidden token, scene reload, actor rerender, keyboard guard, tab/close cleanup. Native Foundry/WebGL still needs live testing.');
   } finally {await browser.close();}
 })().catch(error => {console.error(error);process.exitCode=1;});
