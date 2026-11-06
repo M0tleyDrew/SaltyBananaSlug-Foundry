@@ -28,6 +28,75 @@ body.sbs-pocket-mode .combat-tracker {
   display: none !important;
 }
 
+/* Keep Foundry's own player-rendered canvas in place; reveal only the map slot. */
+body.sbs-pocket-mode.sbs-pocket-map-visible #board {
+  display: block !important;
+  pointer-events: none !important;
+  clip-path: var(--sbs-pocket-map-clip, inset(100%));
+}
+
+body.sbs-pocket-mode.sbs-pocket-map-visible .sbs-pocket-mobile,
+body.sbs-pocket-mode.sbs-pocket-map-visible .sbs-pocket-mobile > .window-content {
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+.sbs-pocket-map-open .sbs-pocket-mobile-content {
+  grid-column: 1 / -1;
+  padding: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.sbs-pocket-map-open .sbs-pocket-rail { display: none; }
+.sbs-pocket-map-open :is(.sbs-pocket-mobile-header, .sbs-pocket-mobile-tabs, .sbs-pocket-mobile-footer) { grid-column: 1 / -1; }
+.sbs-pocket-map-open [data-panel="map"].active {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sbs-pocket-map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  background: #202d1b;
+}
+
+.sbs-pocket-map-toolbar button {
+  width: auto;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  color: #1a210f;
+  background: var(--sbs-pocket-gold);
+  border: 0;
+  touch-action: manipulation;
+}
+
+.sbs-pocket-map-scale { min-width: 48px; text-align: center; }
+.sbs-pocket-map-viewport {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  background: #11190f;
+  overflow: hidden;
+}
+
+body.sbs-pocket-map-visible .sbs-pocket-map-viewport { background: transparent; }
+.sbs-pocket-map-message { padding: 20px; text-align: center; }
+body.sbs-pocket-map-visible .sbs-pocket-map-message { visibility: hidden; }
+.sbs-pocket-map-note {
+  margin: 0;
+  padding: 8px;
+  background: #202d1b;
+  text-align: center;
+  font-size: .75rem;
+}
+
 body.sbs-pocket-mode .notifications {
   z-index: 100600 !important;
 }

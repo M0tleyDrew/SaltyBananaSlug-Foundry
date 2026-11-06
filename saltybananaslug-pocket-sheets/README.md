@@ -1,6 +1,6 @@
 # SaltyBananaSlug's Pocket Sheets
 
-Pocket Sheets lets a GM place selected players into a phone-friendly, character-sheet-only Foundry mode. It reads the player's real dnd5e Actor and owned Items but presents them through a purpose-built mobile interface instead of shrinking the desktop character sheet.
+Pocket Sheets lets a GM place selected players into a phone-friendly, character sheet and map Foundry mode. It reads the player's real dnd5e Actor and owned Items but presents them through a purpose-built mobile interface instead of shrinking the desktop character sheet.
 
 ## Installation
 
@@ -16,7 +16,7 @@ The published manifest installs the matching versioned package from the reposito
 - dnd5e 5.x
 - Designed first for the official dnd5e character sheet
 
-The mobile sheet includes Attributes, Inventory, Features, Spellbook, Foundry's live native Chat Log, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
+The mobile sheet includes Attributes, Inventory, Features, Spellbook, Map, Foundry's live native Chat Log, Effects, Bastions when present, Biography, and an optional Special Traits page. Other modules can add mobile-native pages through the Pocket Sheets `registerTab` API.
 
 ## GM setup
 
@@ -33,9 +33,9 @@ The player's assigned sheet opens automatically. Disabling Pocket Mode restores 
 
 ## What Pocket Mode changes
 
-- Hides the canvas, scene navigation, controls, sidebar, hotbar, and player list.
+- Hides the canvas outside the Map tab, scene navigation, controls, sidebar, hotbar, and player list.
 - Renders the real Actor's information through a dedicated responsive phone layout.
-- Includes Attributes, Inventory, Features, Spellbook, Chat, Effects, Bastions, Biography, and optionally Special Traits.
+- Includes Attributes, Inventory, Features, Spellbook, Map, Chat, Effects, Bastions, Biography, and optionally Special Traits.
 - Mounts the player's actual live Foundry Chat Log inside the Pocket Chat tab instead of rebuilding, cloning, or interpreting ChatMessages.
 - Shows the same public messages, permitted whispers, comments, dnd5e cards, Midi-QOL cards, attacks, connected damage, healing, and other rolls that Foundry renders for that player on desktop.
 - Keeps the native Chat Log's own create, update, and delete lifecycle, so a completed Midi-QOL workflow updates the same card Pocket Sheets displays.
@@ -98,3 +98,23 @@ Closing the character sheet while Pocket Mode is enabled causes it to reopen. A 
 - Change HP or resources from the GM client and confirm the phone sheet updates.
 - Refresh and reconnect the phone client.
 - Disable Pocket Mode and confirm the standard Foundry interface returns.
+
+## Map tab (v0.4.0)
+
+Open **Map** to see the live scene centered on the assigned character's visible, owned token. Zoom with **+ / −**, or tap **Center on me**. The camera follows when the GM moves the token, including animated movement. With multiple copies of the character, the initial selection prefers the currently controlled token, then keeps following that copy.
+
+This is a viewing tab: touching the map and movement hotkeys do not move tokens. Movement, speed, dashes, and remaining movement are still handled by the GM. The view uses the player's existing Foundry canvas, so normal lighting, walls, fog, and visibility permissions still apply. No extra map rendering or GM image capture is used. It requires a working WebGL canvas on the phone; a client with **Disable Game Canvas** enabled must turn that off and reload.
+
+If the character is not on the viewed scene, is hidden, or the scene is loading, the tab displays a message instead of showing another character's map. Scene activation by the GM is handled automatically. Leaving Map restores the previous camera position for the current scene; leaving Pocket Mode restores the normal interface.
+
+### Map verification
+
+- On a player client in Pocket Mode, open Map with the assigned actor on the active scene.
+- Zoom in and out; move the token from the GM client and confirm it stays centered.
+- Confirm walls, darkness, unexplored areas, hidden tokens, and permissions match that player's normal Foundry view.
+- Hide/delete the assigned token, change scene, and restore it; check the waiting message and recovery.
+- Rotate/resize the phone, switch tabs, update the actor, and reopen Map.
+- Confirm map taps, dragging, and arrow/WASD keys cannot move tokens, while sheet and chat controls still work.
+- Disable Pocket Mode and confirm normal canvas interaction returns.
+
+Automated checks: `node --test saltybananaslug-pocket-sheets/tests/map.test.mjs`. The browser smoke test requires Playwright on `NODE_PATH` and optionally `POCKET_CHROMIUM` pointing to an installed Chromium executable: `node saltybananaslug-pocket-sheets/tests/browser-map.cjs`. It exercises the real tab event handlers and CSS with a simulated canvas; live Foundry visibility and WebGL behavior require the player-client checklist above.
