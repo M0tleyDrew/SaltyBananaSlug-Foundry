@@ -1,3 +1,5 @@
+import { PocketMap } from "./pocket-map.js";
+
 const MODULE_ID = "saltybananaslug-pocket-sheets";
 const SETTING_ASSIGNMENTS = "assignments";
 const SOCKET = `module.${MODULE_ID}`;
@@ -201,6 +203,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     super(options);
     this.actor = actor;
     this.activeTab = "attributes";
+    this._map = new PocketMap(actor.id);
     this.scrollPositions = new Map();
     this.followChat = true;
     this._nativeChatElement = null;
@@ -220,6 +223,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       { id: "inventory", label: "Inventory", icon: "fa-solid fa-backpack", render: () => renderInventory(this.actor) },
       { id: "features", label: "Features", icon: "fa-solid fa-star", render: () => renderFeatures(this.actor) },
       { id: "spellbook", label: "Spellbook", icon: "fa-solid fa-book-sparkles", render: () => renderSpells(this.actor) },
+      { id: "map", label: "Map", icon: "fa-solid fa-map", render: () => "" },
       { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => renderNativeChatPortal() },
       { id: "effects", label: "Effects", icon: "fa-solid fa-bolt", render: () => renderEffects(this.actor) },
       ...(hasBastion ? [{ id: "bastions", label: "Bastions", icon: "fa-solid fa-castle", render: () => renderBastions(this.actor) }] : []),
@@ -230,10 +234,10 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.3.12";
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.2";
     return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
   }
-  _replaceHTML(result, content) { this._restoreNativeChat(); content.innerHTML = result; }
+  _replaceHTML(result, content) { this._map.stop(); this._restoreNativeChat(); content.innerHTML = result; }
   _onRender(context, options) {
     super._onRender(context, options);
     const root = elementOf(this.element); if (!root) return;
@@ -244,13 +248,14 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     root.querySelectorAll("[draggable]").forEach((n) => n.removeAttribute("draggable"));
     for (const type of ["dragstart", "dragenter", "dragover", "drop"]) root.addEventListener(type, (e) => { e.preventDefault(); e.stopImmediatePropagation(); }, capture);
     let pointer = null, suppressUntil = 0;
-    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, capture);
+    root.addEventListener("pointerdown", (e) => { if (!e.target.closest(".sbs-pocket-rail, .sbs-pocket-map-viewport")) pointer = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }; }, capture);
     root.addEventListener("pointermove", (e) => { if (pointer?.id === e.pointerId && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > 9) pointer.moved = true; }, capture);
     root.addEventListener("pointerup", (e) => { if (pointer?.id === e.pointerId) { if (pointer.moved) suppressUntil = performance.now() + 650; pointer = null; } }, capture);
-    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
+    root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail, .sbs-pocket-map-viewport")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
     root.addEventListener("click", (e) => this._onClick(e), { signal: eventAbort.signal });
     root.addEventListener("change", (e) => this._onChange(e), { signal: eventAbort.signal });
     this._installRail(root);
+    if (this.activeTab === "map") this._map.start(root);
     const content = root.querySelector(".sbs-pocket-mobile-content");
     if (content) content.scrollTop = this.activeTab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(this.activeTab) ?? 0);
     if (this.activeTab === "chat") this._mountNativeChat().catch((error) => this._showNativeChatError(error));
@@ -259,6 +264,8 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const button = event.target.closest("[data-action]"); if (!button) return;
     const action = button.dataset.action; const key = button.dataset.key; const item = this.actor.items.get(button.dataset.itemId);
     try {
+      if (action === "map-clear-targets") return this._map.clearTargets();
+      if (action === "map-center") return this._map.center();
       if (action === "change-tab") return this.changeTab(button.dataset.tab);
       if (action === "roll-ability") return await this._runAndClosePrompt(() => this.actor.rollAbilityCheck?.({ ability: key, event }));
       if (action === "roll-save") return await this._runAndClosePrompt(() => this.actor.rollSavingThrow?.({ ability: key, event }));
@@ -496,9 +503,11 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const root = elementOf(this.element); const content = root?.querySelector(".sbs-pocket-mobile-content");
     if (content) this.scrollPositions.set(this.activeTab, content.scrollTop);
     if (this.activeTab === "chat" && tab !== "chat") this._restoreNativeChat();
+    if (this.activeTab === "map") this._map.stop();
     this.activeTab = tab;
     root?.querySelectorAll(".sbs-pocket-mobile-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
     root?.querySelectorAll(".sbs-pocket-panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === tab));
+    if (tab === "map" && root) this._map.start(root);
     if (tab === "chat") await this._mountNativeChat().catch((error) => this._showNativeChatError(error));
     if (content) content.scrollTop = tab === "chat" && this.followChat ? content.scrollHeight : (this.scrollPositions.get(tab) ?? 0);
     this._updateRail();
@@ -518,7 +527,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const root = elementOf(this.element), content = root?.querySelector(".sbs-pocket-mobile-content"), track = root?.querySelector(".sbs-pocket-track"), thumb = root?.querySelector(".sbs-pocket-thumb"); if (!content || !track || !thumb) return;
     const max = Math.max(0, content.scrollHeight - content.clientHeight), height = Math.max(44, track.clientHeight * Math.min(1, content.clientHeight / Math.max(1, content.scrollHeight))), travel = Math.max(0, track.clientHeight - height); thumb.style.height = `${height}px`; thumb.style.transform = `translateY(${max ? (content.scrollTop / max) * travel : 0}px)`; root.querySelector(".sbs-pocket-rail")?.classList.toggle("no-scroll", max < 2);
   }
-  async close(options = {}) { if (state.active && !options.force) return this; this._restoreNativeChat(); this._eventAbort?.abort(); this._railAbort?.abort(); this._pendingActions.clear(); return super.close(options); }
+  async close(options = {}) { if (state.active && !options.force) return this; this._map.stop(); this._restoreNativeChat(); this._eventAbort?.abort(); this._railAbort?.abort(); this._pendingActions.clear(); return super.close(options); }
 }
 
 class PocketManager extends foundry.applications.api.ApplicationV2 {
