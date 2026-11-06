@@ -1,5 +1,13 @@
 # SaltyBananaSlugs's Party Viewer
 
+## v0.4.1 — Storage save and drag-only deposits
+
+- Fixed **Save Storage** in both the Storage panel and GM editor: it now reads the containing panel instead of looking for settings inside the button. UUID, name, type, capacity and access settings persist, with a success message.
+- Removed the character-item dropdown and manual-loot form from Storage. Drag from a character sheet to deposit one item; hold Shift to deposit a full stack. GMs can also drag from Items or compendiums.
+- Linked storage and the linked actor/vehicle sheet share one live inventory. Sheet additions appear in Party Viewer; Party Viewer deposits and withdrawals update the linked sheet. Existing shared stock migrates when the link is first saved.
+- Storage settings use explicit Save rather than autosaving every field change. Pasted `@UUID[Actor.…]{Name}` links are also accepted.
+- The v0.4.0 trade flow is unchanged.
+
 ## v0.4.0 — Separate trades and linked inventories
 
 Click **Trades ↗** to open a separate window; it no longer replaces the dashboard with a trade tab. Select your party character and another online player's character. A two-sided offer window opens for both players. Drag physical inventory items from your selected character's sheet onto your side, set quantities, and enter coins (CP/SP/EP/GP/PP). Save the currency offer, then click **Ready**. **Complete Trade** enables only after both players are ready; either participant or a GM viewing the trade can complete it. The GM opens **Trades ↗** and selects an open trade to observe.

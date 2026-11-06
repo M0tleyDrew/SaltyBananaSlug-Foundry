@@ -77,34 +77,6 @@
       <p>Party stash, wagon, mule saddlebags, bag of holding, suspicious sack, emotionally compromised wheelbarrow, etc.</p>
     </div>
 
-    {{#if containers.length}}
-    <div class="pv-add-actor-item pv-box">
-      <h3>Add Item from Character</h3>
-      <div class="pv-form-row">
-        <label>Item
-          <select name="actorItem">
-            {{#each actorItems}}
-              <optgroup label="{{name}}">
-                {{#each items}}
-                  <option value="{{../id}}|{{id}}">{{name}} ×{{quantity}}</option>
-                {{/each}}
-              </optgroup>
-            {{/each}}
-          </select>
-        </label>
-        <label>Qty <input name="actorItemQuantity" type="number" min="1" value="1"></label>
-        <label>To
-          <select name="targetContainer">
-            {{#each containers}}<option value="{{id}}">{{name}}</option>{{/each}}
-          </select>
-        </label>
-        <label class="pv-check"><input name="moveItem" type="checkbox" checked> Move, not copy</label>
-        <button type="button" data-action="add-actor-item">Add</button>
-      </div>
-      {{#unless actorItems.length}}<p class="pv-muted">No owned actor inventory items found.</p>{{/unless}}
-    </div>
-    {{/if}}
-
     {{#each containers}}
     <article class="pv-container pv-box" data-container-id="{{id}}">
       <header class="pv-container-header">
@@ -144,7 +116,7 @@
       {{#if linkError}}<p class="pv-trade-error">{{linkError}}</p>{{/if}}
       <div class="pv-drop-zone" data-container-id="{{id}}">
         <i class="fas fa-hand-holding-box"></i>
-        Drop items here from character sheets, the Items sidebar, or compendiums.
+        Drag items here from your character sheet. GM: Items sidebar and compendiums also work. Hold Shift to move a full stack.
       </div>
 
       <div class="pv-currency">
@@ -173,21 +145,6 @@
         {{/each}}
       </div>
 
-      {{#if allowManual}}<div class="pv-manual-item pv-box inset">
-        <h4>Add Manual Loot</h4>
-        <div class="pv-form-row">
-          <label>Name <input name="itemName" placeholder="Blackened Silver Reliquary"></label>
-          <label>Qty <input name="itemQuantity" type="number" min="1" value="1"></label>
-          <label>Weight <input name="itemWeight" type="number" min="0" step="0.1" value="0"></label>
-          <label>Value gp <input name="itemValue" type="number" min="0" step="0.01" value="0"></label>
-        </div>
-        <div class="pv-form-row">
-          <label>Image path <input name="itemImg" placeholder="icons/svg/item-bag.svg"></label>
-          <label class="pv-grow">Description <input name="itemDescription" placeholder="Optional notes"></label>
-          <button type="button" data-action="add-manual-item" data-container-id="{{id}}">Add</button>
-        </div>
-      </div>
-      {{/if}}
     </article>
     {{else}}
       <p class="pv-empty">No shared storage yet. The GM can create a wagon, chest, mule bags, or whatever container the party will immediately abuse.</p>

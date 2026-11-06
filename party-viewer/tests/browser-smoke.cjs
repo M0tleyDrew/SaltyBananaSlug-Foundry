@@ -227,6 +227,230 @@ const server = http.createServer((req, res) => {
     "Three-client browser simulation passed: picker, both automatic windows, two-sided drag/drop, currency, ready gate, GM observation/completion, synchronized result.",
   );
   console.log(JSON.stringify(result));
+  const storagePage = await browser.newPage({
+    viewport: { width: 1100, height: 900 },
+  });
+  await storagePage.goto(url + "/party-viewer/README.md");
+  await storagePage.addScriptTag({
+    path: require.resolve("handlebars/dist/handlebars.js"),
+  });
+  await storagePage.addScriptTag({
+    path: require.resolve("jquery/dist/jquery.js"),
+  });
+  await storagePage.evaluate(async () => {
+    const { fixture } = await import("/party-viewer/tests/helpers.mjs");
+    const f = fixture();
+    const listeners = new Map();
+    globalThis.Hooks = {
+      once() {},
+      on(name, fn) {
+        const list = listeners.get(name) ?? [];
+        list.push(fn);
+        listeners.set(name, list);
+      },
+      callAll(name, ...args) {
+        for (const fn of listeners.get(name) ?? []) fn(...args);
+      },
+    };
+    window.notices = [];
+    globalThis.ui = {
+      notifications: {
+        info: (m) => notices.push(m),
+        error: (m) => notices.push(m),
+        warn: (m) => notices.push(m),
+      },
+    };
+    window.world = {
+      roster: [],
+      containers: [
+        {
+          id: "wagon",
+          name: "Shared Wagon",
+          items: [
+            {
+              id: "old",
+              name: "Old Rope",
+              quantity: 2,
+              itemData: {
+                name: "Old Rope",
+                type: "loot",
+                system: { quantity: 2 },
+              },
+            },
+          ],
+          currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
+        },
+      ],
+    };
+    game.settings = {
+      get: (ns, key) => (key === "partyData" ? structuredClone(world) : false),
+      set: async (ns, key, value) => {
+        window.world = structuredClone(value);
+      },
+    };
+    globalThis.fromUuid = async (uuid) => {
+      const parts = uuid.split(".");
+      const actor = game.actors.get(parts[1]);
+      return parts.length === 4 ? actor?.items.get(parts[3]) : actor;
+    };
+    for (const [name, fn] of Object.entries({
+      pvEq: (a, b) => a === b,
+      pvChecked: (v) => (v ? "checked" : ""),
+      pvMoney: (v) => String(v || 0),
+      pvFixed: (v) => Number(v || 0).toFixed(1),
+      pvNl2br: (v) => v || "",
+    }))
+      Handlebars.registerHelper(name, fn);
+    globalThis.Application = class {
+      constructor(options = {}) {
+        this.options = { ...this.constructor.defaultOptions, ...options };
+      }
+      static get defaultOptions() {
+        return {};
+      }
+      render() {
+        (async () => {
+          const data = await this.getData(),
+            template = await (
+              await fetch("/" + this.options.template.replace("modules/", ""))
+            ).text();
+          let root = document.getElementById(this.options.id);
+          if (!root) {
+            root = document.createElement("div");
+            root.id = this.options.id;
+            document.body.appendChild(root);
+          }
+          root.innerHTML = Handlebars.compile(template)(data);
+          this.element = jQuery(root);
+          this.rendered = true;
+          this.activateListeners(this.element);
+        })().catch((e) => notices.push(e.message));
+        return this;
+      }
+      activateListeners() {}
+      async close() {
+        this.element.remove();
+        this.rendered = false;
+      }
+    };
+    const api = await import("/party-viewer/scripts/party-viewer.js");
+    const app = new api.PartyViewerApp();
+    api.PartyViewerApp.instance = app;
+    app.activeTab = "storage";
+    app.render(true);
+    window.storageApp = app;
+    f.a.add("deposit", "Dragged Supplies", 2);
+    f.actors.get("v").type = "vehicle";
+  });
+  await storagePage.waitForSelector(
+    '.pv-container [data-action="save-container"]',
+  );
+  if (await storagePage.locator('[name="actorItem"]').count())
+    throw Error("Inventory dropdown still rendered");
+  if (await storagePage.locator(".pv-manual-item").count())
+    throw Error("Storage is not drag-only");
+  await storagePage
+    .locator('.pv-container [name="containerLinkedUuid"]')
+    .fill("Actor.v");
+  await storagePage
+    .locator('.pv-container [name="containerEditName"]')
+    .fill("Linked Vehicle");
+  await storagePage
+    .locator('.pv-container [name="containerEditCapacity"]')
+    .fill("125");
+  await storagePage
+    .locator('.pv-container [data-action="save-container"]')
+    .click();
+  await storagePage.waitForFunction(
+    () =>
+      world.containers[0].linkedUuid === "Actor.v" &&
+      world.containers[0].name === "Linked Vehicle" &&
+      world.containers[0].capacity === 125,
+  );
+  if (
+    !(await storagePage.evaluate(() =>
+      game.actors
+        .get("v")
+        .items.contents.some(
+          (i) => i.name === "Old Rope" && i.system.quantity === 2,
+        ),
+    ))
+  )
+    throw Error("Save did not migrate stock to vehicle sheet");
+  await storagePage.waitForSelector(".pv-linked-inventory");
+  await storagePage.evaluate(async () => {
+    const actor = game.actors.get("v");
+    const [item] = await actor.createEmbeddedDocuments("Item", [
+      { name: "Sheet Added Rations", type: "loot", system: { quantity: 5 } },
+    ]);
+    Hooks.callAll("createItem", item);
+  });
+  await storagePage.waitForFunction(() =>
+    document
+      .querySelector(".pv-storage-list")
+      ?.textContent.includes("Sheet Added Rations"),
+  );
+  await storagePage.locator(".pv-drop-zone").evaluate((panel) => {
+    const dt = new DataTransfer();
+    dt.setData(
+      "text/plain",
+      JSON.stringify({ type: "Item", uuid: "Actor.a.Item.deposit" }),
+    );
+    panel.dispatchEvent(
+      new DragEvent("drop", {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer: dt,
+      }),
+    );
+  });
+  await storagePage.waitForFunction(() =>
+    game.actors
+      .get("v")
+      .items.contents.some((i) => i.name === "Dragged Supplies"),
+  );
+  await storagePage.waitForFunction(() =>
+    document
+      .querySelector(".pv-storage-list")
+      ?.textContent.includes("Dragged Supplies"),
+  );
+  await storagePage.evaluate(() => {
+    storageApp.activeTab = "gm";
+    storageApp.render(false);
+  });
+  await storagePage.waitForSelector(
+    '.pv-gm-storage-row [name="containerLinkedUuid"]',
+  );
+  if (
+    (await storagePage
+      .locator('.pv-gm-storage-row [name="containerLinkedUuid"]')
+      .inputValue()) !== "Actor.v"
+  )
+    throw Error("Link was not persisted");
+  await storagePage
+    .locator('.pv-gm-storage-row [name="containerEditName"]')
+    .fill("Saved from GM editor");
+  await storagePage
+    .locator('.pv-gm-storage-row [data-action="save-container"]')
+    .click();
+  await storagePage.waitForFunction(
+    () => world.containers[0].name === "Saved from GM editor",
+  );
+  const storageResult = await storagePage.evaluate(() => ({
+    name: world.containers[0].name,
+    uuid: world.containers[0].linkedUuid,
+    stock: game.actors
+      .get("v")
+      .items.contents.map((i) => [i.name, i.system.quantity]),
+    source: game.actors.get("a").items.get("deposit").system.quantity,
+    notices,
+  }));
+  if (storageResult.source !== 1)
+    throw Error("Drag did not remove source quantity");
+  console.log(
+    "Storage browser checks passed: clicked Save in both editors, persisted UUID and settings, migrated stock, sheet-to-storage update, drag-to-sheet update, no inventory dropdown.",
+  );
+  console.log(JSON.stringify(storageResult));
   await browser.close();
   server.close();
 })().catch((e) => {

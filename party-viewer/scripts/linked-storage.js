@@ -9,7 +9,12 @@ import {
 } from "./trade-engine.js";
 const MOD = "party-viewer",
   SBS = "saltybananaslug-containers";
+export function normalizeInventoryUuid(value) {
+  const text = String(value ?? "").trim();
+  return text.match(/^@UUID\[([^\]]+)\](?:\{[^}]*\})?$/)?.[1] ?? text;
+}
 export async function resolveInventory(uuid) {
+  uuid = normalizeInventoryUuid(uuid);
   const doc = await fromUuid(uuid);
   if (!doc) throw new Error("Linked inventory UUID could not be found.");
   let actor,
@@ -123,7 +128,7 @@ export async function refreshLinked(container, { user = game.user } = {}) {
   }
 }
 export async function configureLink(container, uuid) {
-  uuid = String(uuid ?? "").trim();
+  uuid = normalizeInventoryUuid(uuid);
   if (uuid === container.linkedUuid) return;
   if (container.linkedUuid && !uuid) {
     container.linkedUuid = "";

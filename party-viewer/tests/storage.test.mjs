@@ -288,3 +288,5 @@ test("taking a linked bag item clears its old container reference on the receivi
   assert.equal(f.b.items.contents[0].system.container, null);
   assert.equal(v.items.get("food").system.quantity, 1);
 });
+
+test('pasted Foundry UUID links save the canonical inventory UUID',async()=>{const f=setup(),c=storage();await configureLink(c,'@UUID[Actor.v]{Wagon}');assert.equal(c.linkedUuid,'Actor.v');assert.equal(c.linkedActorId,'v');});

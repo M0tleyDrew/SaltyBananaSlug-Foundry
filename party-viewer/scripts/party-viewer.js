@@ -6,7 +6,7 @@ import {resolveInventory,refreshLinked,configureLink,addLinkedItem,removeLinkedI
 let partyOperationTail=Promise.resolve();
 function runPartyOperation(fn){const next=partyOperationTail.catch(()=>{}).then(fn);partyOperationTail=next.catch(()=>{});return next;}
 const MODULE_ID = "party-viewer";
-const MODULE_VERSION = "0.4.0";
+const MODULE_VERSION = "0.4.1";
 const SOCKET = `module.${MODULE_ID}`;
 const TEMPLATE = `modules/${MODULE_ID}/templates/party-viewer.hbs`;
 const ICON = `modules/${MODULE_ID}/assets/party-viewer.svg`;
@@ -995,6 +995,7 @@ function actionSuccessMessage(action) {
     case "update-shared-notes": return "Shared notes saved.";
     case "update-private-notes": return "Private notes saved.";
     case "update-currency": return "Shared currency updated.";
+    case "update-container": return "Storage settings saved.";
     default: return "Party Viewer updated.";
   }
 }
@@ -1010,6 +1011,7 @@ async function requestMutation(action, payload = {}) {
   if (isPrimaryGM()) {
     try {
       await mutatePartyData(action, payload, game.user.id);
+      if(action==="update-container")ui.notifications.info(actionSuccessMessage(action));
       PartyViewerApp.refreshOpen();
     } catch (err) {
       console.error(`${MODULE_ID} | ${action} failed`, err);
@@ -1107,24 +1109,11 @@ class PartyViewerApp extends BaseApplication {
     const ownedActors = ownedActorsFor(game.user);
     const partyActors = partyActorsForData(data, game.user);
     const ownedPartyActors = partyActors.filter(a => canUserOwnActor(a, game.user));
-    const storageSourceActors = game.user.isGM ? allActors : ownedPartyActors;
     const storageTargetActors = game.user.isGM ? partyActors : ownedPartyActors;
-
-    const makeActorItemGroups = actors => actors.map(a => ({
-      id: a.id,
-      name: a.name,
-      items: a.items.contents
-        .filter(i => itemIsInventoryItem(i))
-        .map(i => ({ id: i.id, name: i.name, img: i.img, quantity: getItemQuantity(i), type: i.type }))
-        .sort((x, y) => x.name.localeCompare(y.name))
-    })).filter(a => a.items.length);
-
-    const actorItems = makeActorItemGroups(storageSourceActors);
 
     for(const c of data.containers)if(c.linkedUuid)await refreshLinked(c,{user:game.user});
     const containers = data.containers.map(c => ({
       ...c,
-      allowManual:!c.linkedUuid||game.user.isGM,
       weightTotal: totalContainerWeight(c),
       valueTotal: totalContainerValue(c),
       overCapacity: Number(c.capacity) > 0 && totalContainerWeight(c) > Number(c.capacity)
@@ -1166,7 +1155,6 @@ class PartyViewerApp extends BaseApplication {
       allActors,
       ownedActors,
       storageTargetActors,
-      actorItems,
       containers,
       log: (data.log ?? []).map(l => ({ ...l, userName: userName(l.userId), timeLabel: formatTime(l.time) })),
       sharedNotes: data.sharedNotes,
@@ -1194,7 +1182,6 @@ class PartyViewerApp extends BaseApplication {
 
     html.find("[data-action]").on("click", ev => this._onAction(ev));
     html.find(".pv-roster-role, .pv-roster-hidden").on("change", ev => this._onRosterChange(ev));
-    html.find(".pv-container-field").on("change", ev => this._onContainerChange(ev));
     html.find(".pv-currency-input").on("change", ev => this._onCurrencyChange(ev));
     html.find(".pv-save-shared-notes").on("click", ev => this._saveSharedNotes(ev));
     html.find(".pv-save-private-notes").on("click", ev => this._savePrivateNotes(ev));
@@ -1340,7 +1327,7 @@ class PartyViewerApp extends BaseApplication {
         break;
       }
       case "save-container": {
-        const panel = button.closest("[data-container-id]");
+        const panel = button.closest(".pv-container, .pv-gm-storage-row");
         if (!panel) return;
         requestMutation("update-container", {
           containerId: panel.dataset.containerId,
