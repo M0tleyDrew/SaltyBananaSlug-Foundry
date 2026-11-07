@@ -1,0 +1,25 @@
+{
+  "id": "saltybananaslug-quests-objectives",
+  "title": "SaltyBananaSlug's Quests & Objectives",
+  "description": "A video-game-style quest and objective tracker for Foundry VTT with GM quests, player personal quests, hidden and sequential objectives, tracking, reset tools, scene controls, floating launcher, and SBS-branded macros.",
+  "version": "0.1.6",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/quests-objectives.css"
+  ],
+  "socket": true,
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-quests-objectives",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-quests-objectives.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-quests-objectives-v0.1.6.zip"
+}
