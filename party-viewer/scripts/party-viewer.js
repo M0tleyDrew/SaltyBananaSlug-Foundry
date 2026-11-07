@@ -7,7 +7,7 @@ import {resolveInventory,refreshLinked,configureLink,addLinkedItem,removeLinkedI
 let partyOperationTail=Promise.resolve();
 function runPartyOperation(fn){const next=partyOperationTail.catch(()=>{}).then(fn);partyOperationTail=next.catch(()=>{});return next;}
 const MODULE_ID = "party-viewer";
-const MODULE_VERSION = "0.4.2";
+const MODULE_VERSION = "0.4.3";
 const SOCKET = `module.${MODULE_ID}`;
 const TEMPLATE = `modules/${MODULE_ID}/templates/party-viewer.hbs`;
 const ICON = `modules/${MODULE_ID}/assets/party-viewer.svg`;
@@ -1098,6 +1098,7 @@ class PartyViewerApp extends BaseApplication {
 
   async getData() {
     const data = getPartyData();
+    if (!game.user.isGM && ["users", "gm"].includes(this.activeTab)) this.activeTab = "dashboard";
     const rosterEntries = data.roster.filter(r => game.user.isGM || !r.hidden);
     const members = rosterEntries
       .map(r => {
@@ -1150,6 +1151,12 @@ class PartyViewerApp extends BaseApplication {
       icon: ICON,
       isGM: game.user.isGM,
       activeTab: this.activeTab,
+      users: game.user.isGM ? game.users.contents
+        .slice().sort((a, b) => a.name.localeCompare(b.name))
+        .map(user => ({
+          id: user.id, name: user.name, active: user.active, role: user.roleLabel || (user.isGM ? "GM" : "Player"),
+          characterName: user.character?.name || "None"
+        })) : [],
       data,
       settings: data.settings,
       members,
@@ -1177,6 +1184,7 @@ class PartyViewerApp extends BaseApplication {
     html.find("[data-tab]").on("click", ev => {
       ev.preventDefault();
       if(ev.currentTarget.dataset.tab==="trades"){openPartyTrades();return;}
+      if (["users", "gm"].includes(ev.currentTarget.dataset.tab) && !game.user.isGM) return;
       this.activeTab = ev.currentTarget.dataset.tab;
       this.render(false);
     });
@@ -1286,6 +1294,22 @@ class PartyViewerApp extends BaseApplication {
     const action = button.dataset.action;
     const root = button.closest(".party-viewer");
     switch (action) {
+      case "open-user-settings": {
+        // Open the native editor as the current GM; no user edits are relayed through sockets.
+        if (!game.user.isGM) return ui.notifications.warn("Only a GM can manage users.");
+        const user = game.users.get(button.dataset.userId);
+        if (!user) return ui.notifications.warn("User not found. Reopen the Users tab.");
+        button.disabled = true;
+        try {
+          const UserConfig = foundry.applications.sheets.UserConfig;
+          await new UserConfig({document: user}).render(true);
+        } catch (error) {
+          ui.notifications.error(error.message || "Could not open user settings.");
+        } finally {
+          button.disabled = false;
+        }
+        break;
+      }
       case "add-member": {
         const search = root.querySelector("[name='addActorSearch']")?.value || "";
         const actorId = resolveActorIdFromSearch(root, search);
@@ -1616,3 +1640,11 @@ Hooks.on("updateSetting",setting=>{if(setting?.key===`${MODULE_ID}.partyData`)Pa
 export {mutatePartyData,PartyViewerApp,relevantPartyActor};
 
 Hooks.on("updateToken",token=>{if(!getPartyData().containers.some(c=>c.linkedUuid===token.uuid))return;PartyViewerApp.refreshOpen();resolveInventory(token.uuid).then(ref=>onPartyDocumentChange(ref.actor)).catch(()=>{});});
+
+// Keep user assignments and connection status current even with the native list hidden.
+for (const hook of ["createUser", "updateUser", "deleteUser", "userConnected", "createActor", "deleteActor"]) {
+  Hooks.on(hook, () => PartyViewerApp.refreshOpen());
+}
+Hooks.on("updateActor", (_actor, changes) => {
+  if (PartyViewerApp.instance?.activeTab === "users" && ("name" in changes || "ownership" in changes)) PartyViewerApp.refreshOpen();
+});

@@ -6,9 +6,26 @@
       <button class="{{#if (pvEq activeTab 'storage')}}active{{/if}}" data-tab="storage">Storage</button>
       <button class="{{#if (pvEq activeTab 'trades')}}active{{/if}}" data-tab="trades" title="Open separate trade window">Trades ↗</button>
       <button class="{{#if (pvEq activeTab 'notes')}}active{{/if}}" data-tab="notes">Notes</button>
-      {{#if isGM}}<button class="{{#if (pvEq activeTab 'gm')}}active{{/if}}" data-tab="gm">GM</button>{{/if}}
+      {{#if isGM}}<button class="{{#if (pvEq activeTab 'gm')}}active{{/if}}" data-tab="gm">GM</button>
+      <button class="{{#if (pvEq activeTab 'users')}}active{{/if}}" data-tab="users">Users</button>{{/if}}
     </nav>
   </header>
+
+  {{#if isGM}}
+  {{#if (pvEq activeTab 'users')}}
+  <section class="pv-panel pv-users">
+    <h2>Users</h2>
+    <p class="pv-muted">Open a user's native Foundry settings to change their assigned character, player color, avatar, and other profile options. Offline users can be configured too.</p>
+    {{#each users}}
+    <article class="pv-user-row" data-user-id="{{id}}">
+      <div class="pv-user-details"><strong>{{name}}</strong> <span class="pv-pill {{#if active}}good{{/if}}">{{#if active}}Online{{else}}Offline{{/if}}</span><div class="pv-muted">{{role}}</div></div>
+      <div class="pv-user-character"><span class="pv-muted">Assigned character</span><strong>{{characterName}}</strong></div>
+      <button type="button" data-action="open-user-settings" data-user-id="{{id}}"><i class="fas fa-user-cog"></i> User Settings</button>
+    </article>
+    {{else}}<p class="pv-empty">No users found.</p>{{/each}}
+  </section>
+  {{/if}}
+  {{/if}}
 
   {{#if (pvEq activeTab 'dashboard')}}
   <section class="pv-panel pv-dashboard">

@@ -451,6 +451,35 @@ const server = http.createServer((req, res) => {
     "Storage browser checks passed: clicked Save in both editors, persisted UUID and settings, migrated stock, sheet-to-storage update, drag-to-sheet update, no inventory dropdown.",
   );
   console.log(JSON.stringify(storageResult));
+  // Exercise the GM Users tab and the selected native UserConfig document.
+  await storagePage.addStyleTag({path: path.join(root, "party-viewer/styles/party-viewer.css")});
+  await storagePage.evaluate(() => {
+    window.nativeUserSettings = [];
+    foundry.applications = {sheets: {UserConfig: class {
+      constructor({document}) {this.user = document;}
+      render(force) {nativeUserSettings.push({id: this.user.id, force}); return this;}
+    }}};
+    game.users.get("alice").character = game.actors.get("a");
+    game.users.get("bob").active = false;
+    storageApp.activeTab = "users";
+    storageApp.render(false);
+  });
+  await storagePage.waitForSelector('.pv-user-row[data-user-id="bob"]');
+  if (!(await storagePage.locator('.pv-user-row[data-user-id="bob"]').innerText()).includes("Offline"))
+    throw Error("Offline user omitted");
+  await storagePage.locator('[data-action="open-user-settings"][data-user-id="bob"]').click();
+  const native = await storagePage.evaluate(() => nativeUserSettings);
+  if (native.length !== 1 || native[0].id !== "bob" || !native[0].force)
+    throw Error("Wrong native user settings opened");
+  await storagePage.evaluate(() => {
+    game.user = game.users.get("alice");
+    storageApp.activeTab = "users";
+    storageApp.render(false);
+  });
+  await storagePage.waitForFunction(() => !document.querySelector('[data-tab="users"]'));
+  if (await storagePage.locator('[data-action="open-user-settings"]').count())
+    throw Error("Player sees user configuration controls");
+  console.log("Users browser checks passed: offline user visible, native settings receive selected User document, players have no Users tab or controls.");
   await browser.close();
   server.close();
 })().catch((e) => {

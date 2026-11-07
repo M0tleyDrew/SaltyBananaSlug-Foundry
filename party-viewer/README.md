@@ -1,5 +1,9 @@
 # SaltyBananaSlugs's Party Viewer
 
+## v0.4.3 — GM Users tab
+
+Open **Users** in Party Viewer as a GM to see every user's connection status, role, and assigned character. Click **User Settings** beside a user to open Foundry's native configuration window for character assignment, player color, avatar, and other profile options, including offline users. The native player list can stay hidden. The tab refreshes for user and connection changes; players cannot see or use these controls.
+
 ## v0.4.2 — Automatically hide Foundry's online-player list
 
 **Hide Foundry Online Player List** is a world setting under Configure Settings → Party Viewer. It defaults to enabled for all players and GMs. The standard list is closed each session and remains hidden if Foundry renders it again after a connection/status change. Turn the setting off to immediately restore it for everyone. No per-player macro is needed.

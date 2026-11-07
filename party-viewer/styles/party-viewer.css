@@ -323,3 +323,9 @@
 .pv-trade-window button:hover:not(:disabled){background:#526474}
 .pv-trade-window .pv-trade-session [data-complete]{background:#456b38}
 .pv-trade-sides{grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr))}
+
+.pv-user-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:14px;border:1px solid var(--pv-border);border-radius:8px;margin:10px 0}
+.pv-user-details{flex:1 1 150px;overflow-wrap:anywhere}
+.pv-user-character{display:flex;flex:2 1 220px;flex-direction:column;gap:6px;min-width:0}
+.pv-user-character select{width:100%;min-height:36px}
+.pv-user-row button{width:auto;flex:0 0 auto;min-height:36px}
