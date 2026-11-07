@@ -1,0 +1,17 @@
+<section class="sbs-hub-content">
+  <header><img src="modules/sbs-csi/assets/sbs-slug.svg" alt="SaltyBananaSlug"><div><h2>SBS Tools</h2><p data-count>{{count}} enabled SBS modules</p></div></header>
+  <div class="sbs-hub-toolbar"><input type="search" data-search placeholder="Find a module or tool…" aria-label="Find an SBS tool"><button type="button" data-refresh title="Refresh module list" aria-label="Refresh module list"><i class="fas fa-rotate"></i></button><button type="button" data-layout title="Copy sidebar layout details" aria-label="Sidebar layout details"><i class="fas fa-ruler-vertical"></i></button></div>
+  <div class="sbs-hub-list" tabindex="0" aria-label="SBS module launchers">
+  {{#each entries}}
+    <article data-module="{{id}}" data-search="{{search}}"><h3>{{label}}</h3>
+      {{#if ../showVersions}}<small>Version {{version}}</small>{{/if}}
+      {{#each tools}}<button type="button" data-tool="{{id}}">{{label}}</button>{{/each}}
+      {{#unless tools.length}}<p class="sbs-hub-muted">No launcher exposed by this module.</p>{{/unless}}
+      {{#if macros.length}}<details><summary>Module macros</summary>{{#each macros}}<button type="button" data-macro="{{id}}">{{name}}</button>{{/each}}</details>{{/if}}
+    </article>
+  {{/each}}
+    <p data-empty hidden>No matching SBS modules.</p>
+    {{#if shortcuts.length}}<article><h3>Macro shortcuts</h3>{{#each shortcuts}}<button type="button" data-shortcut data-search="{{search}}" data-macro="{{id}}">{{name}}</button>{{/each}}</article>{{/if}}
+  </div>
+  <footer><button type="button" data-order>Arrange tools</button><button type="button" data-pin>Macro shortcuts</button></footer>
+</section>

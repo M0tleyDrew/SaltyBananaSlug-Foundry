@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {rowsFromWorkbook,groupRows,compile} from '../scripts/core.js';
+const context={};vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('../vendor/xlsx.full.min.js',import.meta.url),'utf8'),context);
+test('shipped blank has the current complete schema and no accidental scene rows',()=>{const book=context.XLSX.read(fs.readFileSync(new URL('../workbooks/SBS_CSI_Blank.xlsx',import.meta.url)),{type:'buffer'});const rows=rowsFromWorkbook(book,context.XLSX);assert.equal(rows.Scenes.length,0);assert.equal(rows.Keys.length,0);assert.ok(book.Sheets['Field Guide']);});

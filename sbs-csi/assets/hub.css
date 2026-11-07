@@ -1,0 +1,17 @@
+.sbs-hub-icon{display:inline-block;width:26px;height:26px;background:url('sbs-slug.svg') center/contain no-repeat;vertical-align:middle}
+.sbs-hub-tab{min-height:0!important;min-width:0;flex:1 1 auto;align-self:stretch;overflow:hidden!important;box-sizing:border-box}
+.sbs-hub-tab .sbs-hub-content{box-sizing:border-box;height:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#14261c;color:#eef5e8;padding:12px;gap:12px;font-family:Arial,sans-serif}
+.sbs-hub-tab header{display:flex;flex:0 0 auto;gap:10px;align-items:center}.sbs-hub-tab header img{height:48px;width:48px;object-fit:contain;border:0}.sbs-hub-tab h2{font-size:19px;color:#f5db48;margin:0}.sbs-hub-tab header p{font-size:12px;margin:2px 0 0;color:#b8d2bb}.sbs-hub-tab .sbs-hub-toolbar{display:flex;flex:0 0 auto;gap:6px}.sbs-hub-tab input{width:100%;min-width:0;background:#0c1b12;color:#eef5e8;border:1px solid #688466;height:36px}.sbs-hub-tab button{white-space:normal;min-height:34px;background:#f5db48;color:#14261c;border:1px solid #c6ac27;padding:6px 10px;cursor:pointer}.sbs-hub-tab button:hover{background:#fff29a}.sbs-hub-tab .sbs-hub-list{flex:1 1 0;min-height:0;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable;pointer-events:auto;padding-right:4px}.sbs-hub-tab article{background:#20442c;border:1px solid #477855;border-radius:8px;padding:12px;margin:0 0 12px}.sbs-hub-tab [hidden]{display:none!important}.sbs-hub-tab article h3{color:#f5db48;font-size:15px;margin:0;overflow-wrap:anywhere}.sbs-hub-tab article small{display:block;color:#b8d2bb;margin-top:4px}.sbs-hub-tab article button{display:block;width:100%;margin-top:8px}.sbs-hub-tab details{margin-top:10px}.sbs-hub-tab summary{cursor:pointer}.sbs-hub-tab .sbs-hub-muted{color:#b8d2bb;font-size:12px}.sbs-hub-tab footer{flex:0 0 auto;display:flex;gap:6px}.sbs-hub-tab footer button{flex:1;font-size:12px}
+
+.sbs-hub-tab.sbs-hub-docked{height:var(--sbs-hub-available-height)!important;max-height:var(--sbs-hub-available-height)!important;flex:0 0 var(--sbs-hub-available-height)!important}
+.sbs-hub-height-host{height:var(--sbs-hub-available-height)!important;max-height:var(--sbs-hub-available-height)!important;min-height:0!important}
+
+/* Hide only the floating input and its controls. The notification log and
+   input in the Chat tab or a deliberately opened chat popout remain available. */
+body.sbs-hide-floating-chat #chat-notifications :is(#chat-form,#chat-message,#chat-controls,.chat-controls,.chat-input,.dice-tray,.dice-tray-container){display:none!important}
+
+/* Foundry reserves horizontal hotbar space for floating chat via --offset.
+   When that input is hidden, use the same centered position as the Chat tab.
+   Leave native positioning, transforms, responsive sizing and visible-chat
+   collision avoidance intact. This follows each client's effective chat policy. */
+body.sbs-hide-floating-chat #hotbar{--offset:0px!important}

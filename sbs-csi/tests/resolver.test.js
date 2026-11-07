@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {resolveImage} from '../scripts/image-resolver.js';
+test('resolves exact image in worksheet-relative ZIP directory',()=>{const file={name:'image.png'},all=new Map([['pack/images/image.png',file]]);assert.equal(resolveImage(all,'images/image.png','pack/').file,file);});
+test('resolves unique image in selected artwork folder and case variations',()=>{const file={name:'01_Open_Plains_Campsite.PNG'},all=new Map([['My Download/01_Open_Plains_Campsite.PNG',file]]);assert.equal(resolveImage(all,'images/01_Open_Plains_Campsite.png').file,file);});
+test('resolves an unambiguous browser download suffix',()=>{const file={name:'map (1).png'},all=new Map([['map (1).png',file]]);assert.equal(resolveImage(all,'map.png').file,file);assert.equal(resolveImage(all,'map.png').renamed,true);});
+test('does not silently choose ambiguous artwork or similar filenames',()=>{assert.throws(()=>resolveImage(new Map([['a/map.png',{}],['b/map.png',{}]]),'map.png'),/Ambiguous/);assert.throws(()=>resolveImage(new Map([['map-new.png',{}]]),'map.png'),/Missing/);});
