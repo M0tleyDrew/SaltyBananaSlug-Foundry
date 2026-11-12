@@ -1,0 +1,389 @@
+{
+  "selection": "Each face card independently chooses one of four custom variants or its standard face with equal 20% probability; artwork is chosen by the dealer when creating the deck and synchronized.",
+  "images": [
+    {
+      "card": "Js",
+      "variant": 1,
+      "subject": "Ren",
+      "file": "Js-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained ink palette of black, dark crimson, ochre gold, parchment, with very small accent colors where needed. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: Ren, a powerful minotaur captain with exactly one horn painted red and the other natural ivory, wearing a weathered captain's coat aboard the Wandering Wayfarer turtle tavern. Distinct variant 1 of 4: gripping the ship wheel with a storm on the horizon. Jack of Spades art, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Js",
+      "variant": 2,
+      "subject": "Ren",
+      "file": "Js-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained ink palette of black, dark crimson, ochre gold, parchment, with very small accent colors where needed. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: Ren, a powerful minotaur captain with exactly one horn painted red and the other natural ivory, wearing a weathered captain's coat aboard the Wandering Wayfarer turtle tavern. Distinct variant 2 of 4: raising a brass spyglass on deck. This is Jack of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Js",
+      "variant": 3,
+      "subject": "Ren",
+      "file": "Js-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained ink palette of black, dark crimson, ochre gold, parchment, with very small accent colors where needed. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: Ren, a powerful minotaur captain with exactly one horn painted red and the other natural ivory, wearing a weathered captain's coat aboard the Wandering Wayfarer turtle tavern. Distinct variant 3 of 4: leaning against a carved ship rail beside a lantern. This is Jack of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Js",
+      "variant": 4,
+      "subject": "Ren",
+      "file": "Js-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained ink palette of black, dark crimson, ochre gold, parchment, with very small accent colors where needed. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: Ren, a powerful minotaur captain with exactly one horn painted red and the other natural ivory, wearing a weathered captain's coat aboard the Wandering Wayfarer turtle tavern. Distinct variant 4 of 4: holding a travel chart and a tankard. This is Jack of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Jh",
+      "variant": 1,
+      "subject": "Iron Maiden — priest of the Slurry",
+      "file": "Jh-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: Iron Maiden, exactly the character from the reference image: a hulking masculine bronze/blackened-iron warforged priest whose torso is an IRON MAIDEN TORTURE DEVICE, huge open hinged coffin-chest showing inward spikes, medieval slit-faced bucket helm, glowing green eyes, broad spiked pauldrons, green devotional tabard with pickle motifs, heavy staff topped by a glass jar of pickles, onions and brine. NOT a slender female automaton. Brass, deep green, pewter and brine-green accent colors. Variant scene: holding the pickle-jar staff upright as a kindly intimidating priest."
+    },
+    {
+      "card": "Jh",
+      "variant": 2,
+      "subject": "Iron Maiden — priest of the Slurry",
+      "file": "Jh-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: Iron Maiden, exactly the character from the reference image: a hulking masculine bronze/blackened-iron warforged priest whose torso is an IRON MAIDEN TORTURE DEVICE, huge open hinged coffin-chest showing inward spikes, medieval slit-faced bucket helm, glowing green eyes, broad spiked pauldrons, green devotional tabard with pickle motifs, heavy staff topped by a glass jar of pickles, onions and brine. NOT a slender female automaton. Brass, deep green, pewter and brine-green accent colors. Variant scene: opening the hinged spiked chest plates in front of an underground Slurry shrine."
+    },
+    {
+      "card": "Jh",
+      "variant": 3,
+      "subject": "Iron Maiden — priest of the Slurry",
+      "file": "Jh-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: Iron Maiden, exactly the character from the reference image: a hulking masculine bronze/blackened-iron warforged priest whose torso is an IRON MAIDEN TORTURE DEVICE, huge open hinged coffin-chest showing inward spikes, medieval slit-faced bucket helm, glowing green eyes, broad spiked pauldrons, green devotional tabard with pickle motifs, heavy staff topped by a glass jar of pickles, onions and brine. NOT a slender female automaton. Brass, deep green, pewter and brine-green accent colors. Variant scene: stirring a huge sacred gray-green slurry cauldron with the staff."
+    },
+    {
+      "card": "Jh",
+      "variant": 4,
+      "subject": "Iron Maiden — priest of the Slurry",
+      "file": "Jh-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: Iron Maiden, exactly the character from the reference image: a hulking masculine bronze/blackened-iron warforged priest whose torso is an IRON MAIDEN TORTURE DEVICE, huge open hinged coffin-chest showing inward spikes, medieval slit-faced bucket helm, glowing green eyes, broad spiked pauldrons, green devotional tabard with pickle motifs, heavy staff topped by a glass jar of pickles, onions and brine. NOT a slender female automaton. Brass, deep green, pewter and brine-green accent colors. Variant scene: offering a blessing beneath a stone arch with candles and pickle reliquaries."
+    },
+    {
+      "card": "Jd",
+      "variant": 1,
+      "subject": "Marl Road Zombie",
+      "file": "Jd-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a recognizable undead encounter from Marl's blighted roads: a shambling desiccated zombie traveler, rotten patched clothes, gray dead skin, milky eyes, clearly a zombie rather than a regal invented noble. Muted ochre, gray, black and sickly green. Variant scene: reaching out with a broken walking stick on the barren road."
+    },
+    {
+      "card": "Jd",
+      "variant": 2,
+      "subject": "Marl Road Zombie",
+      "file": "Jd-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a recognizable undead encounter from Marl's blighted roads: a shambling desiccated zombie traveler, rotten patched clothes, gray dead skin, milky eyes, clearly a zombie rather than a regal invented noble. Muted ochre, gray, black and sickly green. Variant scene: dragging a torn pack through dead farmland."
+    },
+    {
+      "card": "Jd",
+      "variant": 3,
+      "subject": "Marl Road Zombie",
+      "file": "Jd-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a recognizable undead encounter from Marl's blighted roads: a shambling desiccated zombie traveler, rotten patched clothes, gray dead skin, milky eyes, clearly a zombie rather than a regal invented noble. Muted ochre, gray, black and sickly green. Variant scene: wearing ruined old guard armor beside an abandoned wagon."
+    },
+    {
+      "card": "Jd",
+      "variant": 4,
+      "subject": "Marl Road Zombie",
+      "file": "Jd-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a recognizable undead encounter from Marl's blighted roads: a shambling desiccated zombie traveler, rotten patched clothes, gray dead skin, milky eyes, clearly a zombie rather than a regal invented noble. Muted ochre, gray, black and sickly green. Variant scene: crawling from a cursed roadside ditch with tattered pilgrim cloth."
+    },
+    {
+      "card": "Jc",
+      "variant": 1,
+      "subject": "Paladin of the Filth",
+      "file": "Jc-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. ONE finished 2:3 portrait fantasy playing-card illustration, aged warm ivory parchment, rounded thin antique double-line black border, finely engraved black linework with painted dark fantasy texture. Clear parchment patches at TOP-LEFT and BOTTOM-RIGHT for rank and suit labels added by the module. NO words, lettering, numbers, ranks or suit signs anywhere. Black, gunmetal, dark olive, smoke-gray and sickly green palette; NOT predominantly red. A recognizable warrior of the FILTH faction in the Welch/Marl world: a death-paladin in battered soot-black iron armor, closed skull-like helm, corroded religious ironwork, ruined Oka-Ola harbor and pollution. NOT a plasmoid, NOT a monk, NOT a generic invented royal court. No mockup. Scene: The Filth paladin holds a corroded longsword upright with a heavy shield beside polluted fishing docks."
+    },
+    {
+      "card": "Jc",
+      "variant": 2,
+      "subject": "Paladin of the Filth",
+      "file": "Jc-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. ONE finished 2:3 portrait fantasy playing-card illustration, aged warm ivory parchment, rounded thin antique double-line black border, finely engraved black linework with painted dark fantasy texture. Clear parchment patches at TOP-LEFT and BOTTOM-RIGHT for rank and suit labels added by the module. NO words, lettering, numbers, ranks or suit signs anywhere. Black, gunmetal, dark olive, smoke-gray and sickly green palette; NOT predominantly red. A recognizable warrior of the FILTH faction in the Welch/Marl world: a death-paladin in battered soot-black iron armor, closed skull-like helm, corroded religious ironwork, ruined Oka-Ola harbor and pollution. NOT a plasmoid, NOT a monk, NOT a generic invented royal court. No mockup. Scene: A Filth death-paladin with torn smoky cloak stands guard below the smog-covered harbor walls."
+    },
+    {
+      "card": "Jc",
+      "variant": 3,
+      "subject": "Paladin of the Filth",
+      "file": "Jc-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. ONE finished 2:3 portrait fantasy playing-card illustration, aged warm ivory parchment, rounded thin antique double-line black border, finely engraved black linework with painted dark fantasy texture. Clear parchment patches at TOP-LEFT and BOTTOM-RIGHT for rank and suit labels added by the module. NO words, lettering, numbers, ranks or suit signs anywhere. Black, gunmetal, dark olive, smoke-gray and sickly green palette; NOT predominantly red. A recognizable warrior of the FILTH faction in the Welch/Marl world: a death-paladin in battered soot-black iron armor, closed skull-like helm, corroded religious ironwork, ruined Oka-Ola harbor and pollution. NOT a plasmoid, NOT a monk, NOT a generic invented royal court. No mockup. Scene: An armored Filth paladin lifts a smoking censer above an anchor-shaped shield."
+    },
+    {
+      "card": "Jc",
+      "variant": 4,
+      "subject": "Paladin of the Filth",
+      "file": "Jc-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. ONE finished 2:3 portrait fantasy playing-card illustration, aged warm ivory parchment, rounded thin antique double-line black border, finely engraved black linework with painted dark fantasy texture. Clear parchment patches at TOP-LEFT and BOTTOM-RIGHT for rank and suit labels added by the module. NO words, lettering, numbers, ranks or suit signs anywhere. Black, gunmetal, dark olive, smoke-gray and sickly green palette; NOT predominantly red. A recognizable warrior of the FILTH faction in the Welch/Marl world: a death-paladin in battered soot-black iron armor, closed skull-like helm, corroded religious ironwork, ruined Oka-Ola harbor and pollution. NOT a plasmoid, NOT a monk, NOT a generic invented royal court. No mockup. Scene: A Filth paladin points a tarnished spear through blowing ash aboard a ruined fishing boat."
+    },
+    {
+      "card": "Qs",
+      "variant": 1,
+      "subject": "Blighted Vampire",
+      "file": "Qs-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a blighted vampire from the Welch/Marl campaign, gaunt pallid undead with obvious fangs, black fungal veins, ragged noble clothing and blight growing from cracked skin. A creature encounter, no invented abstract deity. Black, cold blue, gray and sickly green with only small blood-red accents. Variant scene: baring its fangs beneath a hood in the leafless forest."
+    },
+    {
+      "card": "Qs",
+      "variant": 2,
+      "subject": "Blighted Vampire",
+      "file": "Qs-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a blighted vampire from the Welch/Marl campaign, gaunt pallid undead with obvious fangs, black fungal veins, ragged noble clothing and blight growing from cracked skin. A creature encounter, no invented abstract deity. Black, cold blue, gray and sickly green with only small blood-red accents. Variant scene: gripping a broken goblet while black blight tendrils coil from its arm."
+    },
+    {
+      "card": "Qs",
+      "variant": 3,
+      "subject": "Blighted Vampire",
+      "file": "Qs-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a blighted vampire from the Welch/Marl campaign, gaunt pallid undead with obvious fangs, black fungal veins, ragged noble clothing and blight growing from cracked skin. A creature encounter, no invented abstract deity. Black, cold blue, gray and sickly green with only small blood-red accents. Variant scene: lunging through dead reeds with a predatory undead stare."
+    },
+    {
+      "card": "Qs",
+      "variant": 4,
+      "subject": "Blighted Vampire",
+      "file": "Qs-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: a blighted vampire from the Welch/Marl campaign, gaunt pallid undead with obvious fangs, black fungal veins, ragged noble clothing and blight growing from cracked skin. A creature encounter, no invented abstract deity. Black, cold blue, gray and sickly green with only small blood-red accents. Variant scene: standing among diseased roots with a tattered cloak and hungry eyes."
+    },
+    {
+      "card": "Qh",
+      "variant": 1,
+      "subject": "Golgothan",
+      "file": "Qh-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: the campaign's GOLGOTHAN fecal demon inspired by Dogma, a hulking disgusting humanoid monster made of wet dark-brown sewage, sludge, undigested refuse and dripping filth, glowing malicious eyes and an open ugly mouth. Clearly a sewage demon, not a treasure-chest mimic or metal machine. Brown, black, muddy olive green, bone accents. Variant scene: rising from a ruined privy in a spray of filthy sludge."
+    },
+    {
+      "card": "Qh",
+      "variant": 2,
+      "subject": "Golgothan",
+      "file": "Qh-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: the campaign's GOLGOTHAN fecal demon inspired by Dogma, a hulking disgusting humanoid monster made of wet dark-brown sewage, sludge, undigested refuse and dripping filth, glowing malicious eyes and an open ugly mouth. Clearly a sewage demon, not a treasure-chest mimic or metal machine. Brown, black, muddy olive green, bone accents. Variant scene: looming above a sewer channel with dripping massive arms."
+    },
+    {
+      "card": "Qh",
+      "variant": 3,
+      "subject": "Golgothan",
+      "file": "Qh-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: the campaign's GOLGOTHAN fecal demon inspired by Dogma, a hulking disgusting humanoid monster made of wet dark-brown sewage, sludge, undigested refuse and dripping filth, glowing malicious eyes and an open ugly mouth. Clearly a sewage demon, not a treasure-chest mimic or metal machine. Brown, black, muddy olive green, bone accents. Variant scene: heaving its sludge-covered bulk across broken cobblestones."
+    },
+    {
+      "card": "Qh",
+      "variant": 4,
+      "subject": "Golgothan",
+      "file": "Qh-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: the campaign's GOLGOTHAN fecal demon inspired by Dogma, a hulking disgusting humanoid monster made of wet dark-brown sewage, sludge, undigested refuse and dripping filth, glowing malicious eyes and an open ugly mouth. Clearly a sewage demon, not a treasure-chest mimic or metal machine. Brown, black, muddy olive green, bone accents. Variant scene: grinning from a churning pool of sewage beneath a ruined arch."
+    },
+    {
+      "card": "Qd",
+      "variant": 1,
+      "subject": "Wandering Wayfarer",
+      "file": "Qd-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Wandering Wayfarer, a colossal friendly turtle carrying a rambling timber tavern on its shell, warm windows and dangling lanterns. Distinct variant 1 of 4: walking through a misty landscape with tavern lights glowing. This is Queen of Diamonds artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Qd",
+      "variant": 2,
+      "subject": "Wandering Wayfarer",
+      "file": "Qd-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Wandering Wayfarer, a colossal friendly turtle carrying a rambling timber tavern on its shell, warm windows and dangling lanterns. Distinct variant 2 of 4: seen from a heroic low angle with the tavern balcony visible. This is Queen of Diamonds artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Qd",
+      "variant": 3,
+      "subject": "Wandering Wayfarer",
+      "file": "Qd-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Wandering Wayfarer, a colossal friendly turtle carrying a rambling timber tavern on its shell, warm windows and dangling lanterns. Distinct variant 3 of 4: resting beside a road beneath stars and lanterns. This is Queen of Diamonds artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Qd",
+      "variant": 4,
+      "subject": "Wandering Wayfarer",
+      "file": "Qd-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Wandering Wayfarer, a colossal friendly turtle carrying a rambling timber tavern on its shell, warm windows and dangling lanterns. Distinct variant 4 of 4: carrying the tavern toward a distant port with colorful pennants. This is Queen of Diamonds artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Qc",
+      "variant": 1,
+      "subject": "Blighted vampire — road encounter",
+      "file": "Qc-1.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. A concrete creature from the Welch/Marl campaign, NOT an abstract deity, no fire elemental or plasmoid. A blighted vampire with fangs and black fungal veins peers through the broken window of a dead farmhouse, moonlight blue and green. Detailed black ink engraving with painted dark fantasy texture. Restrained black, blue, gray and green palette on parchment."
+    },
+    {
+      "card": "Qc",
+      "variant": 2,
+      "subject": "Blighted vampire — road encounter",
+      "file": "Qc-2.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. A concrete creature from the Welch/Marl campaign, NOT an abstract deity, no fire elemental or plasmoid. A blight-rage vampire in ragged noble dress grips a bloodstained broken sword beneath leafless branches, black and gray with small red accents. Detailed black ink engraving with painted dark fantasy texture. Restrained black, blue, gray and green palette on parchment."
+    },
+    {
+      "card": "Qc",
+      "variant": 3,
+      "subject": "Blighted vampire — road encounter",
+      "file": "Qc-3.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. A concrete creature from the Welch/Marl campaign, NOT an abstract deity, no fire elemental or plasmoid. A fanged blighted vampire covered in rotten vines stalks an abandoned campsite in the barren plains, deep olive green and slate. Detailed black ink engraving with painted dark fantasy texture. Restrained black, blue, gray and green palette on parchment."
+    },
+    {
+      "card": "Qc",
+      "variant": 4,
+      "subject": "Blighted vampire — road encounter",
+      "file": "Qc-4.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. A concrete creature from the Welch/Marl campaign, NOT an abstract deity, no fire elemental or plasmoid. A hunched blighted vampire with sickly pale skin and glowing predatory eyes crouches on a ruined stone wall above the road, silver moonlight and dark green. Detailed black ink engraving with painted dark fantasy texture. Restrained black, blue, gray and green palette on parchment."
+    },
+    {
+      "card": "Ks",
+      "variant": 1,
+      "subject": "Captain of the Filth",
+      "file": "Ks-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Captain of the Filth ruling Oka-Ola, an ominous armored death-paladin captain with a closed blackened helm, a tarnished crownlike crest and a heavy soot-stained cloak. Distinct variant 1 of 4: standing above a smog-covered southern fishing port. This is King of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Ks",
+      "variant": 2,
+      "subject": "Captain of the Filth",
+      "file": "Ks-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Captain of the Filth ruling Oka-Ola, an ominous armored death-paladin captain with a closed blackened helm, a tarnished crownlike crest and a heavy soot-stained cloak. Distinct variant 2 of 4: gripping a blackened sword on a polluted dock. This is King of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Ks",
+      "variant": 3,
+      "subject": "Captain of the Filth",
+      "file": "Ks-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Captain of the Filth ruling Oka-Ola, an ominous armored death-paladin captain with a closed blackened helm, a tarnished crownlike crest and a heavy soot-stained cloak. Distinct variant 3 of 4: seated on a throne made of iron anchors and industrial debris. This is King of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Ks",
+      "variant": 4,
+      "subject": "Captain of the Filth",
+      "file": "Ks-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Asset type: one full portrait fantasy playing-card face, 2:3 aspect ratio. Aged warm ivory parchment, thin rounded double-line antique black card border inset consistently, richly detailed black ink engraving mixed with expressive screenprint splatters. Restrained natural palette appropriate to the subject, with black engraved linework. For black-suit art, prioritize slate, forest green, turquoise, ochre and parchment instead of crimson. Match a cohesive fantasy tavern playing-card deck. This is a single full-bleed card, not a photograph or mockup, no table, no hands holding it. Upright central illustrative composition entirely inside the border; KEEP THE TOP-LEFT and BOTTOM-RIGHT CORNER AREAS blank parchment for programmatically added rank/suit indices, but draw no letters, numbers, ranks, suit icons, captions, title, or watermark anywhere. Render a full finished central composition with strong silhouette legible as a small card. Subject: the Captain of the Filth ruling Oka-Ola, an ominous armored death-paladin captain with a closed blackened helm, a tarnished crownlike crest and a heavy soot-stained cloak. Distinct variant 4 of 4: holding a smoking censer with ruined fishing boats behind. This is King of Spades artwork, but do not draw card lettering or suit marks."
+    },
+    {
+      "card": "Kh",
+      "variant": 1,
+      "subject": "Evol — god of second chances",
+      "file": "Kh-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: EVOL, exactly the high-elf lich god in the reference: an intact pale-violet elven face, pointed ears, WHITE HAIR, curled WHITE MOUSTACHE and short pointed WHITE GOATEE, silver dark-gem circlet, bright pale-blue eyes, long BLACK ROBES with angular silver piping and a collar of small skulls, skull belt, hooked black staff. Neutral/kindly thoughtful, NOT a bare skeleton or generic villain. Slate blue, violet, silver and black palette, NO crimson robes. Variant scene: extending an open hand in welcome as in the established portrait."
+    },
+    {
+      "card": "Kh",
+      "variant": 2,
+      "subject": "Evol — god of second chances",
+      "file": "Kh-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: EVOL, exactly the high-elf lich god in the reference: an intact pale-violet elven face, pointed ears, WHITE HAIR, curled WHITE MOUSTACHE and short pointed WHITE GOATEE, silver dark-gem circlet, bright pale-blue eyes, long BLACK ROBES with angular silver piping and a collar of small skulls, skull belt, hooked black staff. Neutral/kindly thoughtful, NOT a bare skeleton or generic villain. Slate blue, violet, silver and black palette, NO crimson robes. Variant scene: holding the hooked staff beside a basket of bread representing honest work after death."
+    },
+    {
+      "card": "Kh",
+      "variant": 3,
+      "subject": "Evol — god of second chances",
+      "file": "Kh-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: EVOL, exactly the high-elf lich god in the reference: an intact pale-violet elven face, pointed ears, WHITE HAIR, curled WHITE MOUSTACHE and short pointed WHITE GOATEE, silver dark-gem circlet, bright pale-blue eyes, long BLACK ROBES with angular silver piping and a collar of small skulls, skull belt, hooked black staff. Neutral/kindly thoughtful, NOT a bare skeleton or generic villain. Slate blue, violet, silver and black palette, NO crimson robes. Variant scene: offering a cold blue glow to a sentient undead artisan seeking another chance."
+    },
+    {
+      "card": "Kh",
+      "variant": 4,
+      "subject": "Evol — god of second chances",
+      "file": "Kh-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: EVOL, exactly the high-elf lich god in the reference: an intact pale-violet elven face, pointed ears, WHITE HAIR, curled WHITE MOUSTACHE and short pointed WHITE GOATEE, silver dark-gem circlet, bright pale-blue eyes, long BLACK ROBES with angular silver piping and a collar of small skulls, skull belt, hooked black staff. Neutral/kindly thoughtful, NOT a bare skeleton or generic villain. Slate blue, violet, silver and black palette, NO crimson robes. Variant scene: seated thoughtfully beneath a blue-lit arch with a repaired hourglass."
+    },
+    {
+      "card": "Kd",
+      "variant": 1,
+      "subject": "Mac — god of light and farming",
+      "file": "Kd-1.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: MAC, the established reluctant god of light, dawn and farming in Drew's campaign, visibly modeled on Mac played by ROB MCELHENNEY from IT'S ALWAYS SUNNY IN PHILADELPHIA: recognizable sturdy athletic build, short dark hair, dark eyebrows, short dark beard and Mac's expressive face. Wearing ornate RED AND GOLD MONK-CLERIC ROBES, sun motifs, a slightly awkward self-important expression. This is the named campaign deity Mac, not a woman, not an anonymous harvest avatar. Warm gold, red and bright sunrise palette. Variant scene: standing in a field with a golden sun halo and a farming staff."
+    },
+    {
+      "card": "Kd",
+      "variant": 2,
+      "subject": "Mac — god of light and farming",
+      "file": "Kd-2.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: MAC, the established reluctant god of light, dawn and farming in Drew's campaign, visibly modeled on Mac played by ROB MCELHENNEY from IT'S ALWAYS SUNNY IN PHILADELPHIA: recognizable sturdy athletic build, short dark hair, dark eyebrows, short dark beard and Mac's expressive face. Wearing ornate RED AND GOLD MONK-CLERIC ROBES, sun motifs, a slightly awkward self-important expression. This is the named campaign deity Mac, not a woman, not an anonymous harvest avatar. Warm gold, red and bright sunrise palette. Variant scene: performing an exaggerated martial-arts stance in gold and red cleric robes, sunburst behind."
+    },
+    {
+      "card": "Kd",
+      "variant": 3,
+      "subject": "Mac — god of light and farming",
+      "file": "Kd-3.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: MAC, the established reluctant god of light, dawn and farming in Drew's campaign, visibly modeled on Mac played by ROB MCELHENNEY from IT'S ALWAYS SUNNY IN PHILADELPHIA: recognizable sturdy athletic build, short dark hair, dark eyebrows, short dark beard and Mac's expressive face. Wearing ornate RED AND GOLD MONK-CLERIC ROBES, sun motifs, a slightly awkward self-important expression. This is the named campaign deity Mac, not a woman, not an anonymous harvest avatar. Warm gold, red and bright sunrise palette. Variant scene: holding a sheaf of wheat with an earnest awkward divine expression."
+    },
+    {
+      "card": "Kd",
+      "variant": 4,
+      "subject": "Mac — god of light and farming",
+      "file": "Kd-4.webp",
+      "probability": 0.2,
+      "prompt": "Use case: illustration-story. Create ONE finished portrait fantasy playing-card illustration, exactly 2:3 portrait framing, aged ivory parchment with a thin rounded double-line antique card border. Detailed black engraved ink with watercolor and screenprint texture, strong readable silhouette. Leave clear parchment zones at top-left and bottom-right for the module to add large rank and suit labels. NO lettering, words, numbers or suit symbols inside the image. This is one flat card artwork, no mockup and no table. Preserve character identity faithfully when a reference is supplied. Palette follows the subject: not an all-red deck. Subject: MAC, the established reluctant god of light, dawn and farming in Drew's campaign, visibly modeled on Mac played by ROB MCELHENNEY from IT'S ALWAYS SUNNY IN PHILADELPHIA: recognizable sturdy athletic build, short dark hair, dark eyebrows, short dark beard and Mac's expressive face. Wearing ornate RED AND GOLD MONK-CLERIC ROBES, sun motifs, a slightly awkward self-important expression. This is the named campaign deity Mac, not a woman, not an anonymous harvest avatar. Warm gold, red and bright sunrise palette. Variant scene: raising one hand to bring dawn light over a struggling field, robe sleeves billowing."
+    },
+    {
+      "card": "Kc",
+      "variant": 1,
+      "subject": "Gary — rainbow unicorn god of carnage",
+      "file": "Kc-1.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. Use the supplied comic image ONLY AS A CHARACTER REFERENCE. Depict ONLY GARY, the central tall anthro unicorn, NOT the human, kobold, robot or comic layout. Gary has an upright TWO-LEGGED HUMANOID BODY, humanlike HANDS WITH FINGERS, a WHITE UNICORN HORSE HEAD with a long golden spiral horn, a huge manic toothy grin, a flowing RAINBOW MANE and colorful ornate open psychedelic ROBES with jewel chains. He is a murder-loving, manipulative, gleefully homicidal deity. His body must be anthropomorphic like the reference, NEVER a four-legged horse. LISA FRANK-ESQUE ultra-saturated neon rainbow pink/cyan/purple/yellow, sparkles, confetti, whimsical candy-color fantasy contrasting with a menacing delighted expression and a little blood spatter. Preserve Gary's white horse face and clothing/physique from the reference. Scene: Gary brandishes a blood-spattered ornate spiked mace with humanoid hands and laughs delightedly amid rainbow confetti."
+    },
+    {
+      "card": "Kc",
+      "variant": 2,
+      "subject": "Gary — rainbow unicorn god of carnage",
+      "file": "Kc-2.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. Use the supplied comic image ONLY AS A CHARACTER REFERENCE. Depict ONLY GARY, the central tall anthro unicorn, NOT the human, kobold, robot or comic layout. Gary has an upright TWO-LEGGED HUMANOID BODY, humanlike HANDS WITH FINGERS, a WHITE UNICORN HORSE HEAD with a long golden spiral horn, a huge manic toothy grin, a flowing RAINBOW MANE and colorful ornate open psychedelic ROBES with jewel chains. He is a murder-loving, manipulative, gleefully homicidal deity. His body must be anthropomorphic like the reference, NEVER a four-legged horse. LISA FRANK-ESQUE ultra-saturated neon rainbow pink/cyan/purple/yellow, sparkles, confetti, whimsical candy-color fantasy contrasting with a menacing delighted expression and a little blood spatter. Preserve Gary's white horse face and clothing/physique from the reference. Scene: Gary stands upright beside a pool of red blood, one humanlike hand extended welcomingly and the other holding a rainbow goblet, grinning murderously."
+    },
+    {
+      "card": "Kc",
+      "variant": 3,
+      "subject": "Gary — rainbow unicorn god of carnage",
+      "file": "Kc-3.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. Use the supplied comic image ONLY AS A CHARACTER REFERENCE. Depict ONLY GARY, the central tall anthro unicorn, NOT the human, kobold, robot or comic layout. Gary has an upright TWO-LEGGED HUMANOID BODY, humanlike HANDS WITH FINGERS, a WHITE UNICORN HORSE HEAD with a long golden spiral horn, a huge manic toothy grin, a flowing RAINBOW MANE and colorful ornate open psychedelic ROBES with jewel chains. He is a murder-loving, manipulative, gleefully homicidal deity. His body must be anthropomorphic like the reference, NEVER a four-legged horse. LISA FRANK-ESQUE ultra-saturated neon rainbow pink/cyan/purple/yellow, sparkles, confetti, whimsical candy-color fantasy contrasting with a menacing delighted expression and a little blood spatter. Preserve Gary's white horse face and clothing/physique from the reference. Scene: Gary cradles a rainbow crystal orb in both hands while multicolor magic and confetti swirl behind his grinning face."
+    },
+    {
+      "card": "Kc",
+      "variant": 4,
+      "subject": "Gary — rainbow unicorn god of carnage",
+      "file": "Kc-4.webp",
+      "probability": 0.2,
+      "prompt": "Create ONE finished 2:3 portrait playing-card illustration, flat art not mockup. Ivory parchment antique rounded double-line border. Leave clean light-parchment TOP-LEFT and BOTTOM-RIGHT corner zones for programmatically added rank and suit. Draw NO lettering, titles, captions, ranks, numbers or suit symbols. Strong central silhouette readable on a small card. Use the supplied comic image ONLY AS A CHARACTER REFERENCE. Depict ONLY GARY, the central tall anthro unicorn, NOT the human, kobold, robot or comic layout. Gary has an upright TWO-LEGGED HUMANOID BODY, humanlike HANDS WITH FINGERS, a WHITE UNICORN HORSE HEAD with a long golden spiral horn, a huge manic toothy grin, a flowing RAINBOW MANE and colorful ornate open psychedelic ROBES with jewel chains. He is a murder-loving, manipulative, gleefully homicidal deity. His body must be anthropomorphic like the reference, NEVER a four-legged horse. LISA FRANK-ESQUE ultra-saturated neon rainbow pink/cyan/purple/yellow, sparkles, confetti, whimsical candy-color fantasy contrasting with a menacing delighted expression and a little blood spatter. Preserve Gary's white horse face and clothing/physique from the reference. Scene: Gary lounges like a dangerous king on a neon rainbow throne with a jeweled crown and a stained weapon at his side, bright psychedelic robe and rainbow mane."
+    }
+  ]
+}

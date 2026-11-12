@@ -1,8 +1,8 @@
 {
   "id": "saltybananaslug-card-games",
   "title": "SaltyBananaSlug's Card Games",
-  "description": "Multiplayer Texas Hold'em, Five-Card Draw, and Blackjack with invitations, private hands, NPC seats controlled by the GM, betting, side pots, splits, doubles, insurance, and surrender.",
-  "version": "1.0.2",
+  "description": "Multiplayer Hold\u2019em, Five-Card Draw, Blackjack, Euchre, Baccarat, Casino War, Jacks or Better, and slots. Play for fun chips or actual D&D character currency, with private hands and custom card artwork.",
+  "version": "1.1.3",
   "authors": [
     {
       "name": "SaltyBananaSlug"

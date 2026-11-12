@@ -287,3 +287,29 @@
   .sbs-cg-user-row { grid-template-columns: 22px 14px 1fr; }
   .sbs-cg-user-row small { grid-column: 3; }
 }
+.sbs-cg-game-picker{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.sbs-cg-modal-body{max-height:70vh;overflow:auto}
+.sbs-card.custom-art{padding:0;overflow:hidden;background:transparent;aspect-ratio:2/3;height:auto;width:94px;border:0}
+.sbs-card.custom-art.small{width:44px;height:auto}
+.sbs-card-art{display:block;width:100%;height:100%;object-fit:contain;border:0}
+.sbs-card.custom-art>.corner,.sbs-card.custom-art>b{display:none}
+.sbs-cg-slot-reels{display:flex;gap:12px;justify-content:center;margin:18px 0}
+.sbs-cg-slot-reels span{display:grid;place-items:center;font-size:44px;width:90px;height:100px;border:3px solid #d3a22d;background:#fff3c4;border-radius:8px;color:#151515}
+.sbs-cg-slot-reels img{width:64px;height:90px;object-fit:contain;border:0}
+.sbs-cg-paytable{border-collapse:collapse;width:100%;margin:12px 0}
+.sbs-cg-paytable td,.sbs-cg-paytable th{padding:6px;border-bottom:1px solid #8c855d;text-align:left}
+.sbs-own-hand .sbs-card[data-hold].selected{outline:3px solid #f4bf32;transform:translateY(-7px)}
+.sbs-cg-team{padding:8px;background:#0004;border-radius:5px}
+.sbs-cg-extra-felt{min-height:0;padding-bottom:16px}
+.sbs-own-area .sbs-action-bar button,.sbs-cg-table-footer button{min-height:32px;padding:5px 12px;border-radius:5px;cursor:pointer}
+.sbs-own-area label{display:flex;align-items:center;gap:8px}
+.sbs-own-area label input[type=checkbox]{width:auto}
+.sbs-cg-slot-reels img{width:78px;height:90px}
+
+/* Face art never hides card identity. Fixed high-contrast indices remain readable over any artwork. */
+.sbs-card.face-art>.corner{display:grid;z-index:2;background:#fff4df;border:1px solid #705c44;border-radius:3px;padding:3px;line-height:1;font-size:1rem;min-width:18px;text-align:center;text-shadow:none}
+.sbs-card.face-art.red>.corner{color:#aa101a}
+.sbs-card.face-art.black>.corner{color:#111}
+.sbs-card.face-art>.corner i{font-size:.95rem}
+.sbs-card.face-art.small>.corner{font-size:.68rem;min-width:11px;padding:1px}
+.sbs-card.face-art.small>.corner i{font-size:.62rem}

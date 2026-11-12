@@ -95,6 +95,7 @@ assert(bj.seats.every(s => Number.isInteger(s.chips)));
 
 const splitBj = createGame("blackjack", "split", "u1", seats.slice(0, 1), { startingChips: 100, minBet: 10, maxBet: 100 });
 blackjackBet(splitBj, "a", 10);
+splitBj.seats[0].chips = 90; // Deterministic fixture: the initial random deal may already have paid a natural.
 splitBj.phase = "playing";
 splitBj.round = "players";
 splitBj.currentSeatIndex = 0;

@@ -1,3 +1,5 @@
+import {copper, walletChanges, preflightWallet, applyWallet, refundUnfinished, WALLET_FLAG} from "./wallet.js";
+import {EXTRA_TYPES, SLOT_SYMBOLS, SLOT_RETURNS, SLOT_REEL} from "./extra-games.js";
 import {
   GAME_NAMES,
   SUITS,
@@ -10,14 +12,14 @@ import {
   blackjackAction,
   nextHand,
   addChips,
-  cardText,
-  blackjackTotal
+  cardText, cardRankLabel, FACE_SUBJECTS,
+  blackjackTotal, extraAction
 } from "./engine.js";
 
 const MODULE_ID = "saltybananaslug-card-games";
 const LOG_PREFIX = "SaltyBananaSlug's Card Games";
-const MAX_SEATS = { holdem: 10, draw: 8, blackjack: 7 };
-const MIN_SEATS = { holdem: 2, draw: 2, blackjack: 1 };
+const MAX_SEATS = { holdem: 10, draw: 8, blackjack: 7, euchre:4, baccarat:7, war:7, video:7, slots:7 };
+const MIN_SEATS = { holdem: 2, draw: 2, blackjack: 1, euchre:4, baccarat:1, war:1, video:1, slots:1 };
 
 let socket = null;
 let authorityLoaded = false;
@@ -47,7 +49,7 @@ function authorityStorageKey() {
   return `${MODULE_ID}.authority.${game.world?.id ?? "world"}`;
 }
 
-function saveAuthority() {
+function saveAuthority(strict = false) {
   if (!game.user?.isGM || !authorityLoaded) return;
   try {
     const data = {
@@ -62,6 +64,7 @@ function saveAuthority() {
     };
     localStorage.setItem(authorityStorageKey(), JSON.stringify(data));
   } catch (error) {
+    if (strict) throw new Error("Cannot save the currency transaction journal. No further wagers can be made until browser storage is available.");
     console.warn(`${LOG_PREFIX} | Could not save active tables`, error);
   }
 }
@@ -167,23 +170,6 @@ function showPrompt({ title, content, buttons, width = 520, closeValue = null, c
   });
 }
 
-async function chooseGame() {
-  return showPrompt({
-    title: "Choose a Card Game",
-    width: 650,
-    content: `
-      <p class="sbs-cg-intro">What flavor of financially irresponsible tavern behavior are we committing to?</p>
-      <div class="sbs-cg-game-picker">
-        <button type="button" data-game-choice="holdem"><strong>Texas Hold'em</strong><span>Two private cards, five community cards, blinds, four betting rounds.</span></button>
-        <button type="button" data-game-choice="draw"><strong>Five-Card Draw</strong><span>Five private cards, one draw, two betting rounds, classic saloon nonsense.</span></button>
-        <button type="button" data-game-choice="blackjack"><strong>Blackjack</strong><span>Play against the dealer with bets, splits, doubles, insurance, and surrender.</span></button>
-      </div>`,
-    buttons: [{ label: "Cancel", value: null }],
-    closeValue: null,
-    classes: "sbs-cg-game-choice-modal"
-  }).then(result => result);
-}
-
 // Game-choice buttons live in the modal body, so wrap the generic prompt with delegated resolution.
 async function chooseGameFixed() {
   return new Promise(resolve => {
@@ -195,9 +181,7 @@ async function chooseGameFixed() {
         <div class="sbs-cg-modal-body">
           <p class="sbs-cg-intro">What flavor of financially irresponsible tavern behavior are we committing to?</p>
           <div class="sbs-cg-game-picker">
-            <button type="button" data-game-choice="holdem"><strong>Texas Hold'em</strong><span>Two private cards, five community cards, blinds, four betting rounds.</span></button>
-            <button type="button" data-game-choice="draw"><strong>Five-Card Draw</strong><span>Five private cards, one draw, two betting rounds, classic saloon nonsense.</span></button>
-            <button type="button" data-game-choice="blackjack"><strong>Blackjack</strong><span>Play against the dealer with bets, splits, doubles, insurance, and surrender.</span></button>
+            ${Object.entries(GAME_NAMES).map(([id,name])=>`<button type="button" data-game-choice="${id}"><strong>${esc(name)}</strong><span>${esc({holdem:"No-limit poker, blinds and side pots.",draw:"Five private cards and one draw.",blackjack:"3:2 blackjack, splits, doubles and surrender.",euchre:"Four seats, partners 1 & 3 versus 2 & 4; first to 10.",baccarat:"Punto banco: Player, Banker or Tie.",war:"High card, surrender or go to war on a tie.",video:"9/6 Jacks or Better; select cards to KEEP.",slots:"Three reels; visible paytable and odds."}[id])}</span></button>`).join("")}
           </div>
         </div>
         <footer><button type="button" data-cancel>Cancel</button></footer>
@@ -231,7 +215,7 @@ async function choosePlayers(type) {
           const ids = [game.user.id];
           form.querySelectorAll('input[type="checkbox"]:checked:not(:disabled)').forEach(input => ids.push(input.value));
           const unique = [...new Set(ids)];
-          if (unique.length > MAX_SEATS[type]) throw new Error(`${gameLabel(type)} supports at most ${MAX_SEATS[type]} connected users before NPC seats are added.`);
+          if (unique.length > MAX_SEATS[type] + (game.user.isGM ? 1 : 0)) throw new Error(`${gameLabel(type)} supports at most ${MAX_SEATS[type]} connected users before NPC seats are added.`);
           return unique;
         }
       }
@@ -243,39 +227,43 @@ async function chooseSettings(type) {
   let fields;
   if (type === "holdem") {
     fields = `
-      <label>Starting chips <input name="startingChips" type="number" min="100" step="10" value="1000"></label>
+      <label>Starting chips <input name="startingChips" type="number" min="100" step="10" value="500"></label>
       <label>Small blind <input name="smallBlind" type="number" min="1" step="1" value="10"></label>
       <label>Big blind <input name="bigBlind" type="number" min="2" step="1" value="20"></label>`;
   } else if (type === "draw") {
     fields = `
-      <label>Starting chips <input name="startingChips" type="number" min="100" step="10" value="1000"></label>
+      <label>Starting chips <input name="startingChips" type="number" min="100" step="10" value="500"></label>
       <label>Ante <input name="ante" type="number" min="0" step="1" value="10"></label>
       <label>Minimum opening bet <input name="minBet" type="number" min="1" step="1" value="20"></label>
       <label>Maximum cards drawn <input name="maxDraw" type="number" min="1" max="4" step="1" value="3"></label>`;
+  } else if (type === "euchre") {
+    fields = `<label>Starting chips <input name="startingChips" type="number" min="1" value="500"></label><label>Match stake per seat <input name="matchStake" type="number" min="1" value="10"></label><label class="sbs-cg-check"><input name="stickDealer" type="checkbox"> Stick the dealer (second round)</label><label class="sbs-cg-check"><input name="euchreJoker" type="checkbox"> Optional highest-trump joker (25-card variant)</label>`;
   } else {
     fields = `
       <label>Starting chips <input name="startingChips" type="number" min="50" step="10" value="500"></label>
       <label>Minimum bet <input name="minBet" type="number" min="1" step="1" value="10"></label>
       <label>Maximum bet <input name="maxBet" type="number" min="10" step="10" value="500"></label>
-      <label class="sbs-cg-check"><input name="dealerHitsSoft17" type="checkbox"> Dealer hits soft 17</label>`;
+      ${type === "blackjack" ? '<label class="sbs-cg-check"><input name="dealerHitsSoft17" type="checkbox"> Dealer hits soft 17</label>' : ""}`;
   }
   return showPrompt({
     title: `Table Rules — ${gameLabel(type)}`,
-    content: `<div class="sbs-cg-settings-grid">${fields}</div>`,
+    content: `<div class="sbs-cg-settings-grid"><label>Betting mode<select name="moneyMode"><option value="fun">Fun mode — free chips</option><option value="currency">Character currency — 1 chip = 1 gp</option></select></label>${fields}</div><p>Currency mode uses each participant's selected actor. Bets and payouts update its actual coins, with change made automatically. The house is a game bank, without an NPC treasury. Starting chips set the table bankroll limit; they are not free currency.</p>`,
     buttons: [
       { label: "Back", value: "back" },
       {
         label: "Continue", className: "primary", callback: form => {
           const raw = formValues(form);
-          const settings = {};
+          const settings = {moneyMode: raw.moneyMode};
           for (const [key, value] of Object.entries(raw)) {
-            if (key === "dealerHitsSoft17") continue;
+            if (["moneyMode", "dealerHitsSoft17", "stickDealer", "euchreJoker"].includes(key)) continue;
             settings[key] = Math.floor(Number(value));
             if (!Number.isFinite(settings[key])) throw new Error("Every table setting needs a valid number.");
           }
           if (type === "holdem" && settings.bigBlind < settings.smallBlind) throw new Error("The big blind cannot be smaller than the small blind. Even goblins know this.");
           if (type === "blackjack" && settings.maxBet < settings.minBet) throw new Error("Maximum bet must be at least the minimum bet.");
           if (type === "blackjack") settings.dealerHitsSoft17 = form.elements.dealerHitsSoft17.checked;
+          if (type === "euchre") {settings.stickDealer=form.elements.stickDealer.checked;settings.euchreJoker=form.elements.euchreJoker.checked;}
+          if (settings.startingChips < 1 || (settings.minBet??1) < 1) throw new Error("Bankroll and minimum bets must be positive.");
           return settings;
         }
       }
@@ -298,6 +286,7 @@ async function chooseGMSeats(type, user = game.user) {
     title: `Choose the GM's Seats — ${gameLabel(type)}`,
     width: 620,
     content: `
+      <label class="sbs-cg-check"><input type="checkbox" name="dealerOnly"> Host/dealer only — no playing seat</label>
       <p>Select any NPCs the GM will play. Ctrl-click to select several. With none selected, the seat is simply <strong>The DM</strong>.</p>
       <select name="actors" multiple size="12" class="sbs-cg-actor-select">${options}</select>
       <label class="sbs-cg-check"><input type="checkbox" name="alsoDM"> Also add a separate seat named “The DM”</label>
@@ -306,6 +295,7 @@ async function chooseGMSeats(type, user = game.user) {
       { label: "Decline", value: null },
       {
         label: "Accept", className: "primary", callback: form => {
+          if(form.elements.dealerOnly.checked)return [];
           const selected = [...form.elements.actors.selectedOptions].map(option => game.actors.get(option.value)).filter(Boolean);
           const seats = selected.map(actor => ({
             id: randomId(), ownerUserId: user.id, name: actor.name, actorId: actor.id,
@@ -320,6 +310,20 @@ async function chooseGMSeats(type, user = game.user) {
     ]
   });
 }
+
+async function chooseCurrencySeats(type, settings, user=game.user) {
+  const actors=game.actors.contents.filter(a=>a.system?.currency && (user.isGM || a.testUserPermission(user,"OWNER"))).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!actors.length && !user.isGM) throw new Error("You need an owned actor with D&D currency to wager.");
+  return showPrompt({title:"Choose your wagering character",content:`<p><strong>Actual character currency.</strong> Bets are deducted and payouts credited automatically. One chip is one gold piece; other coins make change. Choose a bankroll you can cover.</p><label>Character<select name="actorId">${user.isGM?'<option value="__dealer__">Host/dealer only — no playing seat</option><option value="">The DM — house seat (no actor wallet)</option>':""}${actors.map(a=>`<option value="${esc(a.id)}" ${a.id===user.character?.id?"selected":""}>${esc(a.name)} — ${copper(a.system.currency)/100} gp</option>`).join("")}</select></label><label>Table bankroll<input name="bankroll" type="number" min="1" step="1" value="${Math.min(settings.startingChips, user.character?.system?.currency?Math.floor(copper(user.character.system.currency)/100):settings.startingChips)}"></label>`,buttons:[{label:"Cancel",value:null},{label:"Use this seat",className:"primary",callback:form=>{
+    if(form.elements.actorId.value==="__dealer__"&&user.isGM)return [];
+    const actor=game.actors.get(form.elements.actorId.value),bankroll=Number(form.elements.bankroll.value);
+    if(!Number.isSafeInteger(bankroll)||bankroll<1||bankroll>settings.startingChips)throw new Error("Choose a whole bankroll within the table's starting-chip limit.");
+    if(actor&&copper(actor.system.currency)<bankroll*100)throw new Error("That character cannot cover this bankroll.");
+    return [{id:randomId(),ownerUserId:user.id,actorId:actor?.id??null,name:actor?.name??"The DM (house)",avatar:actor?.img??user.avatar,startingChips:bankroll}];
+  }}]});
+}
+function primaryGM(){return game.users.activeGM ?? activeGMs().sort((a,b)=>a.id.localeCompare(b.id))[0];}
+function executeDealer(action,payload){const gm=primaryGM();if(!gm)throw new Error("A connected GM is required.");return socket.executeAsUser("authorityRequest",gm.id,action,payload);}
 
 async function launchGame() {
   if (!await ensureSocket({ notifyUser: true })) return;
@@ -338,7 +342,10 @@ async function launchGame() {
   if (settings === "back") return launchGame();
 
   let hostSeats;
-  if (game.user.isGM) {
+  if (settings.moneyMode === "currency") {
+    hostSeats = await chooseCurrencySeats(type, settings);
+    if (!hostSeats) return;
+  } else if (game.user.isGM) {
     hostSeats = await chooseGMSeats(type);
     if (!hostSeats) return;
   } else {
@@ -346,7 +353,7 @@ async function launchGame() {
   }
 
   try {
-    await socket.executeAsGM("authorityRequest", "createLobby", {
+    await executeDealer("createLobby", {
       requesterId: game.user.id,
       type,
       invitedUserIds,
@@ -361,12 +368,13 @@ async function launchGame() {
 
 async function sendAuthority(action, payload) {
   if (!await ensureSocket({ notifyUser: false })) throw new Error(socketFailureMessage());
-  return socket.executeAsGM("authorityRequest", action, { ...payload, requesterId: game.user.id });
+  const revision = payload.tableId ? local.views.get(payload.tableId)?.revision : undefined;
+  return executeDealer(action, { ...payload, revision, requesterId: game.user.id });
 }
 
 async function pushUser(userId, event) {
   if (!await ensureSocket({ notifyUser: false })) return;
-  if (userId === game.user.id) return receiveEvent(event);
+  if (userId === game.user.id) { void receiveEvent(event); return; }
   return socket.executeForUsers("receiveEvent", [userId], event);
 }
 
@@ -398,9 +406,40 @@ function validateAuthorityRequester(payload, callerId) {
   return requesterId;
 }
 
-async function authorityRequest(action, payload = {}) {
+let authorityTail = Promise.resolve();
+function authorityRequest(action, payload = {}) {
+  const caller = this?.socketdata?.userId;
+  const task=authorityTail.catch(()=>{}).then(async()=>{
+    if (!game.user.isGM || game.user.id!==primaryGM()?.id) throw new Error("Only the active dealer GM can process this table.");
+    loadAuthority();
+    await recoverWallets();
+    return processAuthorityRequest.call({userId:caller}, action, payload);
+  });
+  authorityTail=task.catch(()=>{});return task;
+}
+async function recoverWallets(){
+  for(const [id,state] of authority.games){
+    if(state.pendingWallet){const pending=state.pendingWallet;await applyWallet(pending.changes,id,pending.id,game.actors,Boolean(pending.after.closed));authority.games.set(id,pending.after);if(pending.after.lobbyId)authority.lobbies.delete(pending.after.lobbyId);saveAuthority(true);}
+    if(authority.games.get(id)?.closed){authority.games.delete(id);saveAuthority(true);}
+  }
+}
+async function commitTransition(before,after){
+  after.revision=(before.revision??0)+1;
+  if(after.settings.moneyMode!=="currency"){authority.games.set(after.id,after);saveAuthority();return;}
+  const changes=walletChanges(before,after);
+  for(const c of changes.filter(c=>c.delta<0)){const p=after.seats.find(p=>p.actorId===c.actorId),a=game.actors.get(c.actorId),u=game.users.get(p.ownerUserId);if(!a?.testUserPermission(u,"OWNER"))throw new Error("Actor ownership changed; cannot place further wagers.");}
+  // Zero-value receipts lock a participating actor to one currency table, and release it on close.
+  for(const p of after.seats.filter(p=>p.actorId))if(!changes.some(c=>c.actorId===p.actorId))changes.push({actorId:p.actorId,delta:0});
+  preflightWallet(changes,after.id,game.actors);
+  const pending={...before,pendingWallet:{id:randomId(),after,changes}};
+  authority.games.set(after.id,pending);
+  try {saveAuthority(true);}catch(e){authority.games.set(before.id,before);throw e;}
+  await recoverWallets();
+}
+async function processAuthorityRequest(action, payload = {}) {
   if (!game.user.isGM) throw new Error("Card game authority must run on a GM client.");
-  const callerId = this?.userId ?? payload.requesterId;
+  const callerId = this?.userId;
+  if (!callerId) throw new Error("Socket caller identity is unavailable.");
   const requesterId = validateAuthorityRequester(payload, callerId);
 
   if (action === "createLobby") return createLobbyAuthority(requesterId, payload);
@@ -420,17 +459,33 @@ function normalizeSeatDefs(seats, ownerUserId) {
     ownerUserId,
     name: String(seat.name || game.users.get(ownerUserId)?.name || "Player").slice(0, 100),
     actorId: seat.actorId && game.actors.get(seat.actorId) ? seat.actorId : null,
+    startingChips: seat.startingChips,
     avatar: seat.avatar ? String(seat.avatar) : null
   }));
 }
 
+function validateWagerSeats(seats, ownerId, settings) {
+  const user=game.users.get(ownerId);
+  if(!user.isGM && seats.length!==1)throw new Error("Players may control one seat.");
+  if(settings.moneyMode!=="currency")return;
+  for(const seat of seats){
+    const actor=game.actors.get(seat.actorId);
+    if(!actor&&!user.isGM)throw new Error("Select a character for currency play.");
+    if(actor&&(!actor.system?.currency||!actor.testUserPermission(user,"OWNER")))throw new Error("You must own the wagering character.");
+    const bankroll=seat.startingChips??settings.startingChips;
+    if(!Number.isSafeInteger(bankroll)||bankroll<1||bankroll>settings.startingChips)throw new Error("Invalid bankroll.");
+    if(actor&&(copper(actor.system.currency)<bankroll*100 || actor.getFlag(WALLET_FLAG,"wallet")?.tableId))throw new Error(`${actor.name} cannot cover that bankroll or is already at a currency table.`);
+  }
+}
 async function createLobbyAuthority(requesterId, payload) {
   const { type, invitedUserIds, settings, hostSeats } = payload;
   if (!GAME_NAMES[type]) throw new Error("Unknown card game.");
+  if(!settings || !["fun","currency"].includes(settings.moneyMode))throw new Error("Choose Fun or Character Currency mode.");
   const uniqueInvitees = [...new Set(invitedUserIds)].filter(id => game.users.get(id)?.active);
   if (!uniqueInvitees.includes(requesterId)) uniqueInvitees.unshift(requesterId);
   const normalizedHostSeats = normalizeSeatDefs(hostSeats, requesterId);
-  if (!normalizedHostSeats.length) throw new Error("The host needs at least one seat.");
+  validateWagerSeats(normalizedHostSeats, requesterId, settings);
+  if (!normalizedHostSeats.length && !isRequesterGM(requesterId)) throw new Error("The host needs at least one seat.");
   const lobby = {
     id: randomId(), type, settings, hostUserId: requesterId,
     invitedUserIds: uniqueInvitees,
@@ -455,9 +510,10 @@ async function respondInviteAuthority(requesterId, payload) {
   if (!lobby.invitedUserIds.includes(requesterId)) throw new Error("You were not invited to that table.");
   if (lobby.responses.has(requesterId)) return;
   if (payload.accepted) {
-    if (!Array.isArray(payload.seats) || !payload.seats.length) throw new Error("An accepted invitation needs at least one seat.");
+    if (!Array.isArray(payload.seats) || (!payload.seats.length && !isRequesterGM(requesterId))) throw new Error("An accepted invitation needs at least one seat.");
     const normalizedSeats = normalizeSeatDefs(payload.seats, requesterId);
-    if (!normalizedSeats.length) throw new Error("An accepted invitation needs at least one seat.");
+    if (!normalizedSeats.length && !isRequesterGM(requesterId)) throw new Error("An accepted invitation needs at least one seat.");
+    validateWagerSeats(normalizedSeats, requesterId, lobby.settings);
     lobby.responses.set(requesterId, "accepted");
     lobby.seatsByUser.set(requesterId, normalizedSeats);
   } else {
@@ -500,12 +556,19 @@ async function startLobbyAuthority(lobby, acceptedOnly = false) {
   }
   const omitted = seats.slice(MAX_SEATS[lobby.type]);
   seats = seats.slice(0, MAX_SEATS[lobby.type]);
+  for(const id of new Set(seats.map(p=>p.ownerUserId)))validateWagerSeats(seats.filter(p=>p.ownerUserId===id),id,lobby.settings);
+  const actorIds=seats.filter(p=>p.actorId).map(p=>p.actorId);
+  if(lobby.settings.moneyMode==="currency"&&new Set(actorIds).size!==actorIds.length)throw new Error("An actor can fund only one seat.");
   const tableId = randomId();
   const state = createGame(lobby.type, tableId, lobby.hostUserId, seats, lobby.settings);
-  authority.games.set(tableId, state);
+  state.lobbyId=lobby.id;
+  state.observerUserIds=lobby.invitedUserIds.filter(id=>lobby.responses.get(id)==="accepted" && isRequesterGM(id) && !seats.some(p=>p.ownerUserId===id));
+  const before=structuredClone(state);
+  before.seats.forEach((p,i)=>{p.chips=seats[i].startingChips??lobby.settings.startingChips;});
+  await commitTransition(before,state);
   authority.lobbies.delete(lobby.id);
   saveAuthority();
-  const ownerIds = [...new Set(seats.map(seat => seat.ownerUserId))];
+  const ownerIds = [...new Set([lobby.hostUserId,...state.observerUserIds,...seats.map(seat => seat.ownerUserId)])];
   await pushUsers(ownerIds, userId => ({ type: "gameView", view: sanitizeState(state, userId) }));
   await pushUsers(lobby.invitedUserIds, { type: "lobbyClosed", lobbyId: lobby.id });
   if (omitted.length) {
@@ -531,10 +594,15 @@ function verifySeatOwner(state, requesterId, seatId) {
 }
 
 async function gameActionAuthority(requesterId, payload) {
-  const state = authority.games.get(payload.tableId);
-  if (!state) throw new Error("That table is no longer active.");
+  const before = authority.games.get(payload.tableId);
+  if (!before) throw new Error("That table is no longer active.");
+  if(payload.revision !== (before.revision??0)) {await sendViewsForGame(before.id);throw new Error("The table changed. Use the refreshed controls.");}
+  const state=structuredClone(before);
   const isHostOrGM = state.hostUserId === requesterId || isRequesterGM(requesterId);
-  if (payload.kind === "poker") {
+  if (payload.kind === "extra") {
+    verifySeatOwner(state, requesterId, payload.seatId);
+    extraAction(state,payload.seatId,payload.action,payload.amount,payload.value,Boolean(payload.alone));
+  } else if (payload.kind === "poker") {
     verifySeatOwner(state, requesterId, payload.seatId);
     pokerAction(state, payload.seatId, payload.action, payload.amount);
   } else if (payload.kind === "draw") {
@@ -554,24 +622,26 @@ async function gameActionAuthority(requesterId, payload) {
     nextHand(state);
   } else if (payload.kind === "add-chips") {
     if (!isHostOrGM) throw new Error("Only the host or GM can add chips.");
+    if(state.settings.moneyMode==="currency")throw new Error("Free chip top-ups are disabled for character-currency tables.");
     addChips(state, payload.seatId, payload.amount);
   } else {
     throw new Error("Unknown game action.");
   }
-  saveAuthority();
+  await commitTransition(before,state);
   await sendViewsForGame(state.id);
 }
 
 async function sendViewsForGame(tableId, onlyUserIds = null) {
   const state = authority.games.get(tableId);
   if (!state) return;
-  const ownerIds = onlyUserIds ?? [...new Set(state.seats.map(seat => seat.ownerUserId))];
+  const participants=[...new Set([state.hostUserId,...(state.observerUserIds??[]),...state.seats.map(seat => seat.ownerUserId)])];
+  const ownerIds = onlyUserIds ? onlyUserIds.filter(id=>participants.includes(id)) : participants;
   await pushUsers(ownerIds, userId => ({ type: "gameView", view: sanitizeState(state, userId) }));
 }
 
 async function resumeTablesAuthority(requesterId) {
   for (const state of authority.games.values()) {
-    if (state.seats.some(seat => seat.ownerUserId === requesterId)) {
+    if (state.hostUserId === requesterId || state.observerUserIds?.includes(requesterId) || state.seats.some(seat => seat.ownerUserId === requesterId)) {
       await pushUser(requesterId, { type: "gameView", view: sanitizeState(state, requesterId) });
     }
   }
@@ -584,9 +654,11 @@ async function endGameAuthority(requesterId, payload) {
   const state = authority.games.get(payload.tableId);
   if (!state) return;
   if (state.hostUserId !== requesterId && !isRequesterGM(requesterId)) throw new Error("Only the host or GM can end the table.");
+  const after=structuredClone(state);refundUnfinished(after);after.closed=true;
+  await commitTransition(state,after);
   authority.games.delete(state.id);
   saveAuthority();
-  const ownerIds = [...new Set(state.seats.map(seat => seat.ownerUserId))];
+  const ownerIds = [...new Set([state.hostUserId,...(state.observerUserIds??[]),...state.seats.map(seat => seat.ownerUserId)])];
   await pushUsers(ownerIds, { type: "gameEnded", tableId: state.id });
 }
 
@@ -619,7 +691,10 @@ async function handleInvite(lobby) {
   });
   let seats = [];
   if (accepted) {
-    if (game.user.isGM) {
+    if (lobby.settings.moneyMode === "currency") {
+      seats=await chooseCurrencySeats(lobby.type,lobby.settings);
+      if(!seats)accepted=false;
+    } else if (game.user.isGM) {
       seats = await chooseGMSeats(lobby.type);
       if (!seats) accepted = false;
     } else {
@@ -631,6 +706,10 @@ async function handleInvite(lobby) {
 }
 
 function settingsSummary(type, settings) {
+  const mode=settings.moneyMode==="currency"?"ACTUAL CHARACTER CURRENCY — 1 chip = 1 gp":"Fun mode — free chips";
+  return `<div class="sbs-cg-rule-summary"><strong>${mode}</strong><br>Bankroll limit ${settings.startingChips}; ${type==="euchre"?`stake ${settings.matchStake} per seat / match; teams 1 & 3 vs 2 & 4`:`minimum ${settings.minBet??settings.bigBlind??1}; maximum ${settings.maxBet??"all-in"}`}</div>`;
+}
+function legacySettingsSummary(type, settings) {
   if (type === "holdem") return `<div class="sbs-cg-rule-summary">Starting chips ${settings.startingChips} · Blinds ${settings.smallBlind}/${settings.bigBlind}</div>`;
   if (type === "draw") return `<div class="sbs-cg-rule-summary">Starting chips ${settings.startingChips} · Ante ${settings.ante} · Minimum bet ${settings.minBet}</div>`;
   return `<div class="sbs-cg-rule-summary">Starting chips ${settings.startingChips} · Bets ${settings.minBet}–${settings.maxBet} · Dealer ${settings.dealerHitsSoft17 ? "hits" : "stands on"} soft 17</div>`;
@@ -687,10 +766,11 @@ function suitInfo(card) {
 function cardHtml(card, { small = false, selectable = false, selected = false, index = null } = {}) {
   if (!card) return `<div class="sbs-card back ${small ? "small" : ""}"><img src="${gameIcon()}" alt="Card back"></div>`;
   const suit = suitInfo(card);
-  return `<button type="button" class="sbs-card face ${suit?.red ? "red" : "black"} ${small ? "small" : ""} ${selectable ? "selectable" : ""} ${selected ? "selected" : ""}" ${selectable ? `data-draw-card="${index}"` : "disabled"}>
-    <span class="corner top">${esc(card.rank)}<i>${esc(suit?.symbol ?? card.suit)}</i></span>
+  return `<button type="button" class="sbs-card face ${suit?.red ? "red" : "black"} ${card.art ? `custom-art ${card.art.startsWith("faces/") ? "face-art" : ""}` : ""} ${small ? "small" : ""} ${selectable ? "selectable" : ""} ${selected ? "selected" : ""}" title="${esc(cardText(card))}${card.art?.startsWith("faces/") ? ` — ${esc(FACE_SUBJECTS[card.rank+card.suit])}` : ""}" aria-label="${esc(cardText(card))}" ${selectable ? `data-draw-card="${index}"` : "disabled"}>
+    ${card.art ? `<img class="sbs-card-art" src="modules/${MODULE_ID}/assets/cards/${esc(card.art)}" alt="${esc(cardText(card))}">` : ""}
+    <span class="corner top">${esc(cardRankLabel(card))}<i>${esc(suit?.symbol ?? card.suit)}</i></span>
     <b>${esc(suit?.symbol ?? card.suit)}</b>
-    <span class="corner bottom">${esc(card.rank)}<i>${esc(suit?.symbol ?? card.suit)}</i></span>
+    <span class="corner bottom">${esc(cardRankLabel(card))}<i>${esc(suit?.symbol ?? card.suit)}</i></span>
   </button>`;
 }
 
@@ -776,7 +856,57 @@ function ownBlackjackControl(view, seat) {
   return `<section class="sbs-own-hand ${action ? "has-action" : ""}"><header><strong>${esc(seat.name)}</strong><span>${seat.chips} chips</span></header>${hands || `<p class="hint">No hand dealt yet.</p>`}<div class="sbs-action-bar">${controls || "<small>Waiting.</small>"}</div></section>`;
 }
 
+function rulesHtml(view) {
+  const common=`<p>${view.settings.moneyMode==="currency"?"Character currency: 1 chip = 1 gp. Bets debit and payouts credit the selected actor. Coins make change automatically. Unfinished bets are refunded on End Table; completed outcomes stand. The house has no limited treasury. A single actor can fund one active table.":"Fun mode: chips have no effect on character coins."}</p>`;
+  const rules={
+    holdem:"No-limit Hold'em. Best five of seven cards; all suits equal. Heads-up button posts small blind and acts first pre-flop, last afterward. Minimum raise is the last full raise. Short all-ins do not reopen action unless cumulative raises reach a full raise. Side pots and odd chips are allocated automatically, starting left of the button.",
+    draw:"Five cards, ante, first betting round, one draw, final betting round. Maximum discards is the launcher setting. Reshuffle prior discards if necessary, excluding your own current discards. No jokers or wild cards.",
+    blackjack:"Single deck each round, dealer peek, natural blackjack pays 3:2 profit, normal wins 1:1, pushes return the stake. Dealer soft-17 rule is the launcher setting. Same-rank splits only, maximum four hands; split aces receive one card and stand; split 21 pays 1:1. Double after split permitted except split aces. Late surrender loses half. Insurance pays 2:1 profit on dealer blackjack. Fractional chip payouts are preserved.",
+    euchre:"Four seats; 1 & 3 versus 2 & 4. First team to 10. Five cards from 9–A. Order up the exposed suit or pass; after four passes choose another suit. All-pass second round redeals unless Stick the Dealer is enabled. Dealer picks up and discards on an order-up. Follow effective suit: the same-color jack is the left bower and is trump. Trump ranks right bower, left bower, A K Q 10 9. Maker can go alone; partner sits out. Makers take 3–4 tricks: 1 point; all 5: 2, or 4 alone. Euchred: defenders score 2. Stake per seat is charged once per match; winning partners each receive twice the stake. Optional 25-card joker is highest trump; a joker turned up is put under the kitty and the next suited card is exposed. Defender loners and Canadian partner-order-up restrictions are not used.",
+    baccarat:"Eight-deck punto banco; every seat plays an independent coup. Aces 1, tens/faces 0, totals modulo 10. Naturals 8 or 9 stop drawing. Player draws 0–5. Banker uses the standard third-card tableau. Player pays 1:1 profit, Banker 0.95:1 after 5% commission, Tie 8:1. A tie pushes Player/Banker bets. No side bets.",
+    war:"Single shared deck per round. All funded seats lock their bets before the deal; everyone faces the same dealer card. Tied seats choose surrender or war before the shared second dealer card is revealed. High card wins, ace high. Initial win returns 2× stake. On a tie surrender for half back, or match the initial stake, burn three cards and compare again. War win returns 3× the original stake (1× profit on the 2× total stake); second tie returns 4×; loss returns zero. No tie side bet.",
+    video:"9/6 Jacks or Better. Select cards to KEEP, then draw once from the remaining deck. Returns include the stake: high pair J/Q/K/A 1×, two pair 2×, trips 3×, straight 4×, flush 6×, full house 9×, quads 25×, straight flush 50×, royal 800×. Royal always 800×; no max-coin bonus requirement. No jokers.",
+    slots:"Custom SBS three-reel machine. Each reel independently chooses one of 20 equally likely stops: cherry 8, lemon 5, bell 3, banana 2, joker 1, seven 1. Only three matching symbols pay. Returns include stake; no near-miss awards. Theoretical return 90.8875%, independent spins with no changing odds. Joker artwork alternates cosmetically without affecting odds."
+  };
+  const slots=view.type==="slots"?`<table class="sbs-cg-paytable"><tr><th>Three matching</th><th>Total return</th><th>Probability per spin</th></tr>${SLOT_SYMBOLS.map((x,i)=>`<tr><td>${x} ${x} ${x}</td><td>${SLOT_RETURNS[i]}× stake</td><td>${(SLOT_REEL.filter(n=>n===i).length**3)}/8000</td></tr>`).join("")}</table>`:"";
+  return common+`<p>${esc(rules[view.type])}</p>`+slots;
+}
+function extraTableHtml(v) {
+  const control=(p,action,label,value="")=>`<button data-action="extra-${action}" data-seat-id="${esc(p.id)}" data-value="${esc(value)}">${esc(label)}</button>`;
+  const team=v.type==="euchre"?`<div class="sbs-cg-team">${[0,1].map(t=>`Team ${t+1}: ${v.seats.filter((p,i)=>i%2===t).map(p=>esc(p.name)).join(" & ")} — ${v.scores[t]} points, ${v.tricks[t]} tricks`).join("<br>")}<br>Trump: ${esc(SUITS.find(t=>t.id===v.trump)?.name??"Not called")} · Bidding round ${v.bidRound}</div><div class="sbs-community">Upcard${cardsHtml([v.upcard])}<p>Current trick</p>${cardsHtml((v.trick??[]).map(t=>t.card))}<p>Last trick: ${(v.lastTrick??[]).map(t=>`${esc(v.seats[t.index].name)} ${esc(cardText(t.card))}`).join(" · ")||"None"}</p></div>`:"";
+  const shared=v.type==="war"?`<div class="sbs-community dealer"><p>Dealer — shared by all seats</p>${cardsHtml(v.dealerCards??[])}</div>`:v.type==="baccarat"&&v.sharedDeal?`<div class="sbs-community"><p>Player</p>${cardsHtml(v.sharedDeal.player)}<p>Banker</p>${cardsHtml(v.sharedDeal.banker)}</div>`:"";
+  const controls=v.seats.filter(p=>p.own).map(p=>{
+    let buttons="",hand=p.cards?cardsHtml(p.cards):"";
+    if(v.type==="euchre") {
+      if(p.current&&v.phase==="euchre-bid"){
+        buttons=control(p,"pass","Pass")+`<label>Trump<select name="choice">${SUITS.filter(t=>v.bidRound===1?t.id===v.upcard.suit:t.id!==v.upcard.suit).map(t=>`<option value="${t.id}">${t.symbol} ${t.name}</option>`).join("")}</select></label><label><input name="alone" type="checkbox"> Go alone</label>`+control(p,"trump","Call Trump");
+        // The suit selector supplies the choice for this action.
+        buttons=buttons.replace('data-action="extra-trump" data-seat-id="'+esc(p.id)+'" data-value=""','data-action="extra-trump" data-seat-id="'+esc(p.id)+'"');
+      }
+      if(p.current&&["euchre-play","euchre-discard"].includes(v.phase))hand=`<div class="sbs-card-row">${p.cards.map((c,i)=>cardHtml(c).replace(' disabled',` data-action="extra-${v.phase==="euchre-discard"?"discard":"play"}" data-seat-id="${esc(p.id)}" data-value="${i}"`)).join("")}</div>`;
+      if(v.sittingOut===v.seats.indexOf(p))buttons="<p>Your partner is going alone; you sit out this hand.</p>";
+    } else if(!p.betLocked&&v.phase==="betting"&&p.chips>=v.settings.minBet){
+      buttons=`<label>Bet<input name="bet" type="number" step="1" min="${v.settings.minBet}" max="${Math.min(v.settings.maxBet,p.chips)}" value="${v.settings.minBet}"></label>${v.type==="baccarat"?'<label>Bet on<select name="choice"><option value="player">Player</option><option value="banker">Banker (5% commission)</option><option value="tie">Tie (8:1)</option></select></label>':""}`+control(p,"bet",v.type==="slots"?"Spin":"Place Bet");
+      buttons=buttons.replace('data-action="extra-bet" data-seat-id="'+esc(p.id)+'" data-value=""','data-action="extra-bet" data-seat-id="'+esc(p.id)+'"');
+    }else if(p.extra&&!p.extra.done){
+      if(v.type==="war"&&v.phase==="war-choice"&&!p.extra.warChoice)buttons=control(p,"surrender","Surrender half")+control(p,"war","Go to War — match stake");
+      if(v.type==="video"){
+        const held=local.drawSelections.get(`${v.id}:${p.id}`)??new Set();
+        hand=`<p>Select cards to KEEP. Gold outline = held.</p><div class="sbs-card-row">${p.cards.map((c,i)=>cardHtml(c,{selected:held.has(i)}).replace(' disabled',` data-hold="${i}"`)).join("")}</div>`;
+        buttons=control(p,"draw","Draw — keep selected cards");
+      }
+    }
+    if(p.extra?.dealer)hand+=`<p>Dealer</p>${cardsHtml(p.extra.dealer)}`;
+    if(p.extra?.player)hand+=`<p>Player</p>${cardsHtml(p.extra.player)}<p>Banker</p>${cardsHtml(p.extra.banker)}`;
+    if(v.type==="slots")hand+=`<div class="sbs-cg-slot-reels">${(p.extra?.reels??[-1,-1,-1]).map(i=>`<span>${i===4?`<img src="modules/${MODULE_ID}/assets/cards/${(v.handNumber%2)?"joker-red.png":"joker-black.png"}" alt="Joker">`:i>=0?`<img src="modules/${MODULE_ID}/assets/slots/${["cherry","lemon","bell","banana","joker","seven"][i]}.svg" alt="${SLOT_SYMBOLS[i]}">`:"?"}</span>`).join("")}</div>`;
+    return `<section class="sbs-own-hand" data-seat-id="${esc(p.id)}"><header><strong>${esc(p.name)}</strong><span>${p.chips} chips${v.settings.moneyMode==="currency"?" (gp)":""}</span></header>${hand}<div class="sbs-action-bar">${buttons||"<small>Waiting for the next hand.</small>"}</div><p>${esc(p.lastAction)}</p></section>`;
+  }).join("");
+  const host=game.user.isGM||game.user.id===v.hostUserId;
+  return `<div class="sbs-cg-statusbar"><span>${v.settings.moneyMode==="currency"?"Character coins · 1 chip = 1 gp":"Fun chips"}</span><strong>${esc(v.round)}</strong><span>Round ${v.handNumber}</span></div><div class="sbs-cg-felt sbs-cg-extra-felt">${team}${shared}<div class="sbs-cg-seat-grid">${v.seats.map((p,i)=>`<article class="sbs-cg-seat ${p.current?"current":""}"><strong>Seat ${i+1}: ${esc(p.name)}</strong><p>${p.chips} chips</p>${p.own||v.type==="war"?cardsHtml(p.cards??[],{small:true}):hiddenCards(p.cardCount,true)}<p>${esc(p.lastAction)}</p></article>`).join("")}</div><div class="sbs-results">${v.results.map(r=>`<p>${esc(r.text)}</p>`).join("")}</div></div><div class="sbs-own-area">${controls}</div><details class="sbs-cg-log"><summary>Table log</summary>${v.log.map(x=>`<p>${esc(x)}</p>`).join("")}</details><footer class="sbs-cg-table-footer"><button data-action="rules">Rules & Payouts</button>${host?`${["complete","game-over"].includes(v.phase)?'<button data-action="next-hand" class="primary">Next Hand / Round</button>':""}${v.settings.moneyMode!=="currency"?'<button data-action="add-chips">Add Chips</button>':""}<button data-action="end-game" class="danger">End Table</button>`:""}<button data-action="hide-window">Hide Window</button></footer>`;
+}
+
 function mainTableHtml(view) {
+  if(EXTRA_TYPES.includes(view.type))return extraTableHtml(view);
   const community = view.type === "holdem"
     ? `<div class="sbs-community"><span>Community</span>${view.community.length ? cardsHtml(view.community) : hiddenCards(5)}</div>`
     : view.type === "blackjack"
@@ -787,10 +917,10 @@ function mainTableHtml(view) {
   const resultHtml = view.results.length ? `<div class="sbs-results">${view.results.map(result => `<p>${esc(result.text)}</p>`).join("")}</div>` : "";
   const hostControls = (game.user.id === view.hostUserId || game.user.isGM) ? `
     ${["complete", "game-over"].includes(view.phase) ? `<button data-action="next-hand" class="primary">${view.type === "blackjack" ? "Next Round" : "Next Hand"}</button>` : ""}
-    <button data-action="add-chips">Add Chips</button>
+    ${view.settings.moneyMode!=="currency"?'<button data-action="add-chips">Add Chips</button>':""}
     <button data-action="end-game" class="danger">End Table</button>` : "";
   return `
-    <div class="sbs-cg-statusbar"><span>Hand ${view.handNumber}</span><strong>${esc(formatRound(view))}</strong><span>${view.type === "blackjack" ? "House Dealer" : `Pot ${view.pot}`}</span></div>
+    <div class="sbs-cg-statusbar"><span>${view.settings.moneyMode==="currency"?"Character coins · 1 chip = 1 gp":"Fun chips"} · Hand ${view.handNumber}</span><strong>${esc(formatRound(view))}</strong><span>${view.type === "blackjack" ? "House Dealer" : `Pot ${view.pot}`}</span></div>
     <div class="sbs-cg-felt">
       ${community}
       <div class="sbs-cg-seat-grid">${seatGrid}</div>
@@ -798,7 +928,7 @@ function mainTableHtml(view) {
     </div>
     <div class="sbs-own-area">${ownControls}</div>
     <details class="sbs-cg-log"><summary>Table Log</summary>${view.log.map(line => `<p>${esc(line)}</p>`).join("")}</details>
-    <footer class="sbs-cg-table-footer">${hostControls}<button data-action="hide-window">Hide Window</button></footer>`;
+    <footer class="sbs-cg-table-footer"><button data-action="rules">Rules & Payouts</button>${hostControls}<button data-action="hide-window">Hide Window</button></footer>`;
 }
 
 function makeDraggable(windowElement) {
@@ -875,12 +1005,21 @@ async function handleGameWindowClick(event, tableId) {
     return;
   }
 
+  const held=event.target.closest("[data-hold]");
+  if(held){const seat=held.closest("[data-seat-id]").dataset.seatId,key=`${tableId}:${seat}`,set=local.drawSelections.get(key)??new Set(),n=Number(held.dataset.hold);if(set.has(n))set.delete(n);else set.add(n);local.drawSelections.set(key,set);held.classList.toggle("selected");return;}
   const button = event.target.closest("[data-action]");
   if (!button) return;
   const action = button.dataset.action;
   const seatId = button.dataset.seatId;
   button.disabled = true;
   try {
+    if(action.startsWith("extra-")) {
+      const panel=button.closest(".sbs-own-hand");
+      let value=button.dataset.value??panel.querySelector("[name='choice']")?.value;
+      if(action==="extra-draw")value=[...panel.querySelectorAll("[data-hold].selected")].map(b=>Number(b.dataset.hold));
+      await sendAuthority("gameAction",{tableId,kind:"extra",seatId,action:action.slice(6),amount:panel.querySelector("[name='bet']")?.value,value,alone:panel.querySelector("[name='alone']")?.checked});
+    }
+    if (action === "rules") {await showPrompt({title:"Table rules & payouts",content:rulesHtml(view),buttons:[{label:"Close",value:true}],width:650});}
     if (action === "hide-window") {
       local.windows.get(tableId).hidden = true;
       return;
@@ -914,7 +1053,7 @@ async function handleGameWindowClick(event, tableId) {
     if (action === "next-hand") await sendAuthority("gameAction", { tableId, kind: "next-hand" });
     if (action === "add-chips") await promptAddChips(view);
     if (action === "end-game") {
-      const confirmed = await showPrompt({ title: "End Card Table?", content: "<p>This closes the game for everyone. The chips are imaginary, but the grudges are tragically real.</p>", buttons: [{ label: "Keep Playing", value: false }, { label: "End Table", className: "danger", value: true }] });
+      const confirmed = await showPrompt({ title: "End Card Table?", content: "<p>This closes the game for everyone. Currency tables refund unresolved wagers when ended. Completed results remain applied.</p>", buttons: [{ label: "Keep Playing", value: false }, { label: "End Table", className: "danger", value: true }] });
       if (confirmed) await sendAuthority("endGame", { tableId });
     }
   } catch (error) {
@@ -1003,7 +1142,7 @@ Hooks.once("ready", async () => {
       active: Boolean(socketLibModule()?.active),
       apiAvailable: Boolean(socketLibApi())
     }),
-    version: "1.0.2"
+    version: "1.1.2"
   };
 
   await ensureSocket({ notifyUser: false, attempts: 30, delay: 100 });
@@ -1023,3 +1162,5 @@ Hooks.on("chatMessage", (_chatLog, message) => {
   launchGame();
   return false;
 });
+
+export {launchGame, registerSocket, updateGameView, authorityRequest, processAuthorityRequest, authority, local, cardHtml, mainTableHtml, chooseSettings, chooseGameFixed};

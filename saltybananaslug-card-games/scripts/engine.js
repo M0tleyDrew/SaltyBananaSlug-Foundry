@@ -1,3 +1,4 @@
+import {startExtra, extraAction, extraView, EXTRA_TYPES} from "./extra-games.js";
 export const SUITS = [
   { id: "s", symbol: "♠", name: "Spades", red: false },
   { id: "h", symbol: "♥", name: "Hearts", red: true },
@@ -16,11 +17,33 @@ export const RANKS = [
 export const GAME_NAMES = {
   holdem: "Texas Hold'em",
   draw: "Five-Card Draw",
-  blackjack: "Blackjack"
+  blackjack: "Blackjack", euchre: "Euchre", baccarat: "Baccarat", war: "Casino War", video: "Jacks or Better", slots: "Slug Slots"
 };
 
-export function makeDeck() {
+const ACE_ART = {s: ["ace-spades-1.png", "ace-spades-2.png"], h: ["ace-hearts-1.png", "ace-hearts-2.png"], d: ["ace-diamonds-1.png", "ace-diamonds-2.png"], c: ["ace-clubs-1.png", "ace-clubs-2.png"]};
+export const FACE_SUBJECTS = {
+  Js: "Ren — captain of the Wandering Wayfarer",
+  Jh: "Iron Maiden — warforged priest of the Slurry",
+  Jd: "Marl road zombie",
+  Jc: "Paladin of the Filth",
+  Qs: "Blighted vampire",
+  Qh: "Golgothan",
+  Qd: "The Wandering Wayfarer",
+  Qc: "Blighted vampire — road encounter",
+  Ks: "Captain of the Filth — Oka-Ola",
+  Kh: "Evol — god of second chances",
+  Kd: "Mac — god of light and farming",
+  Kc: "Gary — rainbow unicorn god of carnage"
+};
+// Five equal buckets: four named illustrations and the existing standard card face.
+export function faceArt(rank, suit, random = Math.random) {
+  if (!["J", "Q", "K"].includes(rank)) return null;
+  const bucket = Math.floor(random() * 5);
+  return bucket < 4 ? `faces/${rank}${suit}-${bucket + 1}.webp` : null;
+}
+export function makeDeck(random = Math.random) {
   return SUITS.flatMap(suit => RANKS.map(rank => ({
+    art: rank.id === "A" ? ACE_ART[suit.id][Math.floor(random() * ACE_ART[suit.id].length)] : faceArt(rank.id, suit.id, random),
     suit: suit.id,
     rank: rank.id,
     value: rank.value,
@@ -36,10 +59,14 @@ export function shuffle(deck, random = Math.random) {
   return deck;
 }
 
+export function cardRankLabel(card) {
+  return card?.rank === "T" ? "10" : card?.rank ?? "?";
+}
+
 export function cardText(card) {
   if (!card) return "??";
   const suit = SUITS.find(s => s.id === card.suit)?.symbol ?? card.suit;
-  return `${card.rank}${suit}`;
+  return `${cardRankLabel(card)}${suit}`;
 }
 
 function combinations(items, size) {
@@ -212,16 +239,24 @@ export function createGame(type, tableId, hostUserId, seats, settings = {}) {
   const defaults = type === "blackjack"
     ? { startingChips: 500, minBet: 10, maxBet: 500, blackjackPayout: 1.5, dealerHitsSoft17: false, maxSplits: 3 }
     : type === "holdem"
-      ? { startingChips: 1000, smallBlind: 10, bigBlind: 20 }
-      : { startingChips: 1000, ante: 10, minBet: 20, maxDraw: 3 };
-  const merged = { ...defaults, ...settings };
+      ? { startingChips: 500, smallBlind: 10, bigBlind: 20 }
+      : { startingChips: 500, ante: 10, minBet: 20, maxDraw: 3 };
+  const merged = { ...defaults, minBet: 1, maxBet: 500, matchStake: 10, ...settings };
+  if (!Array.isArray(seats) || !seats.length || seats.length > (type === "euchre" ? 4 : type === "draw" ? 8 : type === "holdem" ? 10 : 7)) throw new Error("Invalid seat count.");
+  if ((["holdem", "draw"].includes(type) && seats.length < 2) || (type === "euchre" && seats.length !== 4)) throw new Error("This game needs more seats.");
+  for (const key of ["startingChips", "minBet", "maxBet", "smallBlind", "bigBlind", "ante", "maxDraw", "matchStake"]) {
+    if (merged[key] !== undefined && (!Number.isSafeInteger(merged[key]) || merged[key] < (key === "ante" ? 0 : 1) || merged[key] > 1000000)) throw new Error(`Invalid ${key}.`);
+  }
+  if (merged.maxBet < merged.minBet || (type === "holdem" && merged.smallBlind > merged.bigBlind) || (type === "draw" && merged.maxDraw > 5)) throw new Error("Invalid table limits.");
+  if (type === "blackjack") { merged.blackjackPayout = 1.5; merged.maxSplits = 3; }
+  for (const seat of seats) if (!Number.isSafeInteger(seat.startingChips ?? merged.startingChips) || (seat.startingChips ?? merged.startingChips) < 1) throw new Error("Invalid seat bankroll.");
   const state = {
     id: tableId,
     type,
     name: GAME_NAMES[type],
     hostUserId,
     settings: merged,
-    seats: seats.map(seat => baseSeat(seat, merged.startingChips)),
+    seats: seats.map(seat => baseSeat(seat, seat.startingChips ?? merged.startingChips)),
     deck: [],
     burn: [],
     community: [],
@@ -240,7 +275,8 @@ export function createGame(type, tableId, hostUserId, seats, settings = {}) {
     results: [],
     createdAt: Date.now()
   };
-  if (type === "blackjack") startBlackjackRound(state);
+  if (EXTRA_TYPES.includes(type)) startExtra(state);
+  else if (type === "blackjack") startBlackjackRound(state);
   else startPokerHand(state);
   return state;
 }
@@ -253,6 +289,7 @@ function resetPokerSeats(state) {
     seat.betRound = 0;
     seat.committed = 0;
     seat.acted = false;
+    seat.lastActedBet = null;
     seat.reveal = false;
     seat.drawDone = false;
     seat.lastAction = seat.chips <= 0 ? "Out" : "";
@@ -273,6 +310,7 @@ function resetBettingRound(state) {
   for (const seat of state.seats) {
     seat.betRound = 0;
     seat.acted = false;
+    seat.lastActedBet = null;
     if (!seat.folded) seat.lastAction = "";
   }
 }
@@ -300,7 +338,7 @@ export function startPokerHand(state) {
     for (let pass = 0; pass < 2; pass++) {
       let index = state.dealerIndex;
       for (let dealt = 0; dealt < activeCount; dealt++) {
-        index = nextIndex(state, index, activeForHand);
+        index = nextIndex(state, index, seat => !seat.folded);
         state.seats[index].hand.push(drawCard(state));
       }
     }
@@ -310,17 +348,17 @@ export function startPokerHand(state) {
     const bb = payIntoPot(bbSeat, state.settings.bigBlind);
     sbSeat.lastAction = `Small blind ${sb}`;
     bbSeat.lastAction = `Big blind ${bb}`;
-    state.currentBet = Math.max(sbSeat.betRound, bbSeat.betRound);
+    state.currentBet = state.settings.bigBlind;
     state.minRaise = state.settings.bigBlind;
     state.round = "preflop";
     state.phase = "betting";
     state.currentSeatIndex = activeCount === 2
-      ? state.smallBlindIndex
+      ? (canActPoker(sbSeat) ? state.smallBlindIndex : nextIndex(state, state.smallBlindIndex, canActPoker))
       : nextIndex(state, state.bigBlindIndex, canActPoker);
     state.log.push(`${sbSeat.name} posts ${sb}. ${bbSeat.name} posts ${bb}.`);
   } else {
     for (const seat of state.seats) {
-      if (!activeForHand(seat)) continue;
+      if (seat.folded) continue;
       const ante = payIntoPot(seat, state.settings.ante);
       seat.betRound = 0; // Antes belong to the pot, not to the opening betting total.
       seat.lastAction = `Ante ${ante}`;
@@ -328,7 +366,7 @@ export function startPokerHand(state) {
     for (let pass = 0; pass < 5; pass++) {
       let index = state.dealerIndex;
       for (let dealt = 0; dealt < active.length; dealt++) {
-        index = nextIndex(state, index, activeForHand);
+        index = nextIndex(state, index, seat => !seat.folded);
         state.seats[index].hand.push(drawCard(state));
       }
     }
@@ -339,12 +377,12 @@ export function startPokerHand(state) {
     state.minRaise = state.settings.minBet;
     state.log.push(`Each player antes ${state.settings.ante}.`);
   }
-  if (state.currentSeatIndex < 0) autoAdvancePoker(state, state.dealerIndex);
+  if (state.currentSeatIndex < 0 || state.seats.filter(canActPoker).length < 2) autoAdvancePoker(state, (state.currentSeatIndex - 1 + state.seats.length) % state.seats.length);
   return state;
 }
 
 export function legalPokerActions(state, seatId) {
-  if (state.phase !== "betting") return null;
+  if (!["holdem","draw"].includes(state.type) || state.phase !== "betting") return null;
   const seatIndex = state.seats.findIndex(s => s.id === seatId);
   if (seatIndex !== state.currentSeatIndex) return null;
   const seat = state.seats[seatIndex];
@@ -354,16 +392,17 @@ export function legalPokerActions(state, seatId) {
   const minTarget = state.currentBet === 0
     ? Math.min(maximumTarget, state.minRaise)
     : Math.min(maximumTarget, state.currentBet + state.minRaise);
+  const mayRaise = !seat.acted || state.currentBet - (seat.lastActedBet ?? seat.betRound) >= state.minRaise;
   return {
     toCall,
     canCheck: toCall === 0,
     canCall: toCall > 0 && seat.chips > 0,
     callAmount: Math.min(toCall, seat.chips),
-    canBet: state.currentBet === 0 && seat.chips > 0,
-    canRaise: state.currentBet > 0 && maximumTarget > state.currentBet,
+    canBet: state.currentBet === 0 && seat.chips > 0 && state.seats.filter(canActPoker).length > 1,
+    canRaise: state.currentBet > 0 && maximumTarget > state.currentBet && mayRaise && state.seats.filter(canActPoker).length > 1,
     minTarget,
     maximumTarget,
-    canAllIn: seat.chips > 0,
+    canAllIn: seat.chips > 0 && (maximumTarget <= state.currentBet || (mayRaise && state.seats.filter(canActPoker).length > 1)),
     canFold: true
   };
 }
@@ -437,6 +476,7 @@ export function pokerAction(state, seatId, action, amount = null) {
     throw new Error(`Unknown poker action: ${action}`);
   }
 
+  seat.lastActedBet = state.currentBet;
   autoAdvancePoker(state, index);
   return state;
 }
@@ -448,11 +488,12 @@ function nonFolded(state) {
 function bettingComplete(state) {
   const actors = state.seats.filter(canActPoker);
   if (!actors.length) return true;
+  if (actors.length === 1 && actors[0].betRound >= state.currentBet) return true;
   return actors.every(seat => seat.acted && seat.betRound === state.currentBet);
 }
 
 function nextPokerActor(state, from) {
-  return nextIndex(state, from, seat => canActPoker(seat));
+  return nextIndex(state, from, seat => canActPoker(seat) && (!seat.acted || seat.betRound < state.currentBet));
 }
 
 function awardUncontested(state) {
@@ -536,7 +577,7 @@ function beginNextBettingRound(state, round) {
   state.round = round;
   state.phase = "betting";
   state.currentSeatIndex = firstPostFlopActor(state);
-  if (state.currentSeatIndex < 0) autoAdvancePoker(state, state.dealerIndex);
+  if (state.currentSeatIndex < 0 || state.seats.filter(canActPoker).length < 2) autoAdvancePoker(state, state.dealerIndex);
 }
 
 function advancePokerStreet(state) {
@@ -781,7 +822,7 @@ function advanceBlackjackTurn(state) {
 }
 
 export function legalBlackjackActions(state, seatId) {
-  if (state.phase !== "playing") return null;
+  if (state.type !== "blackjack" || state.phase !== "playing") return null;
   const seatIndex = state.seats.findIndex(s => s.id === seatId);
   if (seatIndex !== state.currentSeatIndex) return null;
   const seat = state.seats[seatIndex];
@@ -851,7 +892,7 @@ export function blackjackAction(state, seatId, action) {
     hand.status = "surrender";
     hand.surrendered = true;
     hand.result = "Surrendered";
-    seat.chips += Math.floor(hand.bet / 2);
+    seat.chips += hand.bet / 2;
     seat.lastAction = "Surrender";
     state.log.push(`${seat.name} surrenders.`);
     advanceBlackjackTurn(state);
@@ -883,7 +924,7 @@ function settleBlackjack(state) {
       if (total > 21) {
         hand.result = `Bust — loses ${hand.bet}`;
       } else if (naturalBlackjack(hand)) {
-        const payout = hand.bet + Math.floor(hand.bet * state.settings.blackjackPayout);
+        const payout = hand.bet + hand.bet * state.settings.blackjackPayout;
         seat.chips += payout;
         hand.result = `Blackjack — wins ${payout - hand.bet}`;
       } else if (dealer.total > 21) {
@@ -910,6 +951,7 @@ function settleBlackjack(state) {
 
 export function nextHand(state) {
   if (state.phase !== "complete" && state.phase !== "game-over") throw new Error("The current hand is not finished.");
+  if (EXTRA_TYPES.includes(state.type)) return startExtra(state);
   if (state.type === "blackjack") return startBlackjackRound(state);
   return startPokerHand(state);
 }
@@ -925,6 +967,7 @@ export function addChips(state, seatId, amount) {
 }
 
 export function sanitizeState(state, userId) {
+  if (EXTRA_TYPES.includes(state.type)) return extraView(state, userId);
   const ownSeatIds = state.seats.filter(s => s.ownerUserId === userId).map(s => s.id);
   const publicSeats = state.seats.map((seat, index) => {
     const own = ownSeatIds.includes(seat.id);
@@ -990,6 +1033,7 @@ export function sanitizeState(state, userId) {
 
   return {
     id: state.id,
+    revision: state.revision ?? 0,
     type: state.type,
     name: state.name,
     hostUserId: state.hostUserId,
@@ -1014,3 +1058,5 @@ export function sanitizeState(state, userId) {
     ownSeatIds
   };
 }
+
+export {extraAction};
