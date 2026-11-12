@@ -1,0 +1,7 @@
+{
+  "name": "saltybananaslug-breakable-items",
+  "private": true,
+  "version": "0.4.1",
+  "type": "module",
+  "scripts": {"test": "node --test tests/*.test.mjs"}
+}

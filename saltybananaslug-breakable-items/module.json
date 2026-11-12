@@ -1,0 +1,37 @@
+{
+  "id": "saltybananaslug-breakable-items",
+  "title": "SaltyBananaSlug's Breakable Items",
+  "description": "Automatic physical item durability, native Mending target prompts, configurable tool roles, independent placed repairers, smallest-first repair payments, weapon/armor wear and lifetime break history.",
+  "version": "0.4.1",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.2.0",
+          "verified": "5.2.4"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/breakable-items.css"
+  ],
+  "socket": true,
+  "readme": "README.md",
+  "license": "LICENSE"
+}

@@ -35,6 +35,7 @@ Armor Models includes session hooks/timers for some cleanup: rerun after a world
 
 | Macro | Opens | Required module |
 | --- | --- | --- |
+| [Equipment Tracker](../saltybananaslug-breakable-items/macros/Equipment_Tracker.js) | Selected token or assigned character’s equipment and repairs | `saltybananaslug-breakable-items` |
 | [Web Viewer](launchers/web-viewer.js) | Web Viewer window | `saltybananaslug-web-viewer` |
 | [Card Games](launchers/card-games.js) | Card Games launcher | `saltybananaslug-card-games` |
 | [Actor Journal](launchers/actor-journal.js) | Actor Journal | `saltybananaslug-actor-journal` |

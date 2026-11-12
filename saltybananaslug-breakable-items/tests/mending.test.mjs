@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {ID,DEFAULT_RULES,DEFAULT_PROFILES,DEFAULT_DURABILITY} from '../scripts/core.mjs';
+import {isMendingSource,mendingReasons,mendingSources} from '../scripts/mending.mjs';
+const cfg={rules:DEFAULT_RULES,profiles:DEFAULT_PROFILES,durability:DEFAULT_DURABILITY};
+const item=extra=>({type:'weapon',name:'Blade',system:{quantity:1},flags:{[ID]:{durability:{max:20,hp:10,breaks:1}}},...extra});
+test('Mending is recognized from a native spell or a named custom item activity',()=>{assert.equal(isMendingSource({name:'Mending'}),true);assert.equal(isMendingSource({name:'Wand'},{name:'Mending'}),true);assert.equal(isMendingSource({system:{identifier:'mending'}}),true);assert.equal(isMendingSource({name:'Greater Mending'}),false);});
+test('Mending sources include native activities regardless of physical source type',()=>{const activity={id:'m',name:'Mending',use(){}};assert.equal(mendingSources({items:[{name:'Custom Wand',type:'equipment',system:{activities:[activity]}}]}).length,1);});
+test('damaged and first/second broken items are eligible by default',()=>{assert.deepEqual(mendingReasons(item(),cfg),[]);for(const breaks of [1,2])assert.deepEqual(mendingReasons(item({flags:{[ID]:{durability:{max:20,hp:0,breaks}}}}),cfg),[]);});
+test('destroyed items remain ineligible for Mending',()=>{assert.match(mendingReasons(item({flags:{[ID]:{durability:{max:20,hp:0,breaks:3}}}}),cfg).join(' '),/Destroyed/);});
+test('Mending never repairs an entire shared-condition stack at once',()=>{assert.match(mendingReasons(item({system:{quantity:5}}),cfg).join(' '),/Split a single object/);});
+test('GM campaign and per-item Mending exclusions are respected',()=>{assert.match(mendingReasons(item(),{...cfg,rules:{...DEFAULT_RULES,mendingEnabled:false}}).join(' '),/disabled/);assert.match(mendingReasons(item({flags:{[ID]:{durability:{max:20,hp:10,config:{mendingAllowed:false}}}}}),cfg).join(' '),/excluded/);});
+test('GM can require ordinary repairs for broken items',()=>{assert.match(mendingReasons(item({flags:{[ID]:{durability:{max:20,hp:0}}}}),{...cfg,rules:{...DEFAULT_RULES,mendingBroken:false}}).join(' '),/ordinary repairs/);});
