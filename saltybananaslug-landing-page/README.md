@@ -1,6 +1,6 @@
 # SaltyBananaSlug's Landing Page
 
-Version **0.6.0** for **Foundry VTT v13** and **D&D5e 5.2.4 or later**.
+Version **0.6.1** for **Foundry VTT v13** and **D&D5e 5.2.4 or later**.
 
 Build a campaign welcome scene with live party cards, session information, handouts, and optional SBS quest and evidence boards. Widgets follow the scene as players pan and zoom. Artwork first places compact party cards across the top and content boxes along the bottom, with transparent controls and adjustable backgrounds.
 
@@ -60,6 +60,8 @@ Fit map includes 12% clear framing space on each side. Click it after changing t
 
 ## Party cards and permissions
 
+The party region expands for extra rows and scales cards when space is tight, keeping the entire selected party visible without an internal scrollbar. Map zoom can enlarge the cards for large rosters. Lower panels retain their own scrolling.
+
 All selected party members appear by name and portrait, including characters whose sheets the viewer cannot access. Publishing includes a name-and-portrait roster for clients missing actor documents.
 
 Observer access enables sheet actions and character statistics. HP modes include exact HP with temporary HP, a health bar, a health description, and owner/GM-only HP. Optional information includes player names, class and level, AC, passive Perception, Inspiration, and conditions.
@@ -90,7 +92,7 @@ Existing presets and landing scenes are supported. Open Configure to choose the 
 
 ## Validation
 
-The source was checked against Foundry v13.347. The v0.6.0 automated suite contains 17 passing checks covering party visibility, HP and quest permissions, links, handouts, scene publishing, appearance normalization, map alignment, zoom limits, and drag navigation.
+The source was checked against Foundry v13.347. The v0.6.1 automated suite contains 20 passing checks covering party visibility, HP and quest permissions, links, handouts, scene publishing, appearance normalization, map alignment, zoom limits, and drag navigation.
 
 Run the checks from this module folder with Node.js.
 
@@ -98,7 +100,7 @@ Run the checks from this module folder with Node.js.
 node --test tests/*.test.mjs
 ```
 
-The maintainer approved v0.6.0 for publication. Automated checks use mocked Foundry data and do not constitute a complete multi-client compatibility test.
+Automated checks use mocked Foundry data and do not constitute a complete multi-client compatibility test.
 
 ## Launcher API
 

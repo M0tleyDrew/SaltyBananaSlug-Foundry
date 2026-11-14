@@ -2,7 +2,7 @@
   "id": "saltybananaslug-landing-page",
   "title": "SaltyBananaSlug's Landing Page",
   "description": "A campaign landing scene with live character cards, session presets, handouts, links, and optional SBS quest and evidence integrations.",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "authors": [
     {
       "name": "SaltyBananaSlug"
@@ -31,5 +31,5 @@
   ],
   "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslug-landing-page",
   "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-landing-page.json",
-  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-landing-page-v0.6.0.zip"
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-landing-page-v0.6.1.zip"
 }

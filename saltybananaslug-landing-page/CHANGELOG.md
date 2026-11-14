@@ -1,3 +1,10 @@
+## 0.6.1
+
+- Expand the party region to show additional rows.
+- Measure wrapped card content and scale the full party group when space is tight.
+- Keep all selected party cards visible together while reserving space for lower panels.
+- Remove internal party scrolling.
+
 ## 0.6.0
 
 - Remove solid green fills from party cards and landing-page links.

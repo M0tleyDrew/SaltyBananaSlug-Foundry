@@ -1,3 +1,4 @@
+import { choosePartyFit } from './party-layout.mjs';
 import { fitView, zoomView, dragView } from './navigation.mjs';
 import { ID, QUESTS, EVIDENCE, SECTIONS, clone, esc, safeURL, defaults, normalize, projectQuests, health, validateLinkRows, mapPlacement, normalizeAppearance, panelStyle } from './model.mjs';
 
@@ -241,7 +242,8 @@ export class LandingDashboard {
     if (!stage) return;
     const party=stage.querySelector(':scope > .sbs-lp-party');
     const lower=stage.querySelector('.sbs-lp-lower');
-    stage.style.gridTemplateRows=party && lower ? 'minmax(0, 0.38fr) minmax(0, 0.62fr)' : 'minmax(0,1fr)';
+    stage.style.gridTemplateRows=party && lower ? 'auto minmax(0,1fr)' : 'minmax(0,1fr)';
+    if(party)this.fitParty(stage,party,!!lower);
     if (lower) {
       const panels=Array.from(lower.children);
       const columns=Math.max(1,Math.min(3,Math.floor(stage.clientWidth/300)));
@@ -254,12 +256,44 @@ export class LandingDashboard {
       });
     }
   }
+  fitParty(stage,panel,hasLower) {
+    const body=panel.querySelector('.sbs-lp-panel-content');
+    const frame=body?.querySelector('.sbs-lp-party-fit');
+    const grid=frame?.firstElementChild;
+    if(!grid || !stage.clientWidth || !stage.clientHeight)return;
+    const style=getComputedStyle(body);
+    const width=body.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+    if(width<=0)return;
+    const overhead=panel.querySelector('h2').offsetHeight+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+4;
+    const gap=parseFloat(getComputedStyle(stage).rowGap)||0;
+    const lowerReserve=hasLower?Math.min(220,stage.clientHeight*.30)+gap:0;
+    const height=Math.max(1,stage.clientHeight-lowerReserve-overhead);
+    const count=grid.querySelectorAll('.sbs-lp-character').length;
+    const compact=!!stage.closest('.sbs-lp-layout-artwork');
+    const cardWidth=compact?240:180;
+    const firstColumn=Math.max(1,Math.min(count,Math.floor((width+12)/(cardWidth+12))));
+    const candidates=[];
+    grid.style.transform='none';
+    // Measure real wrapped text before choosing the largest card scale that fits.
+    for(let columns=firstColumn;columns<=Math.max(1,count);columns++) {
+      const naturalWidth=Math.max(width,columns*cardWidth+(columns-1)*12);
+      grid.style.width=`${naturalWidth}px`;
+      grid.style.gridTemplateColumns=`repeat(${columns},minmax(0,1fr))`;
+      candidates.push({columns,width:naturalWidth,height:grid.scrollHeight});
+    }
+    const fit=choosePartyFit(candidates,width,height);
+    grid.style.width=`${fit.width}px`;
+    grid.style.gridTemplateColumns=`repeat(${fit.columns},minmax(0,1fr))`;
+    grid.style.transform=`scale(${fit.scale})`;
+    frame.style.height=`${Math.ceil(fit.height*fit.scale)}px`;
+    panel.style.height=`${Math.ceil(fit.height*fit.scale)+overhead}px`;
+  }
   async buildHTML() {
     const p=this.config ?? currentConfig(); if (!p) return '';
     const user=this.preview ?? game.user, isGM=game.user.isGM && !this.preview;
     const panels={};
     panels.header=`<div class="sbs-lp-eyebrow">${esc(p.campaign)}</div><h1>${esc(p.showTitle?p.title:'Session '+p.session)}</h1><p>${[p.arc&&`Arc ${p.arc}`,p.chapter&&`Chapter ${p.chapter}`,p.session&&`Session ${p.session}`].filter(Boolean).map(esc).join(' · ')}</p>`;
-    panels.party=`<div class="sbs-lp-party">${partyFor(p).map(a=>characterCard(a,p,user)).join('') || '<p>No visible characters selected.</p>'}</div>`;
+    panels.party=`<div class="sbs-lp-party-fit"><div class="sbs-lp-party">${partyFor(p).map(a=>characterCard(a,p,user)).join('') || '<p>No visible characters selected.</p>'}</div></div>`;
     panels.recap=`<p>${text(p.recap || 'Your story continues here.')}</p>`;
     const qa=moduleAPI(QUESTS);
     if (qa?.getState) {
