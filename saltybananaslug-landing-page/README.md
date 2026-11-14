@@ -6,15 +6,9 @@ Build a campaign welcome scene with live party cards, session information, hando
 
 ## Install
 
-Install through **SaltyBananaSlug's Environment**, or paste the following URL into Foundry Setup → Add-on Modules → Install Module → Manifest URL.
-
-```text
-https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslug-landing-page.json
-```
+Open **SaltyBananaSlug's Environment**, find **SaltyBananaSlug's Landing Page**, and install it through the manager.
 
 Enable **SaltyBananaSlug's Landing Page** in the world's Manage Modules screen. Reload connected clients after updating.
-
-For manual installation, download the [v0.6.0 module ZIP](https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslug-landing-page-v0.6.0.zip) and extract its module folder into your Foundry User Data `Data/modules` directory. The folder should directly contain `module.json`, `scripts`, and `styles`.
 
 ## Create a landing scene
 
