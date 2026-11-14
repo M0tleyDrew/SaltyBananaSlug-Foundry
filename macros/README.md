@@ -26,6 +26,7 @@ Armor Models includes session hooks/timers for some cleanup: rerun after a world
 
 | Macro | Purpose | Requirements and notes |
 | --- | --- | --- |
+| [Clear Scene Navigation](utilities/clear-scene-navigation.js) | Turn off Show in Navigation for all scenes while keeping maps in the Scenes directory. | GM-only. Works with normal navigation and Monk’s Scene Navigation. Active/currently viewed scenes can remain visible. Re-enable individual scenes with Toggle Navigation in the Scenes directory. |
 | [Toggle Player List](utilities/toggle-player-list.js) | Show or hide Foundry's normal online-player list for your client. | Original session toggle. Party Viewer v0.4.2 also provides a persistent hide setting, which is preferable for automatic hiding. |
 | [Toggle 180° Vision](utilities/toggle-180-vision.js) | Toggle selected tokens between 180° and 360° sight. | Enables sight and updates selected tokens; requires token update permission. |
 | [Set 180° Vision](utilities/set-180-vision.js) | Set all selected tokens to 180° sight. | Enables sight; requires token update permission. |
@@ -50,7 +51,7 @@ The [archive](archive/README.md) preserves five superseded scripts and explains 
 
 ## Recovery inventory
 
-This folder contains **13 current scripts and 5 archived scripts**. The original collection source was recovered from saved macro files, original module macro folders, and the exact vision/player-list code from the conversation. Recovered JavaScript files were copied without rewriting their mechanics; descriptions and organization are new.
+This folder contains **14 current scripts and 5 archived scripts**. The original collection source was recovered from saved macro files, original module macro folders, and the exact vision/player-list code from the conversation. Recovered JavaScript files were copied without rewriting their mechanics; descriptions and organization are new.
 
 These previously discussed macros still need their complete original source recovered before they can be added:
 
