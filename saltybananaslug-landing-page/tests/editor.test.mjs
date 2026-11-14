@@ -1,0 +1,40 @@
+
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateLinkRows} from '../scripts/model.mjs';
+test('link rows support ordinary labels and validate only complete destinations',()=>{
+  assert.deepEqual(validateLinkRows([{label:'',target:''}]),[]);
+  assert.deepEqual(validateLinkRows([{label:'Map | clues',target:' https://example.com/map '}]),[{label:'Map | clues',target:'https://example.com/map'}]);
+  assert.throws(()=>validateLinkRows([{label:'Map',target:''}]),/both/);
+  assert.throws(()=>validateLinkRows([{label:'Map',target:'javascript:alert(1)'}]));
+  assert.equal(validateLinkRows([{label:'Clue',target:'JournalEntry.abc.JournalEntryPage.def'}]).length,1);
+});
+globalThis.Hooks={on(){},once(){}};
+globalThis.foundry={applications:{api:{ApplicationV2:class{}}}};
+globalThis.CONST={DOCUMENT_OWNERSHIP_LEVELS:{NONE:0,OBSERVER:2},IMAGE_FILE_EXTENSIONS:{png:'image/png'}};
+globalThis.game={user:{isGM:true},scenes:{}};
+globalThis.ui={notifications:{info(){}}};
+const {LandingEditor}=await import('../scripts/main.mjs');
+test('new handouts create pages, honor sharing, and attach to the draft',async()=>{
+  const editor=new LandingEditor();
+  editor.capture=()=>{};
+  editor.handoutTitle='Clue';
+  editor.handoutShared=true;
+  const created=[];
+  globalThis.JournalEntry={create:async data=>{created.push(data);return {uuid:'JournalEntry.'+created.length,sheet:{render(){}}}}};
+  await editor.createHandout('worlds/test/clue.png');
+  assert.equal(created[0].pages[0].type,'image');
+  assert.equal(created[0].ownership.default,2);
+  editor.handoutShared=false;
+  await editor.createHandout('worlds/test/clue.pdf');
+  assert.equal(created[1].pages[0].type,'pdf');
+  assert.equal(created[1].ownership.default,0);
+  await editor.createHandout();
+  assert.equal(created[2].pages[0].type,'text');
+  assert.equal(editor.p.journalRefs.length,3);
+  await assert.rejects(editor.createHandout('worlds/test/clue.js'),/image or PDF/);
+  globalThis.JournalEntry.create=async()=>{throw Error('Storage unavailable')};
+  await assert.rejects(editor.createHandout(),/Storage unavailable/);
+  assert.equal(editor.addingHandout,false);
+  assert.equal(editor.p.journalRefs.length,3);
+});
