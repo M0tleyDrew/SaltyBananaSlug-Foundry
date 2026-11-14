@@ -1,17 +1,17 @@
 // Selected Token -> Monster Manual-style text stat block
 // Foundry VTT v13 / D&D5e v5.2.x. Create a Script macro and paste this file.
-(async () => {
+return (async () => {
   if (game.system.id !== "dnd5e") {
     ui.notifications.error("This macro requires the D&D 5e game system.");
     return;
   }
 
-  const selected = canvas.tokens.controlled;
+  const selected = canvas.tokens?.controlled ?? [];
   if (selected.length > 1) {
     ui.notifications.warn("Select only one token.");
     return;
   }
-  const targets = Array.from(game.user.targets);
+  const targets = Array.from(game.user.targets ?? []);
   const token = selected[0] ?? (targets.length === 1 ? targets[0] : null);
   if (!token?.actor) {
     ui.notifications.warn("Select a token, or target exactly one token.");
@@ -32,6 +32,9 @@
     node.querySelectorAll("script, style, button, svg, figcaption, .document-embed-actions")
       .forEach(element => element.remove());
     node.style.cssText = "position:fixed;left:-100000px;top:0;width:700px;opacity:0;pointer-events:none";
+    if (!game.user.isGM && !actor.isOwner) {
+      node.querySelectorAll(".secret:not(.revealed)").forEach(element => element.remove());
+    }
     document.body.append(node);
     try {
       return node.innerText
@@ -55,7 +58,7 @@
     const a = s.attributes ?? {};
     const d = s.details ?? {};
     const t = s.traits ?? {};
-    const size = game.i18n.localize(CONFIG.DND5E.actorSizes?.[t.size] ?? t.size ?? "Medium");
+    const size = game.i18n.localize(CONFIG.DND5E.actorSizes?.[t.size]?.label ?? CONFIG.DND5E.actorSizes?.[t.size] ?? t.size ?? "Medium");
     const kind = label(d.race) || label(d.type) || "Humanoid";
     const lines = [actor.name, [size, kind, label(d.alignment)].filter(Boolean).join(" ")];
     lines.push(`Armor Class ${a.ac?.value ?? "—"}`);
@@ -131,9 +134,9 @@
   let text;
   if (actor.type === "npc") {
     try {
-      const editor = foundry.applications.ux.TextEditor;
+      const editor = foundry.applications.ux.TextEditor.implementation;
       const embed = `@Embed[${actor.uuid} statblock caption=false cite=false]`;
-      const html = await editor.enrichHTML(embed, { embeds: true, relativeTo: actor });
+      const html = await editor.enrichHTML(embed, { embeds: true, relativeTo: actor, secrets: game.user.isGM || actor.isOwner });
       if (!html || html.includes("@Embed[")) throw new Error("Stat block embed was not resolved");
       text = htmlToText(html);
       if (!text) throw new Error("Stat block rendered empty");
@@ -146,7 +149,7 @@
     text = characterText();
   }
 
-  new foundry.applications.api.DialogV2({
+  await new foundry.applications.api.DialogV2({
     window: { title: `${actor.name} — Text Stat Block`, resizable: true },
     position: { width: 750, height: 650 },
     content: `<p>Copyable text for <strong>${foundry.utils.escapeHTML(actor.name)}</strong>.</p>
@@ -163,4 +166,8 @@
       { action: "close", label: "Close" }
     ]
   }).render({ force: true });
-})();
+})().catch(error => {
+  console.error("Selected Token Statblock", error);
+  ui.notifications.error(`Statblock failed: ${error.message ?? error}`);
+});
+
