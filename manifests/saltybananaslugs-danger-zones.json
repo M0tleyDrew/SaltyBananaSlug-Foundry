@@ -1,0 +1,35 @@
+{
+  "id": "saltybananaslugs-danger-zones",
+  "title": "SaltyBananaSlug's Danger Zones",
+  "description": "GM-driven tactical danger and safe-zone telegraphs with one-shot countdown attacks, repeating hazards, encounter-tracker initiative, saves, damage, healing, messages, movement patterns, and presets.",
+  "version": "0.2.5",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.350"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.2.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/danger-zones.css"
+  ],
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-danger-zones",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-danger-zones.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-danger-zones-v0.2.5.zip"
+}

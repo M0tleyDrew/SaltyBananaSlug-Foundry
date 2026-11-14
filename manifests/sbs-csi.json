@@ -1,0 +1,50 @@
+{
+  "id": "sbs-csi",
+  "title": "SaltyBananaSlug's Complete Scene Importer (SBS CSI)",
+  "description": "A shared SBS slug sidebar hub plus batch imports of maps and scenic artwork from XLSX/ZIP, with scale, walls, doors, windows, lighting and working Lock & Key items.",
+  "version": "0.1.7",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13.341",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0",
+          "maximum": "5.9.99"
+        }
+      }
+    ],
+    "requires": [
+      {
+        "id": "LocknKey",
+        "type": "module",
+        "manifest": "https://github.com/Saibot393/LocknKey/releases/latest/download/module.json"
+      }
+    ]
+  },
+  "scripts": [
+    "vendor/xlsx.full.min.js",
+    "vendor/jszip.min.js"
+  ],
+  "esmodules": [
+    "scripts/chat-visibility.js",
+    "scripts/hub.js",
+    "scripts/main.js"
+  ],
+  "styles": [
+    "assets/csi.css",
+    "assets/hub.css"
+  ],
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/sbs-csi",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/sbs-csi.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/sbs-csi-v0.1.7.zip"
+}

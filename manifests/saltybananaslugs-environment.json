@@ -1,0 +1,24 @@
+{
+  "id": "saltybananaslugs-environment",
+  "title": "SaltyBananaSlug's Environment",
+  "description": "SaltyBananaSlug ecosystem manager for Foundry VTT: GitHub-backed module discovery, version checks, install/update manifests, release packages, and SBS macro installation.",
+  "version": "0.4.0",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.347"
+  },
+  "esmodules": [
+    "scripts/environment.mjs"
+  ],
+  "styles": [
+    "styles/environment.css"
+  ],
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/saltybananaslugs-environment",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/saltybananaslugs-environment.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/saltybananaslugs-environment-v0.4.0.zip"
+}
