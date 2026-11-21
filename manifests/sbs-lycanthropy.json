@@ -1,0 +1,37 @@
+{
+  "id": "sbs-lycanthropy",
+  "title": "SaltyBananaSlug’s Lycanthropy",
+  "description": "Grim Hollow 2024 lycanthrope stages, player boon choices, reversible hybrid and animal forms, and temporary form-specific token images.",
+  "version": "0.1.1",
+  "authors": [
+    {
+      "name": "SaltyBananaSlug"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.2.0",
+          "maximum": "5.2.99"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/lycanthropy.css"
+  ],
+  "socket": true,
+  "url": "https://github.com/M0tleyDrew/SaltyBananaSlug-Foundry/tree/main/sbs-lycanthropy",
+  "manifest": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/manifests/sbs-lycanthropy.json",
+  "download": "https://raw.githubusercontent.com/M0tleyDrew/SaltyBananaSlug-Foundry/environment-catalog/packages/sbs-lycanthropy-v0.1.1.zip"
+}
