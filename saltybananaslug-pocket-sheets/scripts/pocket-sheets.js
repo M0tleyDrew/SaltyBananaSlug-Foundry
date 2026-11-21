@@ -1,6 +1,8 @@
 import { PocketMap } from "./pocket-map.js";
 
 const MODULE_ID = "saltybananaslug-pocket-sheets";
+const BREAKABLE_ITEMS_ID = "saltybananaslug-breakable-items";
+const MESSAGE_CANTRIP_ID = "message-cantrip";
 const SETTING_ASSIGNMENTS = "assignments";
 const SOCKET = `module.${MODULE_ID}`;
 
@@ -95,7 +97,15 @@ function renderActivityButtons(item, activities) {
   return controls.join("");
 }
 
-function renderItemRow(item, { spell = false, feature = false } = {}) {
+function renderItemDurability(item, api) {
+  const durability = api?.inspect?.(item);
+  const hp = durability?.state;
+  if (!durability?.tracked || !hp) return "";
+  const condition = hp.destroyed ? " · Destroyed" : hp.hp === 0 ? " · Broken" : "";
+  return `<span class="sbs-pocket-item-durability">${esc(hp.hp)}/${esc(hp.max)} HP${condition}</span>`;
+}
+
+function renderItemRow(item, { spell = false, feature = false, durabilityApi } = {}) {
   const uses = usesLabel(item);
   const prep = item.system?.preparation;
   const prepared = prep?.mode !== undefined && !["always", "innate", "pact"].includes(prep.mode)
@@ -106,7 +116,7 @@ function renderItemRow(item, { spell = false, feature = false } = {}) {
   const useButtons = renderActivityButtons(item, activities);
   return `<article class="sbs-pocket-item" data-item-id="${item.id}">
     <img src="${esc(item.img)}" alt="" draggable="false">
-    <div class="sbs-pocket-item-name"><strong>${esc(item.name)}</strong><span>${esc(uses || labelFromConfig("itemTypes", item.type, item.type))}</span></div>
+    <div class="sbs-pocket-item-name"><strong>${esc(item.name)}</strong><span>${esc(uses || labelFromConfig("itemTypes", item.type, item.type))}</span>${renderItemDurability(item, durabilityApi)}</div>
     <div class="sbs-pocket-item-actions">${prepared}${equipped}${useButtons}<button type="button" class="sbs-pocket-description" data-action="item-details" data-item-id="${item.id}"><i class="fa-solid fa-book-open"></i> Expand</button><button type="button" class="sbs-pocket-chat" data-action="item-chat" data-item-id="${item.id}"><i class="fa-solid fa-comment"></i> Chat</button></div>
     <div class="sbs-pocket-item-details" hidden></div>
   </article>`;
@@ -114,14 +124,14 @@ function renderItemRow(item, { spell = false, feature = false } = {}) {
 
 function section(title, contents, empty = "Nothing here.") { return `<section class="sbs-pocket-card"><h3>${esc(title)}</h3>${contents || `<p class="sbs-pocket-empty">${esc(empty)}</p>`}</section>`; }
 
-function renderContainerTree(actor, item, seen = new Set()) {
+function renderContainerTree(actor, item, durabilityApi, seen = new Set()) {
   if (seen.has(item.id)) return "";
   const branch = new Set(seen);
   branch.add(item.id);
   const children = actor.items.filter((child) => containerIdOf(child) === item.id);
-  const row = renderItemRow(item, { spell: item.type === "spell", feature: ["feat", "class", "subclass", "race", "background"].includes(item.type) });
+  const row = renderItemRow(item, { spell: item.type === "spell", feature: ["feat", "class", "subclass", "race", "background"].includes(item.type), durabilityApi });
   if (!children.length) return row;
-  return `<div class="sbs-pocket-container-tree">${row}<div class="sbs-pocket-container-contents"><h4><i class="fa-solid fa-box-open"></i> Contents</h4>${children.map((child) => renderContainerTree(actor, child, branch)).join("")}</div></div>`;
+  return `<div class="sbs-pocket-container-tree">${row}<div class="sbs-pocket-container-contents"><h4><i class="fa-solid fa-box-open"></i> Contents</h4>${children.map((child) => renderContainerTree(actor, child, durabilityApi, branch)).join("")}</div></div>`;
 }
 
 function renderAttributes(actor) {
@@ -131,9 +141,9 @@ function renderAttributes(actor) {
   const speed = Object.entries(movement).filter(([, v]) => Number.isFinite(Number(v)) && Number(v) > 0).map(([k, v]) => `${labelFromConfig("movementTypes", k, k)} ${v}`).join(" · ") || "—";
   const abilities = Object.entries(system.abilities ?? {}).map(([key, a]) => {
     const proficient = Number(a.proficient ?? a.save?.proficient ?? a.saveProficient ?? 0) > 0;
-    return `<article class="sbs-pocket-ability"><strong>${esc(labelFromConfig("abilities", key, key.toUpperCase()))}</strong><span class="score">${a.value ?? "—"}</span><button type="button" data-action="roll-ability" data-key="${key}">Check</button><button type="button" class="sbs-pocket-save ${proficient ? "proficient" : ""}" data-action="roll-save" data-key="${key}">${proficient ? '<i class="fa-solid fa-circle-check"></i> ' : ""}Save</button>${proficient ? '<small class="sbs-pocket-save-prof">Proficient</small>' : ""}</article>`;
+    return `<article class="sbs-pocket-ability"><div class="sbs-pocket-ability-title"><strong>${esc(labelFromConfig("abilities", key, key.toUpperCase()))}</strong><span class="score">${a.value ?? "—"}</span></div><button type="button" data-action="roll-ability" data-key="${key}">Check</button><button type="button" class="sbs-pocket-save ${proficient ? "proficient" : ""}" data-action="roll-save" data-key="${key}">${proficient ? '<i class="fa-solid fa-circle-check"></i> ' : ""}Save</button>${proficient ? '<small class="sbs-pocket-save-prof">Proficient</small>' : ""}</article>`;
   }).join("");
-  const skills = Object.entries(system.skills ?? {}).map(([key, s]) => `<button type="button" class="sbs-pocket-skill" data-action="roll-skill" data-key="${key}"><span>${esc(labelFromConfig("skills", key, key))}</span><strong>${signed(s.total ?? s.mod)}</strong><small>Passive ${s.passive ?? "—"}</small></button>`).join("");
+  const skills = Object.entries(system.skills ?? {}).map(([key, s]) => `<button type="button" class="sbs-pocket-skill" data-action="roll-skill" data-key="${key}"><span class="sbs-pocket-skill-label"><span>${esc(labelFromConfig("skills", key, key))}</span><small>Passive ${s.passive ?? "—"}</small></span><strong>${signed(s.total ?? s.mod)}</strong></button>`).join("");
   const death = system.attributes?.death ?? {};
   const success = Number(death.success ?? 0), failure = Number(death.failure ?? 0);
   const pip = (filled, kind) => Array.from({ length: 3 }, (_, index) => `<i class="fa-${index < filled ? "solid" : "regular"} fa-circle ${kind}"></i>`).join("");
@@ -146,10 +156,12 @@ function renderAttributes(actor) {
 }
 
 function renderInventory(actor) {
+  const breakableItems = game.modules.get(BREAKABLE_ITEMS_ID);
+  const durabilityApi = breakableItems?.active ? breakableItems.api : undefined;
   const groups = [["Weapons", ["weapon"]], ["Equipment", ["equipment"]], ["Consumables", ["consumable"]], ["Tools", ["tool"]], ["Containers", ["container"]], ["Other", ["loot", "backpack"]]];
   return groups.map(([title, types]) => {
     const items = itemCollection(actor, types).filter((item) => !containerIdOf(item));
-    const rows = items.map((item) => item.type === "container" ? renderContainerTree(actor, item) : renderItemRow(item)).join("");
+    const rows = items.map((item) => item.type === "container" ? renderContainerTree(actor, item, durabilityApi) : renderItemRow(item, { durabilityApi })).join("");
     return rows ? section(title, `<div class="sbs-pocket-list">${rows}</div>`) : "";
   }).join("") || section("Inventory", "", "No carried items.");
 }
@@ -189,11 +201,65 @@ async function renderBiography(actor) {
   return section("Biography", `<div class="sbs-pocket-prose">${enriched}</div>`, "No biography.");
 }
 
-function renderNativeChatPortal() {
+function messageCantripModule() {
+  const exact = game.modules.get(MESSAGE_CANTRIP_ID);
+  if (exact?.active) return exact;
+  return Array.from(game.modules.values()).find((module) =>
+    module.active && /message[ -]+cantrip/i.test(`${module.id} ${module.title}`));
+}
+
+function messageCantripApi() {
+  const api = messageCantripModule()?.api;
+  if (typeof api?.send === "function") return api;
+  return globalThis.MessageCantrip;
+}
+
+function messageCantripFlag(message) {
+  const scope = messageCantripModule()?.id ?? MESSAGE_CANTRIP_ID;
+  return message?.flags?.[scope]?.payload ?? message?.flags?.[MESSAGE_CANTRIP_ID]?.payload;
+}
+
+function cantripPayload(message) {
+  const payload = messageCantripFlag(message);
+  const userId = game.user.id;
+  if (!payload || !message.whisper?.includes(userId)) return null;
+  return payload.senderId === userId || payload.recipientIds?.includes(userId) ? payload : null;
+}
+
+function renderCantripHistory() {
+  const entries = (game.messages?.contents ?? []).flatMap((message) => {
+    const payload = cantripPayload(message);
+    return payload ? [{ message, payload }] : [];
+  }).slice(-30).reverse();
+  return entries.map(({ message, payload }) => {
+    const sent = payload.senderId === game.user.id;
+    return `<article><strong>${sent ? "To " + esc(payload.recipientNames?.join(", ")) : "From " + esc(payload.senderName)}</strong>
+      <p>${esc(payload.text)}</p>
+      ${!sent && game.users.get(payload.senderId) ? `<button type="button" data-action="reply-cantrip" data-key="${esc(message.id)}">Reply</button>` : ""}</article>`;
+  }).join("") || "<p>No private messages yet.</p>";
+}
+
+function renderCantrip(draft) {
+  const recipients = game.users.contents.filter((user) => user.id !== game.user.id)
+    .map((user) => `<option value="${esc(user.id)}" ${draft.recipientId === user.id ? "selected" : ""}>${esc(user.name)}</option>`).join("");
+  return `<section class="sbs-pocket-cantrip-panel"><h2>Message Cantrip</h2>
+    <form class="sbs-pocket-cantrip-compose">
+      <label>To <select name="recipient" required><option value="">Choose a recipient</option>${recipients}</select></label>
+      <label>Private message<textarea name="message" rows="3" required>${esc(draft.text)}</textarea></label>
+      <button type="submit">Send Private Message</button>
+    </form>
+    <h3>Recent private messages</h3><div class="sbs-pocket-cantrip-history">${renderCantripHistory()}</div>
+  </section>`;
+}
+
+function renderNativeChatPortal(draft) {
   return `<section class="sbs-pocket-chat-feed" aria-label="Visible chat history">
-    <header class="sbs-pocket-chat-heading"><div><h2><i class="fa-solid fa-comments"></i> Chat</h2><p>Foundry's actual live Chat Log. No interpretive dance.</p></div><span>Live</span></header>
+    <header class="sbs-pocket-chat-heading"><h2><i class="fa-solid fa-comments"></i> Chat</h2></header>
     <div class="sbs-pocket-native-chat-host"><div class="sbs-pocket-chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Opening Foundry Chat…</span></div></div>
-    <p class="sbs-pocket-chat-note"><i class="fa-solid fa-eye"></i> The same messages and rolls Foundry shows this player on desktop</p>
+    <form class="sbs-pocket-chat-composer">
+      <textarea name="message" rows="2" aria-label="Message to everyone" placeholder="Message to everyone…" required>${esc(draft)}</textarea>
+      <div class="sbs-pocket-chat-actions"><button type="submit">Send to Chat</button></div>
+    </form>
   </section>`;
 }
 
@@ -206,6 +272,8 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     this._map = new PocketMap(actor.id);
     this.scrollPositions = new Map();
     this.followChat = true;
+    this.chatDraft = "";
+    this.cantripDraft = { recipientId: "", text: "", messageId: null };
     this._nativeChatElement = null;
     this._nativeChatAnchor = null;
     this._nativeChatOrigin = null;
@@ -224,7 +292,8 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
       { id: "features", label: "Features", icon: "fa-solid fa-star", render: () => renderFeatures(this.actor) },
       { id: "spellbook", label: "Spellbook", icon: "fa-solid fa-book-sparkles", render: () => renderSpells(this.actor) },
       { id: "map", label: "Map", icon: "fa-solid fa-map", render: () => "" },
-      { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => renderNativeChatPortal() },
+      { id: "chat", label: "Chat", icon: "fa-solid fa-comments", render: () => renderNativeChatPortal(this.chatDraft) },
+      { id: "cantrip", label: "Cantrip", icon: "fa-solid fa-comment-dots", render: () => renderCantrip(this.cantripDraft) },
       { id: "effects", label: "Effects", icon: "fa-solid fa-bolt", render: () => renderEffects(this.actor) },
       ...(hasBastion ? [{ id: "bastions", label: "Bastions", icon: "fa-solid fa-castle", render: () => renderBastions(this.actor) }] : []),
       ...(showTraits ? [{ id: "traits", label: "Special Traits", icon: "fa-solid fa-list-check", render: () => renderTraits(this.actor) }] : []),
@@ -234,10 +303,15 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!tabs.some((t) => t.id === this.activeTab)) this.activeTab = tabs[0].id;
     const nav = tabs.map((t) => `<button type="button" class="${t.id === this.activeTab ? "active" : ""}" data-action="change-tab" data-tab="${esc(t.id)}"><i class="${esc(t.icon || "fa-solid fa-puzzle-piece")}"></i><span>${esc(t.label)}</span></button>`).join("");
     const panels = (await Promise.all(tabs.map(async (t) => `<section class="sbs-pocket-panel ${t.id === this.activeTab ? "active" : ""}" data-panel="${esc(t.id)}">${await t.render(this.actor, game.user)}</section>`))).join("");
-    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.2";
-    return `<header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><i class="fa-solid fa-wifi" title="Connected"></i></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside>`;
+    const version = game.modules.get(MODULE_ID)?.version ?? "0.4.7";
+    return `<div class="sbs-pocket-mobile-layout"><header class="sbs-pocket-mobile-header"><img src="modules/${MODULE_ID}/assets/pocket-sheets.svg" alt="" draggable="false"><div><strong>Pocket Sheets</strong><span>${esc(this.actor.name)}</span></div><button type="button" class="sbs-pocket-cantrip-shortcut" data-action="change-tab" data-tab="cantrip" aria-label="Open Message Cantrip"><i class="fa-solid fa-comment-dots"></i> Cantrip</button></header><nav class="sbs-pocket-mobile-tabs">${nav}</nav><main class="sbs-pocket-mobile-content">${panels}</main><footer class="sbs-pocket-mobile-footer">SaltyBananaSlug's Pocket Sheets <span>v${esc(version)}</span></footer><aside class="sbs-pocket-rail" aria-label="Sheet scroll controls"><button type="button" data-rail="top"><i class="fa-solid fa-chevron-up"></i></button><div class="sbs-pocket-track"><div class="sbs-pocket-thumb"></div></div><button type="button" data-rail="bottom"><i class="fa-solid fa-chevron-down"></i></button></aside></div>`;
   }
-  _replaceHTML(result, content) { this._map.stop(); this._restoreNativeChat(); content.innerHTML = result; }
+  _replaceHTML(result, content) {
+    this._map.stop();
+    this._restoreNativeChat();
+    if (!content.classList.contains("sbs-pocket-mobile")) content.classList.add("sbs-pocket-mobile-host");
+    content.innerHTML = result;
+  }
   _onRender(context, options) {
     super._onRender(context, options);
     const root = elementOf(this.element); if (!root) return;
@@ -254,6 +328,31 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     root.addEventListener("click", (e) => { if (performance.now() < suppressUntil && !e.target.closest(".sbs-pocket-rail, .sbs-pocket-map-viewport")) { e.preventDefault(); e.stopImmediatePropagation(); } }, capture);
     root.addEventListener("click", (e) => this._onClick(e), { signal: eventAbort.signal });
     root.addEventListener("change", (e) => this._onChange(e), { signal: eventAbort.signal });
+    const composer = root.querySelector(".sbs-pocket-chat-composer");
+    composer?.addEventListener("input", () => { this.chatDraft = composer.elements.message.value; }, { signal: eventAbort.signal });
+    composer?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void this._runExclusive("send-chat", () => this._sendChatMessage(composer)).catch((error) => {
+        console.error(`${MODULE_ID} | Chat message failed`, error);
+        ui.notifications.error("Pocket Sheets could not send that chat message.");
+      });
+    }, { signal: eventAbort.signal });
+    const cantrip = root.querySelector(".sbs-pocket-cantrip-compose");
+    cantrip?.addEventListener("input", () => {
+      const recipientId = cantrip.elements.recipient.value;
+      this.cantripDraft = {
+        recipientId,
+        text: cantrip.elements.message.value,
+        messageId: recipientId === this.cantripDraft.recipientId ? this.cantripDraft.messageId : null
+      };
+    }, { signal: eventAbort.signal });
+    cantrip?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void this._runExclusive("send-cantrip", () => this._sendCantrip()).catch((error) => {
+        console.error(`${MODULE_ID} | Message Cantrip failed`, error);
+        ui.notifications.error("Pocket Sheets could not send that private message.");
+      });
+    }, { signal: eventAbort.signal });
     this._installRail(root);
     if (this.activeTab === "map") this._map.start(root);
     const content = root.querySelector(".sbs-pocket-mobile-content");
@@ -264,6 +363,7 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     const button = event.target.closest("[data-action]"); if (!button) return;
     const action = button.dataset.action; const key = button.dataset.key; const item = this.actor.items.get(button.dataset.itemId);
     try {
+      if (action === "reply-cantrip") return this._replyCantrip(key);
       if (action === "map-clear-targets") return this._map.clearTargets();
       if (action === "map-center") return this._map.center();
       if (action === "change-tab") return this.changeTab(button.dataset.tab);
@@ -417,6 +517,67 @@ class PocketSheet extends foundry.applications.api.ApplicationV2 {
     if (!details.hidden) { details.hidden = true; return; }
     const raw = item.system.description?.value ?? item.system.description ?? "No description.";
     details.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(String(raw), { async: true, relativeTo: item }); details.hidden = false; this._updateRail();
+  }
+  _replyCantrip(messageId) {
+    const payload = cantripPayload(game.messages.get(messageId));
+    if (!payload || payload.senderId === game.user.id || !game.users.get(payload.senderId)) return;
+    const form = elementOf(this.element)?.querySelector(".sbs-pocket-cantrip-compose");
+    if (!form) return;
+    this.cantripDraft = { ...this.cantripDraft, recipientId: payload.senderId, messageId };
+    form.elements.recipient.value = payload.senderId;
+    form.elements.message.focus();
+  }
+  async _sendCantrip() {
+    const draft = this.cantripDraft;
+    const { recipientId, messageId } = draft;
+    const text = draft.text.trim();
+    const recipient = game.users.get(recipientId);
+    if (!text || !recipient || recipientId === game.user.id) return;
+    const api = messageCantripApi();
+    if (typeof api?.send === "function") {
+      await api.send({ recipientIds: [recipientId], text, replyTo: messageId ? { messageId } : null });
+    } else {
+      const sender = game.user;
+      const scope = messageCantripModule()?.id ?? MESSAGE_CANTRIP_ID;
+      const payload = {
+        module: scope, senderId: sender.id, senderName: sender.name,
+        recipientIds: [recipient.id], recipientNames: [recipient.name],
+        text, isReply: Boolean(messageId), originalMessageId: messageId
+      };
+      const message = await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ alias: sender.name }),
+        content: `<p>${esc(text).replace(/\r?\n/g, "<br>")}</p>`,
+        whisper: [sender.id, recipient.id],
+        flags: { [scope]: { payload } }
+      });
+      if (!message) return;
+    }
+    if (this.cantripDraft !== draft) return;
+    this.cantripDraft = { recipientId, text: "", messageId: null };
+    const form = elementOf(this.element)?.querySelector(".sbs-pocket-cantrip-compose");
+    if (form) form.elements.message.value = "";
+  }
+  refreshCantripHistory() {
+    const history = elementOf(this.element)?.querySelector(".sbs-pocket-cantrip-history");
+    if (!history) return;
+    history.innerHTML = renderCantripHistory();
+    this._updateRail();
+  }
+  async _sendChatMessage(form) {
+    const input = form.elements.message;
+    const draft = input.value;
+    const message = draft.trim();
+    if (!message) return;
+
+    const created = await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: esc(message).replace(/\r?\n/g, "<br>"),
+      whisper: []
+    });
+    if (!created || this.chatDraft !== draft) return;
+    this.chatDraft = "";
+    const currentInput = elementOf(this.element)?.querySelector(".sbs-pocket-chat-composer textarea");
+    if (currentInput?.value === draft) currentInput.value = "";
   }
   async _postItemToChat(item) {
     if (typeof item.displayCard === "function") return item.displayCard();
@@ -590,6 +751,19 @@ Hooks.once("init", () => {
 Hooks.once("ready", () => {
   game.socket.on(SOCKET, (m) => { if (m?.type === "refresh" && (!m.userIds?.length || m.userIds.includes(game.user.id))) enterPocketMode(); }); game.modules.get(MODULE_ID).api = { openManager, enterPocketMode, leavePocketMode, registerTab }; ensureLauncherMacro().catch((e) => console.error(`${MODULE_ID} | Launcher macro failed`, e)); setTimeout(enterPocketMode, 400);
 });
+Hooks.on("renderDialogV2", (app, html) => {
+  if (game.user.isGM || !currentAssignment().enabled) return;
+  const root = elementOf(html) ?? elementOf(app.element);
+  if (!root?.querySelector(".sbs-breakable.bi-dialog")) return;
+  const title = app.options?.window?.title ?? "";
+  if (!/^SaltyBananaSlug's Breakable Items — (Getting started|Updated to )/.test(title)) return;
+  queueMicrotask(() => void app.close());
+});
+Hooks.on("renderDialog", (app, html) => {
+  if (!state.active) return;
+  const root = elementOf(app.element) ?? elementOf(html);
+  if (root?.querySelector(".message-cantrip-form")) root.classList.add("sbs-pocket-cantrip");
+});
 Hooks.on("renderActorDirectory", (_app, html) => addManagerButton(html));
 Hooks.on("renderSidebarTab", (app, html) => { if (`${app?.constructor?.name} ${app?.tabName}`.toLowerCase().includes("actor")) addManagerButton(html); });
 Hooks.on("updateActor", (a) => scheduleRefresh(a.id));
@@ -603,3 +777,9 @@ Hooks.on("dnd5e.rollDamageV2", closePocketRollPrompt);
 Hooks.on("dnd5e.rollFormulaV2", closePocketRollPrompt);
 Hooks.on("createChatMessage", showPocketRollToast);
 Hooks.on("updateChatMessage", showPocketRollToast);
+
+for (const hook of ["createChatMessage", "updateChatMessage", "deleteChatMessage"]) {
+  Hooks.on(hook, (message) => {
+    if (state.active && messageCantripFlag(message)) state.sheet?.refreshCantripHistory();
+  });
+}
